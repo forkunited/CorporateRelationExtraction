@@ -33,16 +33,14 @@ public class ModelCReg extends Model {
 		String predictXPath = this.modelPath + ".predict.x";
 		String predictYPath = this.modelPath + ".predict.y";
 		
-		/* FIXME: Output predictX data */
+		if (!outputXData(predictXPath, data))
+			return null;
 		
 		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -D -W --tx " + predictXPath + " > " + predictYPath;
 		if (!CommandRunner.run(predictCmd))
 			return null;
 		
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classifiedData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabel>>();
-		/* FIXME: Load output */
-		
-		return classifiedData;
+		return loadYData(predictYPath, data);
 	}
 
 	@Override
@@ -56,15 +54,31 @@ public class ModelCReg extends Model {
 		String trainXPath = outputPath + ".train.x";
 		String trainYPath = outputPath + ".train.y";
 		
-		List<String> features = data.getFeatureNames();
-		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
+		if (!outputXData(trainXPath, data))
+			return false;
+		if (!outputYData(trainYPath, data))
+			return false;
 		
+		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath; 
+		if (!CommandRunner.run(trainCmd))
+			return false;
+		
+		this.modelPath = outputPath;
+		
+		return true;
+	}
+	
+	private boolean outputXData(String outputPath, CorpRelFeaturizedDataSet data) {
         try {
-    		BufferedWriter writeX = new BufferedWriter(new FileWriter(trainXPath));
-    		BufferedWriter writeY = new BufferedWriter(new FileWriter(trainYPath));
-
+        	List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
+    		List<String> features = data.getFeatureNames();
+    		BufferedWriter writeX = new BufferedWriter(new FileWriter(outputPath));
+    		
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : datums) {
+    			if (datum.getLabel(this.validLabels) == null)
+    				continue;
+    			
     			List<Double> values = datum.getFeatureValues();
     			writeX.write("id" + datumIndex + "\t{");
     			for (int i = 0; i < features.size(); i++) {
@@ -74,20 +88,38 @@ public class ModelCReg extends Model {
     				}
     			}
 				writeX.write("}\n");
-				writeY.write("id" + datumIndex + "\t" + datum.getLabel(this.validLabels) + "\n");
 				datumIndex++;
     		}    		
     		
             writeX.close();
-            writeY.close();
+            return true;
         } catch (IOException e) { e.printStackTrace(); return false; }
+	}
+	
+	private boolean outputYData(String outputPath, CorpRelFeaturizedDataSet data) {
+        try {
+        	List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
+    		BufferedWriter writeY = new BufferedWriter(new FileWriter(outputPath));
+
+    		int datumIndex = 0;
+    		for (CorpRelFeaturizedDatum datum : datums) {
+    			if (datum.getLabel(this.validLabels) == null)
+    				continue;
+    			
+				writeY.write("id" + datumIndex + "\t" + datum.getLabel(this.validLabels) + "\n");
+				datumIndex++;
+    		}    		
+    		
+            writeY.close();
+            return true;
+        } catch (IOException e) { e.printStackTrace(); return false; }
+	}
+	
+	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> loadYData(String path, CorpRelFeaturizedDataSet data) {
+		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> yData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabel>>();
 		
-		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath; 
-		if (!CommandRunner.run(trainCmd))
-			return false;
+		/* FIXME */
 		
-		this.modelPath = outputPath;
-		
-		return true;
+		return yData;
 	}
 }
