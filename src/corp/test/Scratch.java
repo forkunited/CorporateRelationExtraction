@@ -18,7 +18,8 @@ public class Scratch {
 		 *  We can go through this tomorrow afternoon
 		 */
 		
-		/* TODO: Get the paths from a configuration file */
+		/* This is the document set.  It represents a set of annotated documents. 
+		 * TODO: Get the paths from a configuration file */
 		CorpDocumentSet documentSet = new CorpDocumentSet("pathToBryansAnnotations", "pathToStanfordAnnotations");
 		
 		/* Construct corporate relation data set from documents */
@@ -30,14 +31,18 @@ public class Scratch {
 		/* Compute featurized data */
 		List<CorpRelFeaturizedDatum> featurizedData = dataSet.getFeaturizedData();
 		
+		/* Here's a list of some useful functions in dataSet */
+		dataSet.getFeatureNames(); // Gets all feature names
+		dataSet.getData(); // Gets all the data in the set
+		dataSet.getDataInLabel(/* label */null); // Gets all data directly within a given label
+		dataSet.getDataUnderLabel(/* rootLabel */null, /* includeRootData */false); // Gets all data under some branch of the label hierarchy
+		dataSet.getLabelChildren(/*label */ null); // Get all children of a label in the label hierarchy
 		
+		/* This iterates over the featurized data.  Each "datum" represents all of the features computed for a single
+		 * corporate relationship.
+		 */
 		for (CorpRelFeaturizedDatum featurizedDatum : featurizedData) {
-			dataSet.getFeatureNames(); // Gets all feature names
-			dataSet.getData(); // Gets all the data in the set
-			dataSet.getDataInLabel(/* label */null); // Gets all data directly within a given label
-			dataSet.getDataUnderLabel(/* rootLabel */null, /* includeRootData */false); // Gets all data under some branch of the label hierarchy
-			dataSet.getLabelChildren(/*label */ null); // Get all children of a label in the label hierarchy
-			
+			/* Here's a list of some useful functions in featurized datum */
 			featurizedDatum.getAuthorCorpName(); // Gets the author corporation name
 			featurizedDatum.getDocument(); // Gets the original document
 			featurizedDatum.getDocument().getAnnotation(); // Gets stanford annotation
