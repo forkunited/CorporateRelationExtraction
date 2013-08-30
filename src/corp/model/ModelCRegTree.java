@@ -7,6 +7,12 @@ import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * 
+ * Here's where to put the tree model
+ * @author Lingpeng
+ *
+ */
 public class ModelCRegTree extends Model {
 	@Override
 	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(
