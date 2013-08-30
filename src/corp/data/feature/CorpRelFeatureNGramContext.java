@@ -30,12 +30,5 @@ public class CorpRelFeatureNGramContext extends CorpRelFeature {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public List<List<Double>> computeMatrix(List<CorpRelDatum> data,
-			List<List<Double>> existingMatrix) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }
