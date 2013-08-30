@@ -10,21 +10,28 @@ public class CorpRelDataSet {
 	private HashMap<CorpRelLabel, List<CorpRelLabel>> labeledDAG; // Label graph... should be a acyclic
 	private HashMap<CorpRelLabel, List<CorpRelDatum>> labeledData;
 	private List<CorpRelDatum> unlabeledData;
+	private CorpDocumentSet sourceDocuments;
 	
-	public CorpRelDataSet() {
+	public CorpRelDataSet(CorpDocumentSet sourceDocuments) {
 		this.labeledDAG  = new HashMap<CorpRelLabel, List<CorpRelLabel>>();
 		this.labeledData = new HashMap<CorpRelLabel, List<CorpRelDatum>>();
 		this.unlabeledData = new ArrayList<CorpRelDatum>();
+		this.sourceDocuments = sourceDocuments;
+		
+		List<CorpDocument> documents = this.sourceDocuments.getDocuments();
+		for (CorpDocument document : documents) {
+			addData(document.getCorpRelDatums());
+		}
 	}
 	
-	public boolean addData(List<CorpRelDatum> data) {
+	private boolean addData(List<CorpRelDatum> data) {
 		for (CorpRelDatum datum : data)
 			if (!addDatum(datum))
 				return false;
 		return true;
 	}
 	
-	public boolean addDatum(CorpRelDatum datum) {
+	private boolean addDatum(CorpRelDatum datum) {
 		CorpRelLabel[] labelPath = datum.getLabelPath();
 		if (labelPath == null || labelPath.length == 0) {
 			this.unlabeledData.add(datum);
@@ -65,12 +72,21 @@ public class CorpRelDataSet {
 		return data;
 	}
 	
-	public List<CorpRelDatum> getDataUnderLabel(CorpRelLabel label) {
+	public List<CorpRelDatum> getDataUnderLabel(CorpRelLabel root, boolean includeRootData) {
 		List<CorpRelDatum> data = new ArrayList<CorpRelDatum>();
 		Stack<CorpRelLabel> labelsToVisit = new Stack<CorpRelLabel>();
 		HashSet<CorpRelLabel> visited = new HashSet<CorpRelLabel>();
 		
-		labelsToVisit.add(label);
+		if (includeRootData) {
+			labelsToVisit.add(root);
+		} else {
+			if (!this.labeledDAG.containsKey(root))
+				return data;
+			
+			List<CorpRelLabel> childLabels = this.labeledDAG.get(root);
+			for (CorpRelLabel childLabel : childLabels)
+				labelsToVisit.add(childLabel);
+		}
 		
 		while (labelsToVisit.size() > 0) {
 			CorpRelLabel currentLabel = labelsToVisit.pop();
@@ -97,5 +113,15 @@ public class CorpRelDataSet {
 		if (!this.labeledData.containsKey(label))
 			return new ArrayList<CorpRelDatum>();
 		return this.labeledData.get(label);
+	}
+	
+	public List<CorpRelLabel> getLabelChildren(CorpRelLabel label) {
+		if (!this.labeledDAG.containsKey(label))
+			return new ArrayList<CorpRelLabel>();
+		return this.labeledDAG.get(label);
+	}
+	
+	public CorpDocumentSet getSourceDocuments() {
+		return this.sourceDocuments;
 	}
 }

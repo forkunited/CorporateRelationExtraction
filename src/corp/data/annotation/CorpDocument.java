@@ -191,7 +191,7 @@ public class CorpDocument {
 				}
 				
 				if (match) {
-					spans.add(new CorpDocumentTokenSpan(this, sentenceIndex, i+1, i+nerTokens.length+1));
+					spans.add(new CorpDocumentTokenSpan(this, sentenceIndex, i, i+nerTokens.length));
 				}
 			}
 		}

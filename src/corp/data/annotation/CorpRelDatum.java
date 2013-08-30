@@ -1,5 +1,6 @@
 package corp.data.annotation;
 
+import java.util.Collection;
 import java.util.List;
 
 public class CorpRelDatum {
@@ -13,6 +14,12 @@ public class CorpRelDatum {
 		
 		this.authorCorpName = authorCorpName;
 		this.otherOrgTokenSpans = otherOrgTokenSpans;
+	}
+	
+	public CorpRelDatum(CorpRelDatum copy) {
+		this.authorCorpName = copy.authorCorpName;
+		this.otherOrgTokenSpans = copy.otherOrgTokenSpans;
+		this.labelPath = copy.labelPath;
 	}
 	
 	public boolean setLabelPath(CorpRelLabel[] labelPath) {
@@ -37,6 +44,17 @@ public class CorpRelDatum {
 	}
 	
 	public CorpRelLabel getLastLabel() {
+		if (this.labelPath == null)
+			return null;
 		return this.labelPath[this.labelPath.length];
+	}
+	
+	public CorpRelLabel getLabel(Collection<CorpRelLabel> validLabels) {
+		for (CorpRelLabel label : this.labelPath) {
+			if (validLabels.contains(label))
+				return label;
+		}
+		
+		return null;
 	}
 }

@@ -8,14 +8,14 @@ package corp.data.annotation;
 public class CorpDocumentTokenSpan {
 	private CorpDocument document;
 	private int sentenceIndex; // 0-based sentence index
-	private int tokenStartIndex; // 1-based starting token index (inclusive)
-	private int tokenEndIndex; // 1-based ending token index (exclusive)
+	private int tokenStartIndex; // 0-based starting token index (inclusive)
+	private int tokenEndIndex; // 0-based ending token index (exclusive)
 	
 	/**
 	 * @param document Source document
 	 * @param sentenceIndex 0-based sentence index in document
-	 * @param tokenStartIndex  1-based starting token index (inclusive)
-	 * @param tokenEndIndex // 1-based ending token index (exclusive)
+	 * @param tokenStartIndex  0-based starting token index (inclusive)
+	 * @param tokenEndIndex 0-based ending token index (exclusive)
 	 */
 	public CorpDocumentTokenSpan(CorpDocument document, int sentenceIndex, int tokenStartIndex, int tokenEndIndex) {
 		this.document = document;

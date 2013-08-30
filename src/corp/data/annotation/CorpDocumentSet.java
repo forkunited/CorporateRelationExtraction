@@ -25,14 +25,6 @@ public class CorpDocumentSet {
 		return new ArrayList<CorpDocument>(documents.values());
 	}
 	
-	public CorpRelDataSet generateDataSet() {
-		CorpRelDataSet dataSet = new CorpRelDataSet();
-		for (CorpDocument document : this.documents.values()) {
-			dataSet.addData(document.getCorpRelDatums());
-		}
-		return dataSet;
-	}
-	
 	private void loadDocuments(boolean cacheAnnotations) {
 		File corpRelDir = new File(this.corpRelDirPath);
 		File stanfordAnnotationDir = new File(this.stanfordAnnotationDirPath);
