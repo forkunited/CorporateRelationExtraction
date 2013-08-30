@@ -20,15 +20,15 @@ public class CounterTable{
 		}
 	}
 	
-	public void removeSingles() {
-		List<String> singles = new ArrayList<String>();
+	public void removeCountsLessThan(int minCount) {
+		List<String> valuesToRemove = new ArrayList<String>();
 		for (Entry<String, Integer> entry : this.counts.entrySet()) {
-			if (entry.getValue() == 1)
-				singles.add(entry.getKey());
+			if (entry.getValue() < minCount)
+				valuesToRemove.add(entry.getKey());
 		}
 		
-		for (String single : singles)
-			this.counts.remove(single);
+		for (String valueToRemove : valuesToRemove)
+			this.counts.remove(valueToRemove);
 	}
 	
 	public HashMap<String, Integer> buildIndex() {

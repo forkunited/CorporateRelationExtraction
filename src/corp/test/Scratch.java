@@ -26,7 +26,9 @@ public class Scratch {
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
 		/* Add feature to data set */
-		dataSet.addFeature(new CorpRelFeatureNGramContext(documentSet.getDocuments(), dataSet.getData()));
+		dataSet.addFeature(new CorpRelFeatureNGramContext(documentSet.getDocuments(), dataSet.getData(), 0 /* n */, 
+				0 /*minFeatureOccurrence*/,
+				0 /* contextWindowSize */));
 		
 		/* Compute featurized data */
 		List<CorpRelFeaturizedDatum> featurizedData = dataSet.getFeaturizedData();

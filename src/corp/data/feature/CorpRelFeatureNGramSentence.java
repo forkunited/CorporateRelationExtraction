@@ -9,19 +9,16 @@ import corp.data.annotation.CorpRelDatum;
 import corp.util.StanfordUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
-public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
-	private int contextWindowSize;
+public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 	
-	public CorpRelFeatureNGramContext(
+	public CorpRelFeatureNGramSentence(
 			List<CorpDocument> documents,
 			List<CorpRelDatum> data, 
 			int n, 
-			int minFeatureOccurrence,
-			int contextWindowSize) {
+			int minFeatureOccurrence) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
-		this.contextWindowSize = contextWindowSize;
-		this.namePrefix = "Context" + contextWindowSize;
+		this.namePrefix = "Sentence";
 		init(documents, data);
 	}
 
@@ -33,9 +30,7 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 		CorpDocument document = datum.getDocument();
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
 			List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(document.getSentenceAnnotation(tokenSpan.getSentenceIndex()));
-			int startIndex = Math.max(0, tokenSpan.getTokenStartIndex() - this.contextWindowSize);
-			int endIndex = Math.min(tokens.size(), tokenSpan.getTokenEndIndex() + this.contextWindowSize) - this.n + 1;
-			for (int i = startIndex; i < endIndex; i++) {
+			for (int i = 0; i < tokens.size()-this.n+1; i++) {
 				ngrams.add(getCleanNGram(tokens, i));
 			}
 		}

@@ -7,8 +7,8 @@ import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpRelDatum;
 
 public abstract class CorpRelFeature {
-	public CorpRelFeature(List<CorpDocument> documents, List<CorpRelDatum> data) {
-		init(documents, data);
+	public CorpRelFeature() {
+		
 	}
 	
 	protected abstract void init(List<CorpDocument> documents, List<CorpRelDatum> data);

@@ -90,6 +90,14 @@ public class StanfordUtil {
 		return sentenceAnnotation.get(TokensAnnotation.class);
 	}
 	
+	public static List<String> getTokensNGramTexts(List<CoreLabel> tokens, int startIndex, int n) {
+		List<String> ngram = new ArrayList<String>();
+		for (int i = startIndex; i < startIndex + n; i++) {
+			ngram.add(StanfordUtil.getTokenText(tokens.get(i)));
+		}
+		return ngram;
+	}
+	
 	public static String getTokenText(CoreLabel tokenAnnotation) {
 		return tokenAnnotation.get(TextAnnotation.class);
 	}
