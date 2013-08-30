@@ -24,6 +24,10 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		return this.features.add(feature);
 	}
 	
+	public boolean removeFeature(CorpRelFeature feature) {
+		return this.features.remove(feature);
+	}
+	
 	public List<String> getFeatureNames() {
 		List<String> featureNames = new ArrayList<String>();
 		for (CorpRelFeature feature : this.features)
