@@ -1,5 +1,6 @@
 package corp.data.feature;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,12 +36,10 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	@Override
 	public List<Double> computeVector(CorpRelDatum datum, List<Double> existingVector) {
 		HashSet<String> ngramsForDatum = getNGramsForDatum(datum);
-		List<Double> featureValues = Collections.nCopies(this.vocabulary.size(), 0.0);
-		
+		List<Double> featureValues = new ArrayList<Double>(Collections.nCopies(this.vocabulary.size(), 0.0));
 		for (String ngram : ngramsForDatum) {
 			if (this.vocabulary.containsKey(ngram))
-				featureValues.set(this.vocabulary.get(ngram), 1.0);
-				
+				featureValues.set(this.vocabulary.get(ngram), 1.0);		
 		}
 		
 		existingVector.addAll(featureValues);

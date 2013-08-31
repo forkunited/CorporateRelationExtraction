@@ -48,7 +48,7 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 			int startIndex = tokenSpan.getTokenStartIndex();
 			int endIndex = tokenSpan.getTokenEndIndex();
 			for (int i = tokenSpan.getTokenStartIndex(); i < tokenSpan.getTokenEndIndex(); i++) {
-				IndexedWord word = deps.getNodeByIndex(i);
+				IndexedWord word = deps.getNodeByIndex(i+1);
 				List<IndexedWord> depWords = new ArrayList<IndexedWord>();
 				if (this.mode == CorpRelFeatureNGramDep.Mode.ChildrenOnly || this.mode == CorpRelFeatureNGramDep.Mode.ParentsAndChildren) {
 					depWords.addAll(deps.getChildList(word));
@@ -59,9 +59,10 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 				}
 				
 				for (IndexedWord depWord : depWords) {
-					if (depWord.index() < tokens.size() - this.n + 1 
-							&& (depWord.index() < startIndex || depWord.index() >= endIndex)) {
-						String ngram = getCleanNGram(tokens, depWord.index());
+					int depIndex = depWord.index() - 1; // Convert to 0-based
+					if (depIndex < tokens.size() - this.n + 1 
+							&& (depIndex < startIndex || depIndex >= endIndex)) {
+						String ngram = getCleanNGram(tokens, depIndex);
 						if (this.useRelationTypes)
 							ngram += "_" + deps.reln(word, depWord).getShortName();
 						ngrams.add(ngram);

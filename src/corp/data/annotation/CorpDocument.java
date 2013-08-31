@@ -2,13 +2,13 @@ package corp.data.annotation;
 
 import java.io.BufferedReader;
 
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
+import corp.util.StanfordUtil;
 
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
@@ -109,7 +109,7 @@ public class CorpDocument {
 	        /* Parse "TAGS" line */
 	        /* NOTE: Assumes one longest path through tag hierarchy for each key */
 	        for (int i = 1; i < tagParts.length; i++) {
-	        	String[] labelStrPathAndLastLabelStr = keyParts[i].split(":");
+	        	String[] labelStrPathAndLastLabelStr = tagParts[i].split(":");
 	        	if (labelStrPathAndLastLabelStr.length < 2)
 	        		continue;
 	        	
@@ -117,7 +117,7 @@ public class CorpDocument {
 	        	if (labelStrPath.length < 1)
 	        		continue;
 	        	
-	        	String lastLabelStr = labelStrPathAndLastLabelStr[1];
+	        	String lastLabelStr = labelStrPathAndLastLabelStr[1].trim();
 	        	String key = labelStrPath[0].trim();
 	        	try {
 		        	CorpRelLabel[] labelPath = new CorpRelLabel[labelStrPath.length];
@@ -138,6 +138,9 @@ public class CorpDocument {
 	        br.close();
 	    } catch (Exception e) {
 	    	e.printStackTrace();
+	    	if (cachedAnnotation)
+	    		freeAnnotation();
+	    	return false;
 	    }
 		
 		/* Create datums */
@@ -154,16 +157,7 @@ public class CorpDocument {
 	}
 	
 	private Annotation loadStanfordAnnotation() {
-		try {
-			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(this.stanfordFilePath));
-			Annotation annotation = (Annotation)stream.readObject();
-			stream.close();
-			
-			return annotation;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} 
+		return StanfordUtil.deserializeAnnotation(this.stanfordFilePath); 
 	}
 	
 	private List<CorpDocumentTokenSpan> nerTextToTokenSpans(String nerText, int minSentenceIndex, int maxSentenceIndex) {

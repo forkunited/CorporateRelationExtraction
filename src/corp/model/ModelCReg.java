@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import corp.util.CommandRunner;
-import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
