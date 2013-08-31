@@ -1,5 +1,6 @@
 package corp.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 import corp.data.annotation.CorpRelLabel;
@@ -31,6 +32,13 @@ public class ModelCRegTree extends Model {
 	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(
+			CorpRelFeaturizedDataSet data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,12 +1,16 @@
 package corp.model;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import corp.util.CommandRunner;
+import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
@@ -29,6 +33,13 @@ public class ModelCReg extends Model {
 	}
 	
 	@Override
+	public List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(
+			CorpRelFeaturizedDataSet data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(CorpRelFeaturizedDataSet data) {
 		String predictXPath = this.modelPath + ".predict.x";
 		String predictYPath = this.modelPath + ".predict.y";
@@ -36,7 +47,7 @@ public class ModelCReg extends Model {
 		if (!outputXData(predictXPath, data))
 			return null;
 		
-		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -D -W --tx " + predictXPath + " > " + predictYPath;
+		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -W --tx " + predictXPath + " > " + predictYPath;
 		if (!CommandRunner.run(predictCmd))
 			return null;
 		
@@ -76,7 +87,7 @@ public class ModelCReg extends Model {
     		
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : datums) {
-    			if (datum.getLabel(this.validLabels) == null)
+    			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
     			
     			List<Double> values = datum.getFeatureValues();
@@ -103,7 +114,7 @@ public class ModelCReg extends Model {
 
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : datums) {
-    			if (datum.getLabel(this.validLabels) == null)
+    			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
     			
 				writeY.write("id" + datumIndex + "\t" + datum.getLabel(this.validLabels) + "\n");
@@ -117,8 +128,33 @@ public class ModelCReg extends Model {
 	
 	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> loadYData(String path, CorpRelFeaturizedDataSet data) {
 		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> yData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabel>>();
-		
-		/* FIXME */
+		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			
+			for (CorpRelFeaturizedDatum datum : datums) {
+    			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
+    				continue;
+				
+				String line = br.readLine();
+				if (line == null) {
+					br.close();
+					return null;
+				}
+					
+				String[] lineParts = line.split("\t");
+				if (lineParts.length < 2) {
+					br.close();
+					return null;
+				}
+				
+				yData.add(new Pair<CorpRelFeaturizedDatum, CorpRelLabel>(datum, CorpRelLabel.valueOf(lineParts[1])));
+			}
+	        
+	        br.close();
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
 		
 		return yData;
 	}

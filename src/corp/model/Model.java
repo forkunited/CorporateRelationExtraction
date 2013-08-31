@@ -1,5 +1,6 @@
 package corp.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 import corp.data.annotation.CorpRelLabel;
@@ -18,4 +19,5 @@ public abstract class Model {
 	public abstract boolean deserialize(String modelPath);
 	public abstract boolean train(CorpRelFeaturizedDataSet data, String outputPath);
 	public abstract List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(CorpRelFeaturizedDataSet data);
+	public abstract List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(CorpRelFeaturizedDataSet data);
 }
