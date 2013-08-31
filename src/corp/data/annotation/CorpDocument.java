@@ -130,6 +130,7 @@ public class CorpDocument {
 		        		keyToLabels.put(key, labelPath);
 		        	} 
 	        	} catch (Exception e) {
+	        		System.err.println("Failed to load corporate relationship document: " + path);
 	        		e.printStackTrace();
 	        		continue;
 	        	}
@@ -147,7 +148,9 @@ public class CorpDocument {
 		for (Entry<String, CorpRelLabel[]> keyLabelEntry : keyToLabels.entrySet()) {
 			if (!keyToTokenSpans.containsKey(keyLabelEntry.getKey()))
 				continue;
-			this.corpRelDatums.add(new CorpRelDatum(authorCorpName, keyToTokenSpans.get(keyLabelEntry.getKey())));
+			CorpRelDatum datum = new CorpRelDatum(authorCorpName, keyToTokenSpans.get(keyLabelEntry.getKey()));
+			datum.setLabelPath(keyLabelEntry.getValue());
+			this.corpRelDatums.add(datum);
 		}
 
 		if (cachedAnnotation)

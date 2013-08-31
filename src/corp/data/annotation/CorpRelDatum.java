@@ -46,7 +46,7 @@ public class CorpRelDatum {
 	public CorpRelLabel getLastLabel() {
 		if (this.labelPath == null)
 			return null;
-		return this.labelPath[this.labelPath.length];
+		return this.labelPath[this.labelPath.length-1];
 	}
 	
 	public CorpRelLabel getLabel(Collection<CorpRelLabel> validLabels) {
