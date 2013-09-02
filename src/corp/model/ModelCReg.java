@@ -47,6 +47,7 @@ public class ModelCReg extends Model {
 			return null;
 		
 		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -W --tx " + predictXPath + " > " + predictYPath;
+		predictCmd = predictCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(predictCmd))
 			return null;
 		
@@ -69,7 +70,8 @@ public class ModelCReg extends Model {
 		if (!outputYData(trainYPath, data))
 			return false;
 		
-		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath; 
+		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath;
+		trainCmd = trainCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(trainCmd))
 			return false;
 		

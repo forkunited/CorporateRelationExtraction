@@ -1,16 +1,21 @@
 package corp.test;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
+import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeatureNGramContext;
 import corp.data.feature.CorpRelFeatureNGramDep;
 import corp.data.feature.CorpRelFeatureNGramSentence;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
+import corp.model.ModelCReg;
 import corp.util.CorpProperties;
 import corp.util.StanfordUtil;
+import edu.stanford.nlp.util.Pair;
 
 /**
  * For periodically testing out short temporary snippets of code
@@ -86,6 +91,23 @@ public class Scratch {
 				System.out.println(datum.getAuthorCorpName() + "\t" + otherOrgStr + "\t" + datum.getLastLabel() + "\t" + features.get(i) + "\t" + datum.getFeatureValues().get(i));
 			}
 		}
+		
+		System.out.println("Training CReg...");
+		
+		List<CorpRelLabel> validLabels = new ArrayList<CorpRelLabel>();
+		validLabels.add(CorpRelLabel.SelfRef);
+		validLabels.add(CorpRelLabel.OCorp);
+		validLabels.add(CorpRelLabel.NonCorp);
+		validLabels.add(CorpRelLabel.Generic);
+		validLabels.add(CorpRelLabel.Error);
+		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabels);
+		model.train(dataSet, new File(properties.getCregDataDirPath(), "scratch").getAbsolutePath());
+		
+		System.out.println("Predicting CReg...");
+		
+		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> predictions = model.classify(dataSet);
+		
+		System.out.println("Made " + predictions.size() + " predictions.");
 		
 		System.out.println("Done.");
 	}
