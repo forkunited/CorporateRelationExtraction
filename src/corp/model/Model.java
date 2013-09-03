@@ -16,8 +16,20 @@ public abstract class Model {
 		return true;
 	}
 	
+	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
+		return train(data.getFeaturizedData(), outputPath);
+	}
+	
+	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(CorpRelFeaturizedDataSet data) {
+		return classify(data.getFeaturizedData());
+	}
+	
+	public List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(CorpRelFeaturizedDataSet data) {
+		return posterior(data.getFeaturizedData());
+	}
+	
 	public abstract boolean deserialize(String modelPath);
-	public abstract boolean train(CorpRelFeaturizedDataSet data, String outputPath);
-	public abstract List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(CorpRelFeaturizedDataSet data);
-	public abstract List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(CorpRelFeaturizedDataSet data);
+	public abstract boolean train(List<CorpRelFeaturizedDatum> data, String outputPath);
+	public abstract List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(List<CorpRelFeaturizedDatum> data);
+	public abstract List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(List<CorpRelFeaturizedDatum> data);
 }

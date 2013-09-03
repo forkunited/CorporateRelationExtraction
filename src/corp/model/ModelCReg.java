@@ -11,7 +11,6 @@ import java.util.List;
 
 import corp.util.CommandRunner;
 import corp.data.annotation.CorpRelLabel;
-import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
@@ -33,13 +32,13 @@ public class ModelCReg extends Model {
 	
 	@Override
 	public List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(
-			CorpRelFeaturizedDataSet data) {
+			List<CorpRelFeaturizedDatum> data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(CorpRelFeaturizedDataSet data) {
+	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(List<CorpRelFeaturizedDatum> data) {
 		String predictXPath = this.modelPath + ".predict.x";
 		String predictYPath = this.modelPath + ".predict.y";
 		
@@ -61,7 +60,7 @@ public class ModelCReg extends Model {
 	}
 
 	@Override
-	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
+	public boolean train(List<CorpRelFeaturizedDatum> data, String outputPath) {
 		String trainXPath = outputPath + ".train.x";
 		String trainYPath = outputPath + ".train.y";
 		
@@ -80,17 +79,16 @@ public class ModelCReg extends Model {
 		return true;
 	}
 	
-	private boolean outputXData(String outputPath, CorpRelFeaturizedDataSet data) {
+	private boolean outputXData(String outputPath, List<CorpRelFeaturizedDatum> data) {
         try {
-        	List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
-    		List<String> features = data.getFeatureNames();
     		BufferedWriter writeX = new BufferedWriter(new FileWriter(outputPath));
     		
     		int datumIndex = 0;
-    		for (CorpRelFeaturizedDatum datum : datums) {
+    		for (CorpRelFeaturizedDatum datum : data) {
     			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
     			
+    			List<String> features = datum.getSourceDataSet().getFeatureNames();
     			List<Double> values = datum.getFeatureValues();
     			writeX.write("id" + datumIndex + "\t{");
     			for (int i = 0; i < features.size(); i++) {
@@ -108,13 +106,12 @@ public class ModelCReg extends Model {
         } catch (IOException e) { e.printStackTrace(); return false; }
 	}
 	
-	private boolean outputYData(String outputPath, CorpRelFeaturizedDataSet data) {
+	private boolean outputYData(String outputPath, List<CorpRelFeaturizedDatum> data) {
         try {
-        	List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
     		BufferedWriter writeY = new BufferedWriter(new FileWriter(outputPath));
 
     		int datumIndex = 0;
-    		for (CorpRelFeaturizedDatum datum : datums) {
+    		for (CorpRelFeaturizedDatum datum : data) {
     			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
     			
@@ -127,13 +124,12 @@ public class ModelCReg extends Model {
         } catch (IOException e) { e.printStackTrace(); return false; }
 	}
 	
-	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> loadYData(String path, CorpRelFeaturizedDataSet data) {
+	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> loadYData(String path, List<CorpRelFeaturizedDatum> data) {
 		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> yData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabel>>();
-		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			
-			for (CorpRelFeaturizedDatum datum : datums) {
+			for (CorpRelFeaturizedDatum datum : data) {
     			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
 				
