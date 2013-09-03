@@ -64,16 +64,15 @@ public class Scratch {
 					1 /* contextWindowSize */)
 		);
 		
-		/* FIXME: Something's not quite right in dependency code... probably indexing issue */
-		//dataSet.addFeature(
-		//		new CorpRelFeatureNGramDep(
-		//				documentSet.getDocuments(), 
-		//				dataSet.getData(), 
-		//				1 /* n */, 
-		//				2  /* minFeatureOccurrence */,
-		//				CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-		//				false /* useRelationTypes */)
-		//);
+		dataSet.addFeature(
+			new CorpRelFeatureNGramDep(
+					documentSet.getDocuments(), 
+					dataSet.getData(), 
+					1 /* n */, 
+					2  /* minFeatureOccurrence */,
+					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
+					false /* useRelationTypes */)
+		);
 		
 		System.out.println("Computing featurized data set...");
 		
@@ -92,6 +91,7 @@ public class Scratch {
 			}
 		}
 		
+		/*
 		System.out.println("Training CReg...");
 		
 		List<CorpRelLabel> validLabels = new ArrayList<CorpRelLabel>();
@@ -109,6 +109,6 @@ public class Scratch {
 		
 		System.out.println("Made " + predictions.size() + " predictions.");
 		
-		System.out.println("Done.");
+		System.out.println("Done.");*/
 	}
 }

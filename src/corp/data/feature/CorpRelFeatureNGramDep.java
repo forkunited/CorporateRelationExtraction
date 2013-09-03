@@ -47,8 +47,12 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 			SemanticGraph deps = StanfordUtil.getSentenceDependencyGraph(document.getSentenceAnnotation(tokenSpan.getSentenceIndex()));
 			int startIndex = tokenSpan.getTokenStartIndex();
 			int endIndex = tokenSpan.getTokenEndIndex();
+
 			for (int i = tokenSpan.getTokenStartIndex(); i < tokenSpan.getTokenEndIndex(); i++) {
-				IndexedWord word = deps.getNodeByIndex(i+1);
+				IndexedWord word = deps.getNodeByIndexSafe(i+1);
+				if (word == null)
+					continue;
+				
 				List<IndexedWord> depWords = new ArrayList<IndexedWord>();
 				if (this.mode == CorpRelFeatureNGramDep.Mode.ChildrenOnly || this.mode == CorpRelFeatureNGramDep.Mode.ParentsAndChildren) {
 					depWords.addAll(deps.getChildList(word));

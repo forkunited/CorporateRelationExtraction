@@ -17,7 +17,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.CoreMap;
 
 public class CorpDocument {
-	private String stanfordFilePath;
+	private String stanfordAnnotationPath;
 	private Annotation cachedAnnotation;
 	private List<CorpRelDatum> corpRelDatums;
 	
@@ -27,7 +27,7 @@ public class CorpDocument {
 	}
 
 	public CorpDocument(String stanfordAnnotationPath, boolean cacheAnnotation) {
-		this.stanfordFilePath = stanfordAnnotationPath;
+		this.stanfordAnnotationPath = stanfordAnnotationPath;
 		this.corpRelDatums = new ArrayList<CorpRelDatum>();
 		
 		if (cacheAnnotation) {
@@ -45,6 +45,10 @@ public class CorpDocument {
 	
 	public List<CorpRelDatum> getCorpRelDatums() {
 		return this.corpRelDatums;
+	}
+	
+	public String getAnnotationPath() {
+		return this.stanfordAnnotationPath;
 	}
 	
 	public Annotation getAnnotation() {
@@ -160,7 +164,7 @@ public class CorpDocument {
 	}
 	
 	private Annotation loadStanfordAnnotation() {
-		return StanfordUtil.deserializeAnnotation(this.stanfordFilePath); 
+		return StanfordUtil.deserializeAnnotation(this.stanfordAnnotationPath); 
 	}
 	
 	private List<CorpDocumentTokenSpan> nerTextToTokenSpans(String nerText, int minSentenceIndex, int maxSentenceIndex) {
