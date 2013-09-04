@@ -10,28 +10,32 @@ public class CorpRelDataSet {
 	private HashMap<CorpRelLabel, List<CorpRelLabel>> labeledDAG; // Label graph... should be a acyclic
 	private HashMap<CorpRelLabel, List<CorpRelDatum>> labeledData;
 	private List<CorpRelDatum> unlabeledData;
-	private CorpDocumentSet sourceDocuments;
+	
+	public CorpRelDataSet() {
+		this.labeledDAG  = new HashMap<CorpRelLabel, List<CorpRelLabel>>();
+		this.labeledData = new HashMap<CorpRelLabel, List<CorpRelDatum>>();
+		this.unlabeledData = new ArrayList<CorpRelDatum>();
+	}
 	
 	public CorpRelDataSet(CorpDocumentSet sourceDocuments) {
 		this.labeledDAG  = new HashMap<CorpRelLabel, List<CorpRelLabel>>();
 		this.labeledData = new HashMap<CorpRelLabel, List<CorpRelDatum>>();
 		this.unlabeledData = new ArrayList<CorpRelDatum>();
-		this.sourceDocuments = sourceDocuments;
 		
-		List<CorpDocument> documents = this.sourceDocuments.getDocuments();
+		List<CorpDocument> documents = sourceDocuments.getDocuments();
 		for (CorpDocument document : documents) {
 			addData(document.getCorpRelDatums());
 		}
 	}
 	
-	private boolean addData(List<CorpRelDatum> data) {
+	public boolean addData(List<CorpRelDatum> data) {
 		for (CorpRelDatum datum : data)
 			if (!addDatum(datum))
 				return false;
 		return true;
 	}
 	
-	private boolean addDatum(CorpRelDatum datum) {
+	public boolean addDatum(CorpRelDatum datum) {
 		CorpRelLabel[] labelPath = datum.getLabelPath();
 		if (labelPath == null || labelPath.length == 0) {
 			this.unlabeledData.add(datum);
@@ -119,9 +123,5 @@ public class CorpRelDataSet {
 		if (!this.labeledDAG.containsKey(label))
 			return new ArrayList<CorpRelLabel>();
 		return this.labeledDAG.get(label);
-	}
-	
-	public CorpDocumentSet getSourceDocuments() {
-		return this.sourceDocuments;
 	}
 }

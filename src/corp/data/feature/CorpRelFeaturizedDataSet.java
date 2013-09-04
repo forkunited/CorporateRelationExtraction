@@ -11,6 +11,15 @@ import corp.data.annotation.CorpRelLabel;
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private List<CorpRelFeature> features;
 	
+	public CorpRelFeaturizedDataSet() {
+		this(new ArrayList<CorpRelFeature>());
+	}
+	
+	public CorpRelFeaturizedDataSet(List<CorpRelFeature> features) {
+		super();
+		this.features = features;
+	}
+	
 	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments) {
 		this(sourceDocuments, new ArrayList<CorpRelFeature>());
 	}
@@ -37,6 +46,10 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	
 	public CorpRelFeature getFeature(int index) {
 		return this.features.get(index);
+	}
+	
+	public List<CorpRelFeature> getFeatures() {
+		return this.features;
 	}
 	
 	public int getFeatureCount() {

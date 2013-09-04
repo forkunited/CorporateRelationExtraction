@@ -16,6 +16,10 @@ public abstract class Model {
 		return true;
 	}
 	
+	public List<CorpRelLabel> getValidLabels() {
+		return this.validLabels;
+	}
+	
 	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
 		return train(data.getFeaturizedData(), outputPath);
 	}

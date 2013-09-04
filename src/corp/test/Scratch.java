@@ -91,7 +91,6 @@ public class Scratch {
 			}
 		}
 		
-		/*
 		System.out.println("Training CReg...");
 		
 		List<CorpRelLabel> validLabels = new ArrayList<CorpRelLabel>();
@@ -109,6 +108,6 @@ public class Scratch {
 		
 		System.out.println("Made " + predictions.size() + " predictions.");
 		
-		System.out.println("Done.");*/
+		System.out.println("Done.");
 	}
 }
