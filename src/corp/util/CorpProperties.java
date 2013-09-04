@@ -9,6 +9,8 @@ public class CorpProperties {
 	private int stanfordAnnotationCacheSize;
 	private String cregDataDirPath;
 	private String cregCommandPath;
+	private String corpGazettePath;
+	private String nonCorpGazettePath;
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -21,6 +23,8 @@ public class CorpProperties {
 			this.stanfordAnnotationCacheSize = Integer.valueOf(properties.getProperty("stanfordAnnotationCacheSize"));
 			this.cregDataDirPath = properties.getProperty("cregDataDirPath");
 			this.cregCommandPath = properties.getProperty("cregCommandPath");
+			this.corpGazettePath = properties.getProperty("corpGazettePath");
+			this.nonCorpGazettePath = properties.getProperty("nonCorpGazettePath");
 			
 			reader.close();
 		} catch (Exception e) {
@@ -46,5 +50,13 @@ public class CorpProperties {
 	
 	public String getCregCommandPath() {
 		return this.cregCommandPath;
+	}
+	
+	public String getCorpGazettePath() {
+		return this.corpGazettePath;
+	}
+	
+	public String getNonCorpGazettePath() {
+		return this.nonCorpGazettePath;
 	}
 }

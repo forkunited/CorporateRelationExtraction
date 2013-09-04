@@ -22,8 +22,6 @@ import edu.stanford.nlp.util.Pair;
  */
 public class Scratch {
 	public static void main(String[] args) {
-		/* Here's some code to try out loading the data */
-		
 		System.out.println("Loading configuration properties...");
 		
 		CorpProperties properties = new CorpProperties("corp.properties");

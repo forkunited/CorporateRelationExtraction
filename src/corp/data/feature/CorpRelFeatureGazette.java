@@ -13,11 +13,6 @@ public abstract class CorpRelFeatureGazette extends CorpRelFeature {
 		Maximum
 	}
 	
-	protected enum InputType {
-		Mentioner,
-		Mentioned
-	}
-	
 	protected Gazette gazette;
 	protected CorpRelFeatureGazette.ExtremumType extremumType;
 	protected CorpRelFeatureGazette.InputType inputType;
@@ -27,6 +22,11 @@ public abstract class CorpRelFeatureGazette extends CorpRelFeature {
 	protected void init(List<CorpDocument> documents, List<CorpRelDatum> data) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public enum InputType {
+		Mentioner,
+		Mentioned
 	}
 
 	@Override

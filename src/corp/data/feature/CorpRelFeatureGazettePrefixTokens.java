@@ -10,7 +10,7 @@ import corp.util.StringUtil;
 public class CorpRelFeatureGazettePrefixTokens  extends CorpRelFeatureGazette {
 	private int minTokens;
 	
-	public CorpRelFeatureGazettePrefixTokens(List<CorpDocument> documents, List<CorpRelDatum> data, Gazette gazette, int minTokens, CorpRelFeatureGazette.InputType inputType) {
+	public CorpRelFeatureGazettePrefixTokens(List<CorpDocument> documents, List<CorpRelDatum> data, Gazette gazette, CorpRelFeatureGazette.InputType inputType, int minTokens) {
 		this.extremumType = CorpRelFeatureGazette.ExtremumType.Maximum;
 		this.inputType = inputType;
 		this.namePrefix = "PrefixTokens";
