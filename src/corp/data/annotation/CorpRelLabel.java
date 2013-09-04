@@ -25,6 +25,7 @@ public enum CorpRelLabel {
 	Compete,
 	News,
 	Finance,
+	New,
 	NonCorp,
 	US,
 	State,
