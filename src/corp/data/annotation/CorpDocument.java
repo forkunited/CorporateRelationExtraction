@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -18,29 +19,18 @@ import edu.stanford.nlp.util.CoreMap;
 
 public class CorpDocument {
 	private String stanfordAnnotationPath;
-	private Annotation cachedAnnotation;
+	private LinkedHashMap<String, Annotation> annotationCache;
 	private List<CorpRelDatum> corpRelDatums;
 	
 	
 	public CorpDocument(String stanfordAnnotationPath) {
-		this(stanfordAnnotationPath, true);
+		this(stanfordAnnotationPath, null);
 	}
 
-	public CorpDocument(String stanfordAnnotationPath, boolean cacheAnnotation) {
+	public CorpDocument(String stanfordAnnotationPath, LinkedHashMap<String, Annotation> annotationCache) {
 		this.stanfordAnnotationPath = stanfordAnnotationPath;
 		this.corpRelDatums = new ArrayList<CorpRelDatum>();
-		
-		if (cacheAnnotation) {
-			this.cachedAnnotation = loadStanfordAnnotation();
-		}
-	}
-	
-	public void freeAnnotation() {
-		this.cachedAnnotation = null;
-	}
-	
-	public void cacheAnnotation() {
-		this.cachedAnnotation = loadStanfordAnnotation();
+		this.annotationCache = annotationCache;
 	}
 	
 	public List<CorpRelDatum> getCorpRelDatums() {
@@ -52,10 +42,13 @@ public class CorpDocument {
 	}
 	
 	public Annotation getAnnotation() {
-		if (this.cachedAnnotation != null)
-			return this.cachedAnnotation;
-		else
-			return loadStanfordAnnotation();
+		if (this.annotationCache.containsKey(this.stanfordAnnotationPath))
+			return this.annotationCache.get(this.stanfordAnnotationPath);
+		else {
+			Annotation annotation = loadStanfordAnnotation();
+			this.annotationCache.put(this.stanfordAnnotationPath, annotation);
+			return annotation;
+		}
 	}
 	
 	public CoreMap getSentenceAnnotation(int sentenceIndex) {
@@ -67,13 +60,7 @@ public class CorpDocument {
 			return null;
 	}
 	
-	public boolean loadCorpRelsFromFile(String path, int sentenceIndex) {
-		boolean cachedAnnotation = false;
-		if (this.cachedAnnotation == null) {
-			cacheAnnotation();
-			cachedAnnotation = true;
-		}
-		
+	public boolean loadCorpRelsFromFile(String path, int sentenceIndex) {		
 		String authorCorpName = null;
 		HashMap<String, List<CorpDocumentTokenSpan>> keyToTokenSpans = new HashMap<String, List<CorpDocumentTokenSpan>>();
 		HashMap<String, CorpRelLabel[]> keyToLabels = new HashMap<String, CorpRelLabel[]>();
@@ -143,8 +130,6 @@ public class CorpDocument {
 	        br.close();
 	    } catch (Exception e) {
 	    	e.printStackTrace();
-	    	if (cachedAnnotation)
-	    		freeAnnotation();
 	    	return false;
 	    }
 		
@@ -156,9 +141,6 @@ public class CorpDocument {
 			datum.setLabelPath(keyLabelEntry.getValue());
 			this.corpRelDatums.add(datum);
 		}
-
-		if (cachedAnnotation)
-			freeAnnotation();
 			
 		return true;
 	}

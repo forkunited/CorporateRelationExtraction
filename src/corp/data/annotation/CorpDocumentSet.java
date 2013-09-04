@@ -3,33 +3,49 @@ package corp.data.annotation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import edu.stanford.nlp.pipeline.Annotation;
 
 public class CorpDocumentSet {
 	private String corpRelDirPath;
 	private String stanfordAnnotationDirPath;
 	private HashMap<String, CorpDocument> documents; // Map Stanford annotation file names to documents
+	private LinkedHashMap<String, Annotation> annotationCache;
+	
 	
 	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath) {
-		this(corpRelDirPath, stanfordAnnotationDirPath, true, 0);
+		this(corpRelDirPath, stanfordAnnotationDirPath, 10, 0);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath, boolean cacheAnnotations) {
-		this(corpRelDirPath, stanfordAnnotationDirPath, cacheAnnotations, 0);
+	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath, int stanfordAnnotationCacheSize) {
+		this(corpRelDirPath, stanfordAnnotationDirPath, stanfordAnnotationCacheSize, 0);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath, boolean cacheAnnotations, int maxCorpRelDocuments) {
+	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath, final int stanfordAnnotationCacheSize, int maxCorpRelDocuments) {
 		this.corpRelDirPath = corpRelDirPath;
 		this.stanfordAnnotationDirPath = stanfordAnnotationDirPath;
 		this.documents = new HashMap<String, CorpDocument>();
-		loadDocuments(cacheAnnotations, maxCorpRelDocuments);
+		
+		this.annotationCache = new LinkedHashMap<String, Annotation>(stanfordAnnotationCacheSize+1, .75F, true) {
+			private static final long serialVersionUID = 1L;
+
+			// This method is called just after a new entry has been added
+		    public boolean removeEldestEntry(Map.Entry<String, Annotation> eldest) {
+		        return size() > stanfordAnnotationCacheSize;
+		    }
+		};
+		
+		loadDocuments(maxCorpRelDocuments);
 	}
 	
 	public List<CorpDocument> getDocuments() {
 		return new ArrayList<CorpDocument>(documents.values());
 	}
 	
-	private void loadDocuments(boolean cacheAnnotations, int maxCorpRelDocuments) {
+	private void loadDocuments(int maxCorpRelDocuments) {
 		File corpRelDir = new File(this.corpRelDirPath);
 		File stanfordAnnotationDir = new File(this.stanfordAnnotationDirPath);
 		
@@ -56,7 +72,7 @@ public class CorpDocumentSet {
 				if (this.documents.containsKey(annotationFilePath)) {
 					document = this.documents.get(annotationFilePath);
 				} else {
-					document = new CorpDocument(annotationFilePath, cacheAnnotations);
+					document = new CorpDocument(annotationFilePath, this.annotationCache);
 					this.documents.put(annotationFilePath, document);
 				}
 				

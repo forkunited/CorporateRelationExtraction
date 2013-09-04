@@ -6,7 +6,7 @@ import java.util.Properties;
 public class CorpProperties {
 	private String corpRelDirPath;
 	private String stanfordAnnotationDirPath;
-	private boolean cacheAnnotations;
+	private int stanfordAnnotationCacheSize;
 	private String cregDataDirPath;
 	private String cregCommandPath;
 	
@@ -18,7 +18,7 @@ public class CorpProperties {
 			
 			this.corpRelDirPath = properties.getProperty("corpRelDirPath");
 			this.stanfordAnnotationDirPath = properties.getProperty("stanfordAnnotationDirPath");
-			this.cacheAnnotations = Boolean.valueOf(properties.getProperty("cacheAnnotations"));
+			this.stanfordAnnotationCacheSize = Integer.valueOf(properties.getProperty("stanfordAnnotationCacheSize"));
 			this.cregDataDirPath = properties.getProperty("cregDataDirPath");
 			this.cregCommandPath = properties.getProperty("cregCommandPath");
 			
@@ -36,8 +36,8 @@ public class CorpProperties {
 		return this.stanfordAnnotationDirPath;
 	}
 	
-	public boolean getCacheAnnotations() {
-		return this.cacheAnnotations;
+	public int getStanfordAnnotationCacheSize() {
+		return this.stanfordAnnotationCacheSize;
 	}
 	
 	public String getCregDataDirPath() {

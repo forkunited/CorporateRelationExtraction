@@ -34,7 +34,7 @@ public class Scratch {
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				properties.getStanfordAnnotationDirPath(),
-				properties.getCacheAnnotations(),
+				properties.getStanfordAnnotationCacheSize(),
 				3
 		);
 		
