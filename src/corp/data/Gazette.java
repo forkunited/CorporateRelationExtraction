@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashSet;
 
+import corp.util.StringUtil;
+
 /**
  * Gazette is a dictionary which tells us some NERs which we do know there names beforehand.
  * 
@@ -12,9 +14,11 @@ import java.util.HashSet;
  */
 public class Gazette {
 	private HashSet<String> gazette;
+	private String name;
 	
-	public Gazette(String sourceFilePath){
+	public Gazette(String name, String sourceFilePath){
 		this.gazette = new HashSet<String>();
+		this.name = name;
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(sourceFilePath));
@@ -22,11 +26,13 @@ public class Gazette {
 			while ((line = br.readLine()) != null) {
 				String content = line.split("\\t")[0].trim();
 				if (content.matches(".+\\(.+\\)")) {
-					this.gazette.add(content.substring(0, content.indexOf("(")).trim().toLowerCase());
-					this.gazette.add(content.substring(content.indexOf("(")+1, content.lastIndexOf(")")).trim().toLowerCase());
-				} else {
-					this.gazette.add(content.trim().toLowerCase());
+					String s1 = content.substring(0, content.indexOf("("));
+					String s2 = content.substring(content.indexOf("(")+1, content.lastIndexOf(")"));
+					this.gazette.add(cleanString(s1));
+					this.gazette.add(cleanString(s2));
 				}
+				
+				this.gazette.add(cleanString(content));
 			}
 			
 			br.close();
@@ -35,9 +41,33 @@ public class Gazette {
 		}
 	}
 
-	public boolean contains(String str) {
-		return this.gazette.contains(str.toLowerCase());
+	public String getName() {
+		return this.name;
 	}
 	
-	/* FIXME: Add code, or a variation of it, from old project after discussing with Lingpeng */
+	protected String cleanString(String str) {
+		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
+	}
+	
+	public boolean contains(String str) {
+		return this.gazette.contains(cleanString(str));
+	}
+	
+	public double min(String str, StringUtil.StringPairMeasure fn) {
+		double min = Double.POSITIVE_INFINITY;
+		for (String gStr : this.gazette) {
+			double curMin = fn.compute(cleanString(str), gStr);
+			min = (curMin < min) ? curMin : min;
+		}
+		return min;
+	}
+	
+	public double max(String str, StringUtil.StringPairMeasure fn) {
+		double max = Double.NEGATIVE_INFINITY;
+		for (String gStr : this.gazette) {
+			double curMax = fn.compute(cleanString(str), gStr);
+			max = (curMax > max) ? curMax : max;
+		}
+		return max;
+	}
 }
