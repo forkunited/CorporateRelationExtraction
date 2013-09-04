@@ -109,9 +109,19 @@ public class CorpDocumentSet {
 	private String annotationFilePathFromCorpRelFileName(String fileName) {
 		if (fileName.indexOf(".nlp") < 0)
 			return null;
-		File annotationFile = new File(this.stanfordAnnotationDirPath, fileName.substring(0, fileName.indexOf(".nlp") + 4) + ".obj");
-		if (!annotationFile.exists())
-			return null;
-		return annotationFile.getAbsolutePath();
+		
+		String stanfordAnnotationFileName = fileName.substring(0, fileName.indexOf(".nlp") + 4) + ".obj";
+		File annotationFile = new File(this.stanfordAnnotationDirPath, stanfordAnnotationFileName);
+		if (annotationFile.exists())
+			return annotationFile.getAbsolutePath();
+		
+		int dateStartIndex = fileName.indexOf("-8-K-") + 5;
+		String year = fileName.substring(dateStartIndex, dateStartIndex+4);
+		String month = fileName.substring(dateStartIndex+4, dateStartIndex+6);
+		annotationFile = new File(this.stanfordAnnotationDirPath, year + "/" + month + stanfordAnnotationFileName);
+		if (annotationFile.exists())
+			return annotationFile.getAbsolutePath();
+		
+		return null;
 	}
 }

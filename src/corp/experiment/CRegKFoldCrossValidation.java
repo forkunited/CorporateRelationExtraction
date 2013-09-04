@@ -37,7 +37,7 @@ public class CRegKFoldCrossValidation {
 				properties.getCorpRelDirPath(), 
 				properties.getStanfordAnnotationDirPath(),
 				properties.getStanfordAnnotationCacheSize(),
-				50
+				3
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
@@ -147,7 +147,7 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette initialism features */
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
 						documentSet.getDocuments(), 
 						dataSet.getData(), 
@@ -177,11 +177,11 @@ public class CRegKFoldCrossValidation {
 						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
-			);*/
+			);
 	
 		/* Gazette prefix token features */
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
 						documentSet.getDocuments(), 
 						dataSet.getData(), 
@@ -215,8 +215,7 @@ public class CRegKFoldCrossValidation {
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner,
 						2)
-			);*/
-		
+			);
 		
 		System.out.println("Running CReg Cross Validation...");
 		
