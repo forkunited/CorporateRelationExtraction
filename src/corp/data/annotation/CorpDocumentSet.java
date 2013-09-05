@@ -61,13 +61,17 @@ public class CorpDocumentSet {
 				String corpRelFileName = corpRelFile.getName();
 				String corpRelFilePath = corpRelFile.getAbsolutePath();
 				int sentenceIndex = sentenceIndexFromCorpRelFileName(corpRelFileName);
-				if (sentenceIndex < 0)
+				if (sentenceIndex < 0) {
+					System.err.println("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
 					continue;
+				}
 				
 				String annotationFilePath = annotationFilePathFromCorpRelFileName(corpRelFileName);
-				if (annotationFilePath == null)
+				if (annotationFilePath == null) {
+					System.err.println("Skipped file: " + corpRelFileName + " (couldn't get annotation file path)");
 					continue;
-				
+				}
+					
 				CorpDocument document = null;
 				if (this.documents.containsKey(annotationFilePath)) {
 					document = this.documents.get(annotationFilePath);
