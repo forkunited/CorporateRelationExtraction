@@ -122,7 +122,7 @@ public class CorpDocumentSet {
 		int dateStartIndex = fileName.indexOf("-8-K-") + 5;
 		String year = fileName.substring(dateStartIndex, dateStartIndex+4);
 		String month = fileName.substring(dateStartIndex+4, dateStartIndex+6);
-		annotationFile = new File(this.stanfordAnnotationDirPath, year + "/" + month + stanfordAnnotationFileName);
+		annotationFile = new File(this.stanfordAnnotationDirPath, year + "/" + month + "/" + stanfordAnnotationFileName);
 		if (annotationFile.exists())
 			return annotationFile.getAbsolutePath();
 		
