@@ -230,8 +230,8 @@ public class CRegKFoldCrossValidation {
 		KFoldCrossValidation validation = new KFoldCrossValidation(
 				model, 
 				dataSet,
-				2,
-				new File(properties.getCregDataDirPath(), "2FoldCV").getAbsolutePath()
+				8,
+				new File(properties.getCregDataDirPath(), "8FoldCV").getAbsolutePath()
 		);
 		
 		validation.run();
