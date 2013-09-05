@@ -39,6 +39,11 @@ public class ModelCRegTree extends Model {
 	private HashMap<CorpRelLabel, ModelCReg> secondLayerModels;
 	private HashMap<CorpRelLabel, ModelCReg> thirdLayerModels;
 	
+	public ModelCRegTree(){
+		secondLayerModels = new HashMap<CorpRelLabel, ModelCReg> ();
+		thirdLayerModels = new HashMap<CorpRelLabel, ModelCReg>();
+	}
+	
 	@Override
 	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(
 			List<CorpRelFeaturizedDatum> data) {
