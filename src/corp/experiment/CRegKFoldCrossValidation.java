@@ -37,7 +37,7 @@ public class CRegKFoldCrossValidation {
 				properties.getCorpRelDirPath(), 
 				properties.getStanfordAnnotationDirPath(),
 				properties.getStanfordAnnotationCacheSize(),
-				3
+				args.length > 0 ? Integer.parseInt(args[0]) : 0
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
