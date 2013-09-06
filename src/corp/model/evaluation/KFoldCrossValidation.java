@@ -95,7 +95,7 @@ public class KFoldCrossValidation {
 			
 			System.out.println("Training model for CV fold " + foldIndex);
 			
-			AccuracyValidation accuracy = new AccuracyValidation(model.clone(), trainData, testData, outputPath);
+			AccuracyValidation accuracy = new AccuracyValidation(model.clone(), trainData, testData, outputPath + "." + foldIndex);
 			double computedAccuracy = accuracy.run();
 			if (computedAccuracy < 0) {
 				System.err.println("Error: Validation failed on fold " + foldIndex);
