@@ -54,7 +54,7 @@ public class CorpDocumentTokenSpan {
 	}
 	
 	public String toString() {
-		List<CoreLabel> tokens = StanfordUtil.getDocumentSentenceTokens(this.document.getAnnotation(), this.sentenceIndex);
+		List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(this.document.getSentenceAnnotation(this.sentenceIndex));
 		List<String> tokenSpanTokens = StanfordUtil.getTokensNGramTexts(tokens, this.tokenStartIndex, this.tokenEndIndex-this.tokenStartIndex);
 		StringBuilder str = new StringBuilder();
 		
