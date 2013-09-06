@@ -71,13 +71,13 @@ public class CRegKFoldCrossValidation {
 					1 /* contextWindowSize */)
 		);
 		
-		dataSet.addFeature(
-			new CorpRelFeatureNGramDep(
-					1 /* n */, 
-					2  /* minFeatureOccurrence */,
-					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-					false /* useRelationTypes */)
-		);
+		//dataSet.addFeature(
+		//	new CorpRelFeatureNGramDep(
+		//			1 /* n */, 
+		//			2  /* minFeatureOccurrence */,
+		//			CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
+		//			false /* useRelationTypes */)
+		//);
 		
 		/* Gazette contains features */
 		
@@ -205,7 +205,7 @@ public class CRegKFoldCrossValidation {
 				new File(properties.getCregDataDirPath(), properties.getCrossValidationFolds() + "FoldCV").getAbsolutePath()
 		);
 		
-		validation.run(properties.getMaxThreads());
+		validation.run(2);
 		
 		System.out.println("Done.");
 	}

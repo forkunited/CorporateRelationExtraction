@@ -42,6 +42,8 @@ public class ModelCReg extends Model {
 		String predictXPath = this.modelPath + ".predict.x";
 		String predictYPath = this.modelPath + ".predict.y";
 		
+		System.out.println("CReg outputting classification data for " + this.modelPath);
+		
 		if (!outputXData(predictXPath, data))
 			return null;
 		
@@ -49,6 +51,8 @@ public class ModelCReg extends Model {
 		predictCmd = predictCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(predictCmd))
 			return null;
+		
+		System.out.println("CReg classifying data for " + this.modelPath);
 		
 		return loadYData(predictYPath, data);
 	}
@@ -64,10 +68,14 @@ public class ModelCReg extends Model {
 		String trainXPath = outputPath + ".train.x";
 		String trainYPath = outputPath + ".train.y";
 		
+		System.out.println("CReg outputting training data for " + outputPath);
+		
 		if (!outputXData(trainXPath, data))
 			return false;
 		if (!outputYData(trainYPath, data))
 			return false;
+		
+		System.out.println("CReg training model for " + outputPath);
 		
 		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath;
 		trainCmd = trainCmd.replace("\\", "/"); 
@@ -75,6 +83,8 @@ public class ModelCReg extends Model {
 			return false;
 		
 		this.modelPath = outputPath;
+		
+		System.out.println("CReg finished training model for " + outputPath);
 		
 		return true;
 	}
