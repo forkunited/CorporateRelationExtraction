@@ -93,14 +93,18 @@ public class AnnotationCache {
 		
 		synchronized (sentenceLock) {
 			synchronized (this.locks) {
-				if (this.sentenceAnnoCache.containsKey(sentenceName))
+				if (this.sentenceAnnoCache.containsKey(sentenceName)) {
 					return this.sentenceAnnoCache.get(sentenceName);
+				}
 			}
 			
 			CoreMap sentenceAnno = null;
 			synchronized (getLock(documentName)) {
-				if (!sentenceAnnoFilesExist(documentName))
+				if (!sentenceAnnoFilesExist(documentName)) {
 					saveSentenceAnnosForDocument(documentName);
+				} else {
+					System.out.println("Loading sentence annotation for " + sentenceName);
+				}
 			}
 			
 			sentenceAnno = StanfordUtil.deserializeCoreMap(getSentencePath(documentName, sentenceIndex));
@@ -115,8 +119,11 @@ public class AnnotationCache {
 	
 	public int getSentenceCount(String documentName) {
 		synchronized (getLock(documentName)) {
-			if (!sentenceAnnoFilesExist(documentName))
+			if (!sentenceAnnoFilesExist(documentName)) {
 				saveSentenceAnnosForDocument(documentName);
+			} else {
+				System.out.println("Loading sentence count for " + documentName);
+			}
 		}
 		
 		try {
@@ -155,8 +162,8 @@ public class AnnotationCache {
 	}
 	
 	private Object getLock(String name) {
-		synchronized(this.locks) {				
-			if (!this.locks.contains(name))
+		synchronized(this.locks) {	
+			if (!this.locks.containsKey(name))
 				this.locks.put(name, new Object());
 		}
 		
