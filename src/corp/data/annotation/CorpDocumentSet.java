@@ -135,7 +135,7 @@ public class CorpDocumentSet {
 		String month = fileName.substring(dateStartIndex+4, dateStartIndex+6);
 		annotationFile = new File(this.annotationCache.getDocAnnoDirPath(), year + "/" + month + "/" + annotationFileName);
 		if (annotationFile.exists())
-			return annotationFileName;
+			return year + "/" + month + "/" + annotationFileName;
 		
 		return null;
 	}
