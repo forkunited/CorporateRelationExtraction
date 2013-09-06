@@ -125,10 +125,10 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		public void run() {
 			List<Double> featureValues = new ArrayList<Double>();
 			for (CorpRelFeature feature : features) {
-				long start = System.currentTimeMillis();
+				//long start = System.currentTimeMillis();
 				featureValues = feature.computeVector(datum, featureValues);
-				long end = System.currentTimeMillis();
-				System.out.println("Computed feature " + feature.getNames().get(0) + " in " + (end - start)+ "ms");
+				//long end = System.currentTimeMillis();
+				//System.out.println("Computed feature " + feature.getNames().get(0) + " in " + (end - start)+ "ms");
 			}
 			this.featurizedDatums[this.index] = new CorpRelFeaturizedDatum(this.dataSet, this.datum, featureValues);
 		}
