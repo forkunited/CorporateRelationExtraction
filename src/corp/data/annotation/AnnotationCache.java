@@ -21,6 +21,7 @@ public class AnnotationCache {
 	private String docAnnoDirPath;
 	private String sentenceAnnoDirPath;
 	
+	private Map<String, Integer> docSentenceCountCache;
 	private Map<String, Annotation> docAnnoCache;
 	private Map<String, CoreMap> sentenceAnnoCache;
 	private ConcurrentHashMap<String, Object> locks;
@@ -28,6 +29,15 @@ public class AnnotationCache {
 	public AnnotationCache(String docAnnoDirPath, final int docAnnoCacheSize, String sentenceAnnoDirPath, final int sentenceAnnoCacheSize) {
 		this.docAnnoDirPath = docAnnoDirPath;
 		this.sentenceAnnoDirPath = sentenceAnnoDirPath;
+		
+		this.docSentenceCountCache = Collections.synchronizedMap(new LinkedHashMap<String, Integer>(docAnnoCacheSize+1, .75F, true) {
+			private static final long serialVersionUID = 1L;
+
+			// This method is called just after a new entry has been added
+		    public boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
+		        return size() > docAnnoCacheSize;
+		    }
+		});
 		
 		this.docAnnoCache = Collections.synchronizedMap(new LinkedHashMap<String, Annotation>(docAnnoCacheSize+1, .75F, true) {
 			private static final long serialVersionUID = 1L;
@@ -119,23 +129,33 @@ public class AnnotationCache {
 	
 	public int getSentenceCount(String documentName) {
 		synchronized (getLock(documentName)) {
+			synchronized (this.locks) {
+				if (this.docSentenceCountCache.containsKey(documentName))
+					return this.docSentenceCountCache.get(documentName);
+			}
+			
 			if (!sentenceAnnoFilesExist(documentName)) {
 				saveSentenceAnnosForDocument(documentName);
 			} else {
 				System.out.println("Loading sentence count for " + documentName);
 			}
-		}
 		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(getDocumentSentenceMetaDataPath(documentName)));
-			int sentenceCount = Integer.valueOf(br.readLine());
-			br.close();
+			int sentenceCount = 0;
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(getDocumentSentenceMetaDataPath(documentName)));
+				sentenceCount = Integer.valueOf(br.readLine());
+				br.close();
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    	return -1;
+		    }
 			
+			synchronized (this.locks) {
+				this.docSentenceCountCache.put(documentName, sentenceCount);
+			}
+
 			return sentenceCount;
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    	return -1;
-	    }
+		}
 	}
 	
 	private boolean sentenceAnnoFilesExist(String documentName) {
