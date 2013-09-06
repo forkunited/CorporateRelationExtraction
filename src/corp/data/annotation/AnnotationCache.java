@@ -82,8 +82,11 @@ public class AnnotationCache {
 		
 		synchronized (documentLock) {
 			synchronized (this.locks) {
-				if (this.docAnnoCache.containsKey(documentName))
+				if (this.docAnnoCache.containsKey(documentName)) {
 					return this.docAnnoCache.get(documentName);
+				} else {
+					System.out.println("Loading document annotation for " + documentName);
+				}
 			}
 			
 			Annotation docAnno = null;
