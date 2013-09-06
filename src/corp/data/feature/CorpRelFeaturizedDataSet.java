@@ -90,7 +90,8 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private List<CorpRelFeaturizedDatum> featurize(List<CorpRelDatum> data) {
 		System.out.println("Featurizing data set...");
 		
-		CorpRelFeaturizedDatum[] featurizedData = new CorpRelFeaturizedDatum[data.size()];
+		List<CorpRelFeaturizedDatum> featurizedData = new ArrayList<CorpRelFeaturizedDatum>();
+		//CorpRelFeaturizedDatum[] featurizedData = new CorpRelFeaturizedDatum[data.size()];
 		
 		//ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 		
@@ -104,8 +105,9 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 				long end = System.currentTimeMillis();
 				System.out.println("Computed feature " + feature.getNames().get(0) + " in " + (end - start)+ "ms");
 			}
-			featurizedData[i] = new CorpRelFeaturizedDatum(this, data.get(i), featureValues);
-			System.out.println("Datum " + i + " finished at " + System.currentTimeMillis());
+			featurizedData.add(new CorpRelFeaturizedDatum(this, data.get(i), featureValues));
+			//featurizedData[i] = new CorpRelFeaturizedDatum(this, data.get(i), featureValues);
+			//System.out.println("Datum " + i + " finished at " + System.currentTimeMillis());
 			
 			
 			//threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
@@ -118,7 +120,7 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 			e.printStackTrace();
 		}*/
 		
-		return new ArrayList<CorpRelFeaturizedDatum>(Arrays.asList(featurizedData));
+		return featurizedData;//new ArrayList<CorpRelFeaturizedDatum>(Arrays.asList(featurizedData));
 	}
 	
 	private class FeaturizeDatumThread implements Runnable {
