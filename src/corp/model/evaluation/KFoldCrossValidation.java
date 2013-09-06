@@ -71,6 +71,7 @@ public class KFoldCrossValidation {
 		}
 		
 		public Double call() {
+			System.out.println("Initializing CV data sets for fold " + this.foldIndex);
 			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet();
 			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet();
 			for (int j = 0; j < folds.length; j++) {
@@ -81,6 +82,8 @@ public class KFoldCrossValidation {
 				}
 			}
 			
+			System.out.println("Initializing features for CV fold " + foldIndex);
+			
 			/* Need cloned bunch of features for each fold so that they can be reinitialized for each training set */
 			for (CorpRelFeature feature : originalFeatures) {
 				CorpRelFeature foldFeature = feature.clone();
@@ -89,6 +92,8 @@ public class KFoldCrossValidation {
 				trainData.addFeature(foldFeature);
 				testData.addFeature(foldFeature);
 			}
+			
+			System.out.println("Training model for CV fold " + foldIndex);
 			
 			AccuracyValidation accuracy = new AccuracyValidation(model.clone(), trainData, testData, outputPath);
 			double computedAccuracy = accuracy.run();

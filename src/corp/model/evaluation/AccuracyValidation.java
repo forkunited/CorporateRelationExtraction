@@ -25,12 +25,17 @@ public class AccuracyValidation {
 	}
 	
 	public double run() {
+		System.out.println("Training model and outputting to " + this.outputPath);
 		if (!this.model.train(this.trainData, this.outputPath))
 			return -1.0;
+		
+		System.out.println("Model classifying data (" + this.outputPath + ")");
 		
 		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classifiedData =  this.model.classify(this.testData);
 		if (classifiedData == null)
 			return -1.0;
+		
+		System.out.println("Computing model score (" + this.outputPath + ")");
 		
 		double correct = 0;
 		for (Pair<CorpRelFeaturizedDatum, CorpRelLabel> classifiedDatum : classifiedData) {
