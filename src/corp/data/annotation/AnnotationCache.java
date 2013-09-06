@@ -165,7 +165,16 @@ public class AnnotationCache {
 	
 	
 	private String getDocumentPath(String documentName) {
-		return (new File(this.docAnnoDirPath, documentName)).getAbsolutePath();
+		File annotationFile = new File(this.docAnnoDirPath, documentName);
+		if (annotationFile.exists())
+			return annotationFile.getAbsolutePath();
+		else {
+			int dateStartIndex = documentName.indexOf("-8-K-") + 5;
+			String year = documentName.substring(dateStartIndex, dateStartIndex+4);
+			String month = documentName.substring(dateStartIndex+4, dateStartIndex+6);
+			annotationFile = new File(this.docAnnoDirPath, year + "/" + month + "/" + documentName);
+			return annotationFile.getAbsolutePath();
+		}
 	}
 	
 	private String getDocumentSentenceMetaDataPath(String documentName) {
