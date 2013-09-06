@@ -49,19 +49,10 @@ public class Gazette {
 		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
 	}
 	
-	/* NOTE: Mysteriously, this is slow...?
-	 * public boolean contains(String str) {
-	 *	return this.gazette.contains(cleanString(str));
-	}*/
-	
 	public boolean contains(String str) {
-		String cleanStr = cleanString(str);
-		for (String gStr : this.gazette)
-			if (gStr.equals(cleanStr))
-				return true;
-		return false;
+		return this.gazette.contains(cleanString(str));
 	}
-	
+
 	public double min(String str, StringUtil.StringPairMeasure fn) {
 		double min = Double.POSITIVE_INFINITY;
 		String cleanStr = cleanString(str);

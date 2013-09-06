@@ -3,6 +3,7 @@ package corp.data.feature;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +93,7 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		
 		CorpRelFeaturizedDatum[] featurizedData = new CorpRelFeaturizedDatum[data.size()];
 		
-		ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
+		ExecutorService threadPool = Executors.newFixedThreadPool(1);//this.maxThreads);
 		
 		for (int i = 0; i < data.size(); i++) {
 			threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
