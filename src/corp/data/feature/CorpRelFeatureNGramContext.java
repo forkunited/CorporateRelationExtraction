@@ -13,8 +13,6 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 	private int contextWindowSize;
 	
 	public CorpRelFeatureNGramContext(
-			List<CorpDocument> documents,
-			List<CorpRelDatum> data, 
 			int n, 
 			int minFeatureOccurrence,
 			int contextWindowSize) {
@@ -22,7 +20,6 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.contextWindowSize = contextWindowSize;
 		this.namePrefix = "Context" + contextWindowSize;
-		init(documents, data);
 	}
 
 
@@ -40,5 +37,11 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 			}
 		}
 		return ngrams;
+	}
+
+
+	@Override
+	public CorpRelFeature clone() {
+		return new CorpRelFeatureNGramContext(this.n, this.minFeatureOccurrence, this.contextWindowSize);
 	}
 }

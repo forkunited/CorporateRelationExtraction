@@ -1,36 +1,29 @@
 package corp.data.annotation;
 
 import java.io.BufferedReader;
+import java.io.File;
 
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import corp.util.StanfordUtil;
-
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.CoreMap;
 
 public class CorpDocument {
-	private String stanfordAnnotationPath;
-	private LinkedHashMap<String, Annotation> annotationCache;
+	private String annotationFileName;
+	private AnnotationCache annotationCache;
 	private List<CorpRelDatum> corpRelDatums;
-	
-	
-	public CorpDocument(String stanfordAnnotationPath) {
-		this(stanfordAnnotationPath, null);
-	}
 
-	public CorpDocument(String stanfordAnnotationPath, LinkedHashMap<String, Annotation> annotationCache) {
-		this.stanfordAnnotationPath = stanfordAnnotationPath;
-		this.corpRelDatums = new ArrayList<CorpRelDatum>();
+	public CorpDocument(String annotationFileName,
+						AnnotationCache annotationCache) {	
+		this.annotationFileName = annotationFileName;
 		this.annotationCache = annotationCache;
+		this.corpRelDatums = new ArrayList<CorpRelDatum>();
 	}
 	
 	public List<CorpRelDatum> getCorpRelDatums() {
@@ -38,26 +31,19 @@ public class CorpDocument {
 	}
 	
 	public String getAnnotationPath() {
-		return this.stanfordAnnotationPath;
+		return new File(this.annotationCache.getDocAnnoDirPath(), this.annotationFileName).getAbsolutePath();
 	}
 	
 	public Annotation getAnnotation() {
-		if (this.annotationCache.containsKey(this.stanfordAnnotationPath))
-			return this.annotationCache.get(this.stanfordAnnotationPath);
-		else {
-			Annotation annotation = loadStanfordAnnotation();
-			this.annotationCache.put(this.stanfordAnnotationPath, annotation);
-			return annotation;
-		}
+		return this.annotationCache.getDocumentAnnotation(this.annotationFileName);
 	}
 	
 	public CoreMap getSentenceAnnotation(int sentenceIndex) {
-		Annotation annotation = getAnnotation();
-		List<CoreMap> sentenceAnnotations = annotation.get(SentencesAnnotation.class);
-		if (sentenceIndex < sentenceAnnotations.size())
-			return sentenceAnnotations.get(sentenceIndex);
-		else
-			return null;
+		return this.annotationCache.getSentenceAnnotation(this.annotationFileName, sentenceIndex);
+	}
+	
+	public int getSentenceCount() {
+		return this.annotationCache.getSentenceCount(this.annotationFileName);
 	}
 	
 	public boolean loadCorpRelsFromFile(String path, int sentenceIndex) {		
@@ -145,10 +131,6 @@ public class CorpDocument {
 		return true;
 	}
 	
-	private Annotation loadStanfordAnnotation() {
-		return StanfordUtil.deserializeAnnotation(this.stanfordAnnotationPath); 
-	}
-	
 	private List<CorpDocumentTokenSpan> nerTextToTokenSpans(String nerText, int minSentenceIndex, int maxSentenceIndex) {
 		String[] nerTextAndType = nerText.split("/");
 		if (nerTextAndType.length != 2)
@@ -159,7 +141,7 @@ public class CorpDocument {
 		if (nerTokens.length == 0)
 			return null;
 		
-		int numSentences = getAnnotation().get(SentencesAnnotation.class).size();
+		int numSentences = getSentenceCount();
 		List<CorpDocumentTokenSpan> spans = new ArrayList<CorpDocumentTokenSpan>();
 		for (int sentenceIndex = Math.max(0, minSentenceIndex); sentenceIndex < Math.min(numSentences, maxSentenceIndex + 1); sentenceIndex++) {
 			CoreMap sentenceAnnotation = getSentenceAnnotation(sentenceIndex);

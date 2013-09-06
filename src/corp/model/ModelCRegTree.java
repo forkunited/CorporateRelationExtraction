@@ -156,4 +156,9 @@ public class ModelCRegTree extends Model {
 		return null;
 	}
 
+	@Override
+	public Model clone() {
+		return new ModelCRegTree();
+	}
+
 }

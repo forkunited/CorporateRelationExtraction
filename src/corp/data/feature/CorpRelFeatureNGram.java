@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.CounterTable;
 import corp.util.StanfordUtil;
@@ -20,7 +19,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	private HashMap<String, Integer> vocabulary;
 
 	@Override
-	protected void init(List<CorpDocument> documents, List<CorpRelDatum> data) {
+	public void init(List<CorpRelDatum> data) {
 		CounterTable counter = new CounterTable();
 		for (CorpRelDatum datum : data) {
 			HashSet<String> ngramsForDatum = getNGramsForDatum(datum);

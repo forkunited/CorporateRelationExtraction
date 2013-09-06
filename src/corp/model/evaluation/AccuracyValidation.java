@@ -29,6 +29,9 @@ public class AccuracyValidation {
 			return -1.0;
 		
 		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classifiedData =  this.model.classify(this.testData);
+		if (classifiedData == null)
+			return -1.0;
+		
 		double correct = 0;
 		for (Pair<CorpRelFeaturizedDatum, CorpRelLabel> classifiedDatum : classifiedData) {
 			correct += classifiedDatum.first().getLabel(this.model.getValidLabels()) == classifiedDatum.second() ? 1.0 : 0;

@@ -2,41 +2,31 @@ package corp.data.annotation;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import edu.stanford.nlp.pipeline.Annotation;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CorpDocumentSet {
 	private String corpRelDirPath;
-	private String stanfordAnnotationDirPath;
-	private HashMap<String, CorpDocument> documents; // Map Stanford annotation file names to documents
-	private LinkedHashMap<String, Annotation> annotationCache;
+	private ConcurrentHashMap<String, CorpDocument> documents; // Map Stanford annotation file names to documents
+	private AnnotationCache annotationCache;
+	private int maxThreads;
 	
-	
-	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath) {
-		this(corpRelDirPath, stanfordAnnotationDirPath, 10, 0);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache) {
+		this(corpRelDirPath, annotationCache, 1, 0);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath, int stanfordAnnotationCacheSize) {
-		this(corpRelDirPath, stanfordAnnotationDirPath, stanfordAnnotationCacheSize, 0);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads) {
+		this(corpRelDirPath, annotationCache, maxThreads, 0);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, String stanfordAnnotationDirPath, final int stanfordAnnotationCacheSize, int maxCorpRelDocuments) {
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments) {
 		this.corpRelDirPath = corpRelDirPath;
-		this.stanfordAnnotationDirPath = stanfordAnnotationDirPath;
-		this.documents = new HashMap<String, CorpDocument>();
-		
-		this.annotationCache = new LinkedHashMap<String, Annotation>(stanfordAnnotationCacheSize+1, .75F, true) {
-			private static final long serialVersionUID = 1L;
-
-			// This method is called just after a new entry has been added
-		    public boolean removeEldestEntry(Map.Entry<String, Annotation> eldest) {
-		        return size() > stanfordAnnotationCacheSize;
-		    }
-		};
+		this.annotationCache = annotationCache;
+		this.maxThreads = maxThreads;
+		this.documents = new ConcurrentHashMap<String, CorpDocument>();
 		
 		loadDocuments(maxCorpRelDocuments);
 	}
@@ -47,47 +37,68 @@ public class CorpDocumentSet {
 	
 	private void loadDocuments(int maxCorpRelDocuments) {
 		File corpRelDir = new File(this.corpRelDirPath);
-		File stanfordAnnotationDir = new File(this.stanfordAnnotationDirPath);
 		
 		try {
 			if (!corpRelDir.exists() || !corpRelDir.isDirectory())
 				throw new IllegalArgumentException("Invalid corporate relation document directory: " + corpRelDir.getAbsolutePath());
-			if (!stanfordAnnotationDir.exists() || !stanfordAnnotationDir.isDirectory())
-				throw new IllegalArgumentException("Invalid Stanford annotation document directory: " + stanfordAnnotationDir.getAbsolutePath());
-			
+
+			ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 			File[] corpRelFiles = corpRelDir.listFiles();
 			int numDocuments = 0;
 			for (File corpRelFile : corpRelFiles) {
-				String corpRelFileName = corpRelFile.getName();
-				String corpRelFilePath = corpRelFile.getAbsolutePath();
-				int sentenceIndex = sentenceIndexFromCorpRelFileName(corpRelFileName);
-				if (sentenceIndex < 0) {
-					System.err.println("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
-					continue;
-				}
+				threadPool.submit(new DocumentLoadThread(corpRelFile));
 				
-				String annotationFilePath = annotationFilePathFromCorpRelFileName(corpRelFileName);
-				if (annotationFilePath == null) {
-					System.err.println("Skipped file: " + corpRelFileName + " (couldn't get annotation file path)");
-					continue;
-				}
-					
-				CorpDocument document = null;
-				if (this.documents.containsKey(annotationFilePath)) {
-					document = this.documents.get(annotationFilePath);
-				} else {
-					document = new CorpDocument(annotationFilePath, this.annotationCache);
-					this.documents.put(annotationFilePath, document);
-				}
-				
-				document.loadCorpRelsFromFile(corpRelFilePath, sentenceIndex);
 				numDocuments++;
 				if (maxCorpRelDocuments != 0 && numDocuments >= maxCorpRelDocuments)
 					break;
 			}
+			
+			threadPool.shutdown();
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+		
+	private class DocumentLoadThread implements Runnable {
+		private File corpRelFile;
+		
+		public DocumentLoadThread(File corpRelFile) {
+			this.corpRelFile = corpRelFile;
+		}
+		
+		public void run() {
+			String corpRelFileName = this.corpRelFile.getName();
+			String corpRelFilePath = this.corpRelFile.getAbsolutePath();
+			int sentenceIndex = sentenceIndexFromCorpRelFileName(corpRelFileName);
+			if (sentenceIndex < 0) {
+				System.err.println("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
+				return;
+			}
+			
+			String annotationFileName = annotationFileNameFromCorpRelFileName(corpRelFileName);
+			if (annotationFileName == null) {
+				System.err.println("Skipped file: " + corpRelFileName + " (couldn't get annotation file name)");
+				return;
+			}
+				
+			CorpDocument document = fetchDocumentOrAdd(annotationFileName);
+			synchronized (document) {
+				document.loadCorpRelsFromFile(corpRelFilePath, sentenceIndex);
+			}
+		}
+	}
+	
+	private synchronized CorpDocument fetchDocumentOrAdd(String annotationFileName) {
+		CorpDocument document = null;
+		if (this.documents.containsKey(annotationFileName)) {
+			document = this.documents.get(annotationFileName);
+		} else {
+			document = new CorpDocument(annotationFileName, this.annotationCache);
+			this.documents.put(annotationFileName, document);
+		}
+		
+		return document;
 	}
 	
 	private int sentenceIndexFromCorpRelFileName(String fileName) {
@@ -110,21 +121,21 @@ public class CorpDocumentSet {
 		}
 	}
 	
-	private String annotationFilePathFromCorpRelFileName(String fileName) {
+	private String annotationFileNameFromCorpRelFileName(String fileName) {
 		if (fileName.indexOf(".nlp") < 0)
 			return null;
 		
-		String stanfordAnnotationFileName = fileName.substring(0, fileName.indexOf(".nlp") + 4) + ".obj";
-		File annotationFile = new File(this.stanfordAnnotationDirPath, stanfordAnnotationFileName);
+		String annotationFileName = fileName.substring(0, fileName.indexOf(".nlp") + 4) + ".obj";
+		File annotationFile = new File(this.annotationCache.getDocAnnoDirPath(), annotationFileName);
 		if (annotationFile.exists())
-			return annotationFile.getAbsolutePath();
+			return annotationFileName;
 		
 		int dateStartIndex = fileName.indexOf("-8-K-") + 5;
 		String year = fileName.substring(dateStartIndex, dateStartIndex+4);
 		String month = fileName.substring(dateStartIndex+4, dateStartIndex+6);
-		annotationFile = new File(this.stanfordAnnotationDirPath, year + "/" + month + "/" + stanfordAnnotationFileName);
+		annotationFile = new File(this.annotationCache.getDocAnnoDirPath(), year + "/" + month + "/" + annotationFileName);
 		if (annotationFile.exists())
-			return annotationFile.getAbsolutePath();
+			return annotationFileName;
 		
 		return null;
 	}

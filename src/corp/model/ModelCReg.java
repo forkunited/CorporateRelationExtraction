@@ -155,4 +155,9 @@ public class ModelCReg extends Model {
 		
 		return yData;
 	}
+
+	@Override
+	public Model clone() {
+		return new ModelCReg(this.cmdPath, this.validLabels);
+	}
 }

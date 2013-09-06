@@ -36,4 +36,5 @@ public abstract class Model {
 	public abstract boolean train(List<CorpRelFeaturizedDatum> data, String outputPath);
 	public abstract List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(List<CorpRelFeaturizedDatum> data);
 	public abstract List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(List<CorpRelFeaturizedDatum> data);
+	public abstract Model clone();
 }

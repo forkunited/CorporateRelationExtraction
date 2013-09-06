@@ -3,7 +3,6 @@ package corp.data.feature;
 import java.util.List;
 
 import corp.data.Gazette;
-import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 
@@ -19,7 +18,7 @@ public abstract class CorpRelFeatureGazette extends CorpRelFeature {
 	protected String namePrefix;
 
 	@Override
-	protected void init(List<CorpDocument> documents, List<CorpRelDatum> data) {
+	public void init(List<CorpRelDatum> data) {
 		// TODO Auto-generated method stub
 		
 	}

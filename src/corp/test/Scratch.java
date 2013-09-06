@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelLabel;
@@ -26,13 +27,22 @@ public class Scratch {
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
 		
+		System.out.println("Loading Annotation Cache...");
+		
+		AnnotationCache annotationCache = new AnnotationCache(
+			properties.getStanfordAnnotationDirPath(),
+			properties.getStanfordAnnotationCacheSize(),
+			properties.getStanfordCoreMapDirPath(),
+			properties.getStanfordCoreMapCacheSize()
+		);
+		
 		System.out.println("Loading document set...");
 		
 		/* This is the document set.  It represents a set of annotated documents. */
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
-				properties.getStanfordAnnotationDirPath(),
-				properties.getStanfordAnnotationCacheSize(),
+				annotationCache,
+				properties.getMaxThreads(),
 				3
 		);
 		
@@ -42,21 +52,17 @@ public class Scratch {
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
-		System.out.println("Initializing features...");
+		System.out.println("Adding features...");
 		
 		/* Add features to data set */
 		dataSet.addFeature(
 				new CorpRelFeatureNGramSentence(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						1 /* n */, 
 						2  /* minFeatureOccurrence */)
 		);
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramContext(
-					documentSet.getDocuments(), 
-					dataSet.getData(), 
 					1 /* n */, 
 					2 /*minFeatureOccurrence*/,
 					1 /* contextWindowSize */)
@@ -64,8 +70,6 @@ public class Scratch {
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramDep(
-					documentSet.getDocuments(), 
-					dataSet.getData(), 
 					1 /* n */, 
 					2  /* minFeatureOccurrence */,
 					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
@@ -75,10 +79,14 @@ public class Scratch {
 		System.out.println("Computing featurized data set...");
 		
 		/* Compute featurized data */
+		for (int i = 0; i < dataSet.getFeatureCount(); i++) {
+			dataSet.getFeature(i).init(dataSet.getData());
+		}
+		
 		List<CorpRelFeaturizedDatum> featurizedData = dataSet.getFeaturizedData();
 		for (CorpRelFeaturizedDatum datum : featurizedData) {
 			CorpDocumentTokenSpan otherOrg = datum.getOtherOrgTokenSpans().get(0);
-			List<String> tokens = StanfordUtil.getDocumentSentenceTokenTexts(datum.getDocument().getAnnotation(), otherOrg.getSentenceIndex());
+			List<String> tokens = StanfordUtil.getSentenceTokenTexts(datum.getDocument().getSentenceAnnotation(otherOrg.getSentenceIndex()));
 			String otherOrgStr = "";
 			for (int i = otherOrg.getTokenStartIndex(); i < otherOrg.getTokenEndIndex(); i++)
 				otherOrgStr += tokens.get(i) + " ";

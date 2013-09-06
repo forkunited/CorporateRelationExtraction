@@ -1,22 +1,17 @@
 package corp.data.feature;
 
-import java.util.List;
-
 import corp.data.Gazette;
-import corp.data.annotation.CorpDocument;
-import corp.data.annotation.CorpRelDatum;
 import corp.util.StringUtil;
 
 public class CorpRelFeatureGazettePrefixTokens  extends CorpRelFeatureGazette {
 	private int minTokens;
 	
-	public CorpRelFeatureGazettePrefixTokens(List<CorpDocument> documents, List<CorpRelDatum> data, Gazette gazette, CorpRelFeatureGazette.InputType inputType, int minTokens) {
+	public CorpRelFeatureGazettePrefixTokens(Gazette gazette, CorpRelFeatureGazette.InputType inputType, int minTokens) {
 		this.extremumType = CorpRelFeatureGazette.ExtremumType.Maximum;
 		this.inputType = inputType;
 		this.namePrefix = "PrefixTokens";
 		this.gazette = gazette;
 		this.minTokens = minTokens;
-		init(documents, data);
 	}
 
 	@Override
@@ -31,5 +26,10 @@ public class CorpRelFeatureGazettePrefixTokens  extends CorpRelFeatureGazette {
 			return 1.0;
 		else
 			return 0.0;
+	}
+
+	@Override
+	public CorpRelFeature clone() {
+		return new CorpRelFeatureGazettePrefixTokens(this.gazette, this.inputType, this.minTokens);
 	}
 }

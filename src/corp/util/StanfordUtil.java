@@ -90,6 +90,15 @@ public class StanfordUtil {
 		return sentenceAnnotation.get(TokensAnnotation.class);
 	}
 	
+	public static List<String> getSentenceTokenTexts(CoreMap sentenceAnnotation) {
+		List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(sentenceAnnotation);
+		List<String> tokenTexts = new ArrayList<String>(tokens.size());
+		for (CoreLabel token : tokens) {
+			tokenTexts.add(StanfordUtil.getTokenText(token));
+		}
+		return tokenTexts;
+	}
+	
 	public static List<String> getTokensNGramTexts(List<CoreLabel> tokens, int startIndex, int n) {
 		List<String> ngram = new ArrayList<String>();
 		for (int i = startIndex; i < startIndex + n; i++) {
@@ -125,7 +134,7 @@ public class StanfordUtil {
 		}
 	}
 	
-	public static Annotation deserializeAnnotation(String path){
+	public static Annotation deserializeAnnotation(String path) {
 		try {
 			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(path));
 			Annotation annotation = (Annotation)stream.readObject();
@@ -134,6 +143,31 @@ public class StanfordUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public static CoreMap deserializeCoreMap(String path) {
+		try {
+			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(path));
+			CoreMap coreMap = (CoreMap)stream.readObject();
+			stream.close();
+			return coreMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static boolean serializeCoreMap(String path, CoreMap coreMap){
+		try {
+			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(path));
+			stream.writeObject(coreMap);
+			stream.flush();
+			stream.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

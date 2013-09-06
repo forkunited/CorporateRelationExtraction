@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import corp.data.Gazette;
+import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeatureGazette;
@@ -30,13 +31,21 @@ public class CRegKFoldCrossValidation {
 		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
 		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
+		System.out.println("Loading Annotation Cache...");
+		AnnotationCache annotationCache = new AnnotationCache(
+			properties.getStanfordAnnotationDirPath(),
+			properties.getStanfordAnnotationCacheSize(),
+			properties.getStanfordCoreMapDirPath(),
+			properties.getStanfordCoreMapCacheSize()
+		);
+		
 		System.out.println("Loading document set...");
 		
 		/* This is the document set.  It represents a set of annotated documents. */
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
-				properties.getStanfordAnnotationDirPath(),
-				properties.getStanfordAnnotationCacheSize(),
+				annotationCache,
+				properties.getMaxThreads(),
 				args.length > 0 ? Integer.parseInt(args[0]) : 0
 		);
 		
@@ -46,21 +55,17 @@ public class CRegKFoldCrossValidation {
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
-		System.out.println("Initializing features...");
+		System.out.println("Adding features...");
 		
 		/* Add features to data set */
 		dataSet.addFeature(
 				new CorpRelFeatureNGramSentence(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						1 /* n */, 
 						2  /* minFeatureOccurrence */)
 		);
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramContext(
-					documentSet.getDocuments(), 
-					dataSet.getData(), 
 					1 /* n */, 
 					2 /*minFeatureOccurrence*/,
 					1 /* contextWindowSize */)
@@ -68,8 +73,6 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramDep(
-					documentSet.getDocuments(), 
-					dataSet.getData(), 
 					1 /* n */, 
 					2  /* minFeatureOccurrence */,
 					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
@@ -80,32 +83,24 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
 			);
@@ -114,32 +109,24 @@ public class CRegKFoldCrossValidation {
 		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
 			);
@@ -149,32 +136,24 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner)
 			);
@@ -183,8 +162,6 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned,
 						2)
@@ -192,8 +169,6 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner,
 						2)
@@ -201,8 +176,6 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned,
 						2)
@@ -210,8 +183,6 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
-						documentSet.getDocuments(), 
-						dataSet.getData(), 
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioner,
 						2)
@@ -230,11 +201,11 @@ public class CRegKFoldCrossValidation {
 		KFoldCrossValidation validation = new KFoldCrossValidation(
 				model, 
 				dataSet,
-				8,
-				new File(properties.getCregDataDirPath(), "8FoldCV").getAbsolutePath()
+				properties.getCrossValidationFolds(),
+				new File(properties.getCregDataDirPath(), properties.getCrossValidationFolds() + "FoldCV").getAbsolutePath()
 		);
 		
-		validation.run();
+		validation.run(properties.getMaxThreads());
 		
 		System.out.println("Done.");
 	}

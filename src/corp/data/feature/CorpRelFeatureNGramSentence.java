@@ -12,14 +12,11 @@ import edu.stanford.nlp.ling.CoreLabel;
 public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 	
 	public CorpRelFeatureNGramSentence(
-			List<CorpDocument> documents,
-			List<CorpRelDatum> data, 
 			int n, 
 			int minFeatureOccurrence) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.namePrefix = "Sentence";
-		init(documents, data);
 	}
 
 
@@ -35,5 +32,11 @@ public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 			}
 		}
 		return ngrams;
+	}
+
+
+	@Override
+	public CorpRelFeature clone() {
+		return new CorpRelFeatureNGramSentence(this.n, this.minFeatureOccurrence);
 	}
 }

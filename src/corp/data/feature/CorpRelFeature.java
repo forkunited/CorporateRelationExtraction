@@ -3,7 +3,6 @@ package corp.data.feature;
 import java.util.ArrayList;
 import java.util.List;
 
-import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpRelDatum;
 
 public abstract class CorpRelFeature {
@@ -11,10 +10,11 @@ public abstract class CorpRelFeature {
 		
 	}
 	
-	protected abstract void init(List<CorpDocument> documents, List<CorpRelDatum> data);
+	public abstract void init(List<CorpRelDatum> data);
 	public abstract List<String> getNames(List<String> existingNames);
 	public abstract List<Double> computeVector(CorpRelDatum datum, List<Double> existingVector);
-
+	public abstract CorpRelFeature clone();
+	
 	public List<String> getNames() {
 		return getNames(new ArrayList<String>());
 	}

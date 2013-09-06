@@ -23,8 +23,6 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 	private boolean useRelationTypes;
 	
 	public CorpRelFeatureNGramDep(
-			List<CorpDocument> documents,
-			List<CorpRelDatum> data, 
 			int n, 
 			int minFeatureOccurrence,
 			CorpRelFeatureNGramDep.Mode mode,
@@ -34,7 +32,6 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 		this.mode = mode;
 		this.useRelationTypes = useRelationTypes;
 		this.namePrefix = "Dep_" + this.mode + ((this.useRelationTypes) ? "_Rel" : "");
-		init(documents, data);
 	}
 
 	@Override
@@ -76,5 +73,10 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 		}
 		
 		return ngrams;
+	}
+
+	@Override
+	public CorpRelFeature clone() {
+		return new CorpRelFeatureNGramDep(this.n, this.minFeatureOccurrence, this.mode, this.useRelationTypes);
 	}
 }

@@ -1,19 +1,14 @@
 package corp.data.feature;
 
-import java.util.List;
-
 import corp.data.Gazette;
-import corp.data.annotation.CorpDocument;
-import corp.data.annotation.CorpRelDatum;
 import corp.util.StringUtil;
 
 public class CorpRelFeatureGazetteInitialism  extends CorpRelFeatureGazette {
-	public CorpRelFeatureGazetteInitialism(List<CorpDocument> documents, List<CorpRelDatum> data, Gazette gazette, CorpRelFeatureGazette.InputType inputType) {
+	public CorpRelFeatureGazetteInitialism(Gazette gazette, CorpRelFeatureGazette.InputType inputType) {
 		this.extremumType = CorpRelFeatureGazette.ExtremumType.Maximum;
 		this.inputType = inputType;
 		this.namePrefix = "Initialism";
 		this.gazette = gazette;
-		init(documents, data);
 	}
 
 	@Override
@@ -26,5 +21,10 @@ public class CorpRelFeatureGazetteInitialism  extends CorpRelFeatureGazette {
 					return 0.0;
 			}
 		});
+	}
+
+	@Override
+	public CorpRelFeature clone() {
+		return new CorpRelFeatureGazetteInitialism(this.gazette, this.inputType);
 	}
 }
