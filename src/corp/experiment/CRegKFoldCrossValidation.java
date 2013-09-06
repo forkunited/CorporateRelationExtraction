@@ -31,7 +31,7 @@ public class CRegKFoldCrossValidation {
 		CorpProperties properties = new CorpProperties("corp.properties");
 		
 		System.out.println("Loading Gazettes...");
-		//Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
+		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
 		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
 		System.out.println("Loading Annotation Cache...");
@@ -84,11 +84,11 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette contains features */
 		
-		//dataSet.addFeature(
-		//		new CorpRelFeatureGazetteContains(
-		//				corpGazette, 
-		//				CorpRelFeatureGazette.InputType.Mentioned)
-		//	);
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteContains(
+						corpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned)
+			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
@@ -114,11 +114,11 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette initialism features */
 		
-		//dataSet.addFeature(
-		//		new CorpRelFeatureGazetteInitialism(
-		//				corpGazette, 
-		//				CorpRelFeatureGazette.InputType.Mentioned)
-		//	);
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteInitialism(
+						corpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned)
+			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
@@ -128,12 +128,12 @@ public class CRegKFoldCrossValidation {
 	
 		/* Gazette prefix token features */
 		
-		//dataSet.addFeature(
-		//		new CorpRelFeatureGazettePrefixTokens(
-		//				corpGazette, 
-		//				CorpRelFeatureGazette.InputType.Mentioned,
-		//				2)
-		//	);
+		dataSet.addFeature(
+				new CorpRelFeatureGazettePrefixTokens(
+						corpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned,
+						2)
+			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
