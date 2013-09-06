@@ -15,7 +15,7 @@ public class CorpRelFeatureGazetteEditDistance extends CorpRelFeatureGazette {
 	protected double extremum(String str) {
 		return this.gazette.min(str, new StringUtil.StringPairMeasure() {
 			public double compute(String str1, String str2) {
-				return StringUtil.levenshteinDistance(str1, str2);
+				return StringUtil.levenshteinDistance(str1, str2); /* FIXME */
 			}
 		});
 	}

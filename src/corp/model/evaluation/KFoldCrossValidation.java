@@ -39,10 +39,10 @@ public class KFoldCrossValidation {
 	
 	public double run(int maxThreads) {
 		double avgAccuracy = 0.0;
-		ExecutorService threadPool = Executors.newFixedThreadPool(maxThreads);
+		ExecutorService threadPool = Executors.newFixedThreadPool(2);
 		List<ValidationThread> tasks = new ArrayList<ValidationThread>();
 		for (int i = 0; i < this.folds.length; i++) {
-			tasks.add(new ValidationThread(i));
+			tasks.add(new ValidationThread(i, maxThreads/2));
 		}
 		
 		try {
@@ -65,15 +65,17 @@ public class KFoldCrossValidation {
 	
 	private class ValidationThread implements Callable<Double> {
 		private int foldIndex;
+		private int maxThreads;
 		
-		public ValidationThread(int foldIndex) {
+		public ValidationThread(int foldIndex, int maxThreads) {
 			this.foldIndex = foldIndex;
+			this.maxThreads = maxThreads;
 		}
 		
 		public Double call() {
 			System.out.println("Initializing CV data sets for fold " + this.foldIndex);
-			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet();
-			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet();
+			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet(this.maxThreads);
+			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet(this.maxThreads);
 			for (int j = 0; j < folds.length; j++) {
 				if (foldIndex != j) {
 					trainData.addData(folds[j].getData());

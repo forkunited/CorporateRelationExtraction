@@ -16,6 +16,9 @@ import corp.data.feature.CorpRelFeatureGazettePrefixTokens;
 import corp.data.feature.CorpRelFeatureNGramContext;
 import corp.data.feature.CorpRelFeatureNGramDep;
 import corp.data.feature.CorpRelFeatureNGramSentence;
+import corp.data.feature.CorpRelFeatureSelfEditDistance;
+import corp.data.feature.CorpRelFeatureSelfInitialism;
+import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.ModelCReg;
 import corp.model.evaluation.KFoldCrossValidation;
@@ -89,20 +92,8 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner)
 			);
 		
 		/* Gazette edit distance features */
@@ -115,21 +106,10 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner)
-			);
 		*/
 		
 		/* Gazette initialism features */
@@ -142,20 +122,8 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner)
 			);
 	
 		/* Gazette prefix token features */
@@ -169,24 +137,24 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner,
-						2)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned,
 						2)
 			);
 		
+		/* Self features */
+		
+		//dataSet.addFeature(
+		//		new CorpRelFeatureSelfEditDistance()
+		//);
+		
 		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioner,
-						2)
-			);
+				new CorpRelFeatureSelfInitialism()
+		);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureSelfPrefixTokens(2)
+		);
 		
 		System.out.println("Running CReg Cross Validation...");
 		
@@ -205,7 +173,7 @@ public class CRegKFoldCrossValidation {
 				new File(properties.getCregDataDirPath(), properties.getCrossValidationFolds() + "FoldCV").getAbsolutePath()
 		);
 		
-		validation.run(2);
+		validation.run(properties.getMaxThreads());
 		
 		System.out.println("Done.");
 	}

@@ -1,7 +1,11 @@
 package corp.data.feature;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDataSet;
@@ -10,23 +14,30 @@ import corp.data.annotation.CorpRelLabel;
 
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private List<CorpRelFeature> features;
+	private int maxThreads;
 	
 	public CorpRelFeaturizedDataSet() {
-		this(new ArrayList<CorpRelFeature>());
+		this(1);
 	}
 	
-	public CorpRelFeaturizedDataSet(List<CorpRelFeature> features) {
+	public CorpRelFeaturizedDataSet(int maxThreads) {
+		this(new ArrayList<CorpRelFeature>(), maxThreads);
+	}
+	
+	public CorpRelFeaturizedDataSet(List<CorpRelFeature> features, int maxThreads) {
 		super();
 		this.features = features;
+		this.maxThreads = maxThreads;
 	}
 	
 	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments) {
-		this(sourceDocuments, new ArrayList<CorpRelFeature>());
+		this(sourceDocuments, new ArrayList<CorpRelFeature>(), 1);
 	}
 	
-	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments, List<CorpRelFeature> features) {
+	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments, List<CorpRelFeature> features, int maxThreads) {
 		super(sourceDocuments);
 		this.features = features;
+		this.maxThreads = maxThreads;
 	}
 	
 	public boolean addFeature(CorpRelFeature feature) {
@@ -77,16 +88,48 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	}
 	
 	private List<CorpRelFeaturizedDatum> featurize(List<CorpRelDatum> data) {
-		List<CorpRelFeaturizedDatum> featurizedData = new ArrayList<CorpRelFeaturizedDatum>();
-		for (CorpRelDatum datum : data) {
-			List<Double> featureValues = new ArrayList<Double>();
-			for (CorpRelFeature feature : this.features) {
-				featureValues = feature.computeVector(datum, featureValues);
-			}
-			featurizedData.add(new CorpRelFeaturizedDatum(this, datum, featureValues));
+		System.out.println("Featurizing data set...");
+		
+		CorpRelFeaturizedDatum[] featurizedData = new CorpRelFeaturizedDatum[data.size()];
+		
+		ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
+		
+		for (int i = 0; i < data.size(); i++) {
+			threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
 		}
 		
-		return featurizedData;
+		try {
+			threadPool.shutdown();
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<CorpRelFeaturizedDatum>(Arrays.asList(featurizedData));
+	}
+	
+	private class FeaturizeDatumThread implements Runnable {
+		private CorpRelFeaturizedDataSet dataSet;
+		private CorpRelFeaturizedDatum[] featurizedDatums;
+		private CorpRelDatum datum;
+		private int index;
+		
+		public FeaturizeDatumThread(CorpRelFeaturizedDataSet dataSet, CorpRelFeaturizedDatum[] featurizedDatums, CorpRelDatum datum, int index) {
+			this.dataSet = dataSet;
+			this.featurizedDatums = featurizedDatums;
+			this.datum = datum;
+			this.index = index;
+		}
+		
+		@Override
+		public void run() {
+			List<Double> featureValues = new ArrayList<Double>();
+			for (CorpRelFeature feature : features) {
+				featureValues = feature.computeVector(datum, featureValues);
+			}
+			this.featurizedDatums[this.index] = new CorpRelFeaturizedDatum(this.dataSet, this.datum, featureValues);
+		}
+		
 	}
 	
 }
