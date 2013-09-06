@@ -11,7 +11,7 @@ public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 	}
 	
 	protected double selfCompare(String mentioner, String mentioned) {
-		return StringUtil.prefixTokenOverlap(mentioner, mentioned) >= minTokens ? 1.0 : 0.0;
+		return StringUtil.prefixTokenOverlap(mentioner, mentioned) >= this.minTokens ? 1.0 : 0.0;
 	}
 
 	@Override

@@ -4,9 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import corp.data.Gazette;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
+import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeatureNGramContext;
 import corp.data.feature.CorpRelFeatureNGramDep;
@@ -27,8 +29,11 @@ public class Scratch {
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
 		
-		System.out.println("Loading Annotation Cache...");
+		System.out.println("Loading Gazettes...");
+		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
+		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
+		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(
 			properties.getStanfordAnnotationDirPath(),
 			properties.getStanfordAnnotationCacheSize(),
@@ -43,7 +48,7 @@ public class Scratch {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
-				3
+				args.length > 0 ? Integer.parseInt(args[0]) : 4
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
@@ -51,69 +56,15 @@ public class Scratch {
 		
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
-		
-		System.out.println("Adding features...");
-		
-		/* Add features to data set */
-		dataSet.addFeature(
-				new CorpRelFeatureNGramSentence(
-						1 /* n */, 
-						2  /* minFeatureOccurrence */)
-		);
-		
-		dataSet.addFeature(
-			new CorpRelFeatureNGramContext(
-					1 /* n */, 
-					2 /*minFeatureOccurrence*/,
-					1 /* contextWindowSize */)
-		);
-		
-		dataSet.addFeature(
-			new CorpRelFeatureNGramDep(
-					1 /* n */, 
-					2  /* minFeatureOccurrence */,
-					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-					false /* useRelationTypes */)
-		);
-		
-		System.out.println("Computing featurized data set...");
-		
-		/* Compute featurized data */
-		for (int i = 0; i < dataSet.getFeatureCount(); i++) {
-			dataSet.getFeature(i).init(dataSet.getData());
-		}
-		
-		List<CorpRelFeaturizedDatum> featurizedData = dataSet.getFeaturizedData();
-		for (CorpRelFeaturizedDatum datum : featurizedData) {
-			CorpDocumentTokenSpan otherOrg = datum.getOtherOrgTokenSpans().get(0);
-			List<String> tokens = StanfordUtil.getSentenceTokenTexts(datum.getDocument().getSentenceAnnotation(otherOrg.getSentenceIndex()));
-			String otherOrgStr = "";
-			for (int i = otherOrg.getTokenStartIndex(); i < otherOrg.getTokenEndIndex(); i++)
-				otherOrgStr += tokens.get(i) + " ";
-			
-			List<String> features = dataSet.getFeatureNames();
-			for (int i = 0; i < features.size(); i++) {
-				System.out.println(datum.getAuthorCorpName() + "\t" + otherOrgStr + "\t" + datum.getLastLabel() + "\t" + features.get(i) + "\t" + datum.getFeatureValues().get(i));
+		List<CorpRelDatum> datums = dataSet.getData();
+		for (CorpRelDatum datum : datums) {
+			System.out.println("Author: " + datum.getAuthorCorpName());
+			List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
+			for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
+				System.out.println("Mentioned: " + tokenSpan.toString() + "(" + tokenSpan.getSentenceIndex() + " "+  tokenSpan.getTokenStartIndex() + " " + tokenSpan.getTokenEndIndex() + ")");
+				System.out.println("Mentioned Corp: " + corpGazette.contains(tokenSpan.toString()));
+				System.out.println("Author Corp: " + corpGazette.contains(datum.getAuthorCorpName().toString()));
 			}
 		}
-		
-		System.out.println("Training CReg...");
-		
-		List<CorpRelLabel> validLabels = new ArrayList<CorpRelLabel>();
-		validLabels.add(CorpRelLabel.SelfRef);
-		validLabels.add(CorpRelLabel.OCorp);
-		validLabels.add(CorpRelLabel.NonCorp);
-		validLabels.add(CorpRelLabel.Generic);
-		validLabels.add(CorpRelLabel.Error);
-		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabels);
-		model.train(dataSet, new File(properties.getCregDataDirPath(), "scratch").getAbsolutePath());
-		
-		System.out.println("Predicting CReg...");
-		
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> predictions = model.classify(dataSet);
-		
-		System.out.println("Made " + predictions.size() + " predictions.");
-		
-		System.out.println("Done.");
 	}
 }

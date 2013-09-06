@@ -55,4 +55,8 @@ public class StringUtil {
 
 		return distance[str1.length()][str2.length()];
 	}
+	
+	public static String clean(String str) {
+		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
+	}
 }

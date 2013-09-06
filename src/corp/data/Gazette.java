@@ -45,8 +45,8 @@ public class Gazette {
 		return this.name;
 	}
 	
-	protected String cleanString(String str) {		
-		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
+	private String cleanString(String str) {		
+		return StringUtil.clean(str);
 	}
 	
 	public boolean contains(String str) {

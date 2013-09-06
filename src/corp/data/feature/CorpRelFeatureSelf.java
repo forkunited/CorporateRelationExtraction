@@ -4,6 +4,7 @@ import java.util.List;
 
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
+import corp.util.StringUtil;
 
 public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 	protected String namePrefix;
@@ -26,7 +27,7 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 		List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
 		double max = Double.NEGATIVE_INFINITY;
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
-			max = Math.max(max, selfCompare(datum.getAuthorCorpName(), tokenSpan.toString()));
+			max = Math.max(max, selfCompare(StringUtil.clean(datum.getAuthorCorpName()), StringUtil.clean(tokenSpan.toString())));
 		}
 		
 		existingVector.add(max);
