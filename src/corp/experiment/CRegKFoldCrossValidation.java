@@ -49,7 +49,7 @@ public class CRegKFoldCrossValidation {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
-				args.length > 0 ? Integer.parseInt(args[0]) : 4
+				args.length > 0 ? Integer.parseInt(args[0]) : 0
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
