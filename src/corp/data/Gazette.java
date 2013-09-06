@@ -45,7 +45,7 @@ public class Gazette {
 		return this.name;
 	}
 	
-	protected String cleanString(String str) {
+	protected String cleanString(String str) {		
 		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
 	}
 	
