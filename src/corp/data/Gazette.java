@@ -49,14 +49,24 @@ public class Gazette {
 		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
 	}
 	
+	/* NOTE: Mysteriously, this is slow...?
+	 * public boolean contains(String str) {
+	 *	return this.gazette.contains(cleanString(str));
+	}*/
+	
 	public boolean contains(String str) {
-		return this.gazette.contains(cleanString(str));
+		String cleanStr = cleanString(str);
+		for (String gStr : this.gazette)
+			if (gStr.equals(cleanStr))
+				return true;
+		return false;
 	}
 	
 	public double min(String str, StringUtil.StringPairMeasure fn) {
 		double min = Double.POSITIVE_INFINITY;
+		String cleanStr = cleanString(str);
 		for (String gStr : this.gazette) {
-			double curMin = fn.compute(cleanString(str), gStr);
+			double curMin = fn.compute(cleanStr, gStr);
 			min = (curMin < min) ? curMin : min;
 		}
 		return min;
@@ -64,8 +74,9 @@ public class Gazette {
 	
 	public double max(String str, StringUtil.StringPairMeasure fn) {
 		double max = Double.NEGATIVE_INFINITY;
+		String cleanStr = cleanString(str);
 		for (String gStr : this.gazette) {
-			double curMax = fn.compute(cleanString(str), gStr);
+			double curMax = fn.compute(cleanStr, gStr);
 			max = (curMax > max) ? curMax : max;
 		}
 		return max;
