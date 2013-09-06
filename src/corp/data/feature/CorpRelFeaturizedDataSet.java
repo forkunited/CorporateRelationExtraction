@@ -3,7 +3,6 @@ package corp.data.feature;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -93,18 +92,31 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		
 		CorpRelFeaturizedDatum[] featurizedData = new CorpRelFeaturizedDatum[data.size()];
 		
-		ExecutorService threadPool = Executors.newFixedThreadPool(1);//this.maxThreads);
+		//ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 		
 		for (int i = 0; i < data.size(); i++) {
-			threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
+			
+			
+			List<Double> featureValues = new ArrayList<Double>();
+			for (CorpRelFeature feature : features) {
+				long start = System.currentTimeMillis();
+				featureValues = feature.computeVector(data.get(i), featureValues);
+				long end = System.currentTimeMillis();
+				System.out.println("Computed feature " + feature.getNames().get(0) + " in " + (end - start)+ "ms");
+			}
+			featurizedData[i] = new CorpRelFeaturizedDatum(this, data.get(i), featureValues);
+			System.out.println("Datum " + i + " finished at " + System.currentTimeMillis());
+			
+			
+			//threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
 		}
 		
-		try {
+		/*try {
 			threadPool.shutdown();
 			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		return new ArrayList<CorpRelFeaturizedDatum>(Arrays.asList(featurizedData));
 	}
