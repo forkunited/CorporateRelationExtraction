@@ -71,16 +71,16 @@ public class CRegKFoldCrossValidation {
 			new CorpRelFeatureNGramContext(
 					1 /* n */, 
 					2 /*minFeatureOccurrence*/,
-					1 /* contextWindowSize */)
+					0 /* contextWindowSize */)
 		);
 		
-		dataSet.addFeature(
-			new CorpRelFeatureNGramDep(
-					1 /* n */, 
-					2  /* minFeatureOccurrence */,
-					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-					true /* useRelationTypes */)
-		);
+		//dataSet.addFeature(
+		//	new CorpRelFeatureNGramDep(
+		//			1 /* n */, 
+		//			2  /* minFeatureOccurrence */,
+		//			CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
+		//			true /* useRelationTypes */)
+		//);
 		
 		/* Gazette contains features */
 		
