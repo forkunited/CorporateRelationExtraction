@@ -74,13 +74,13 @@ public class CRegKFoldCrossValidation {
 					1 /* contextWindowSize */)
 		);
 		
-		//dataSet.addFeature(
-		//	new CorpRelFeatureNGramDep(
-		//			1 /* n */, 
-		//			2  /* minFeatureOccurrence */,
-		//			CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-		//			false /* useRelationTypes */)
-		//);
+		dataSet.addFeature(
+			new CorpRelFeatureNGramDep(
+					1 /* n */, 
+					2  /* minFeatureOccurrence */,
+					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
+					true /* useRelationTypes */)
+		);
 		
 		/* Gazette contains features */
 		
@@ -97,7 +97,7 @@ public class CRegKFoldCrossValidation {
 			);
 		
 		/* Gazette edit distance features */
-		/*
+		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
 						corpGazette, 
@@ -109,8 +109,6 @@ public class CRegKFoldCrossValidation {
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
-		
-		*/
 		
 		/* Gazette initialism features */
 		
@@ -159,9 +157,9 @@ public class CRegKFoldCrossValidation {
 		
 		/* Self features */
 		
-		//dataSet.addFeature(
-		//		new CorpRelFeatureSelfEditDistance()
-		//);
+		dataSet.addFeature(
+				new CorpRelFeatureSelfEditDistance()
+		);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfInitialism()

@@ -7,7 +7,13 @@ import corp.data.annotation.CorpRelDatum;
 import corp.util.StringUtil;
 
 public abstract class CorpRelFeatureSelf extends CorpRelFeature {
+	protected enum ExtremumType {
+		Minimum,
+		Maximum
+	}
+	
 	protected String namePrefix;
+	protected ExtremumType extremumType;
 	
 	@Override
 	public void init(List<CorpRelDatum> data) {
@@ -25,12 +31,15 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 	public List<Double> computeVector(CorpRelDatum datum,
 			List<Double> existingVector) {
 		List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
-		double max = Double.NEGATIVE_INFINITY;
+		double extremum = (this.extremumType == ExtremumType.Maximum) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
-			max = Math.max(max, selfCompare(StringUtil.clean(datum.getAuthorCorpName()), StringUtil.clean(tokenSpan.toString())));
+			if (this.extremumType == ExtremumType.Maximum)
+				extremum = Math.max(extremum, selfCompare(StringUtil.clean(datum.getAuthorCorpName()), StringUtil.clean(tokenSpan.toString())));
+			else 
+				extremum = Math.min(extremum, selfCompare(StringUtil.clean(datum.getAuthorCorpName()), StringUtil.clean(tokenSpan.toString())));
 		}
 		
-		existingVector.add(max);
+		existingVector.add(extremum);
 		return existingVector;
 	}
 	

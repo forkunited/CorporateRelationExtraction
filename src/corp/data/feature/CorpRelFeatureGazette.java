@@ -50,8 +50,8 @@ public abstract class CorpRelFeatureGazette extends CorpRelFeature {
 		double extremum = (this.extremumType == CorpRelFeatureGazette.ExtremumType.Maximum) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
 			double curExtremum = extremum(tokenSpan.toString());
-			if (this.extremumType == CorpRelFeatureGazette.ExtremumType.Maximum && curExtremum > extremum
-					|| this.extremumType == CorpRelFeatureGazette.ExtremumType.Minimum && curExtremum < extremum)
+			if ((this.extremumType == CorpRelFeatureGazette.ExtremumType.Maximum && curExtremum > extremum)
+					|| (this.extremumType == CorpRelFeatureGazette.ExtremumType.Minimum && curExtremum < extremum))
 				extremum = curExtremum;	
 		}
 		return extremum;

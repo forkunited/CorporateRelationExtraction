@@ -5,6 +5,7 @@ import corp.util.StringUtil;
 public class CorpRelFeatureSelfInitialism extends CorpRelFeatureSelf {
 	public CorpRelFeatureSelfInitialism() {
 		this.namePrefix = "Initialism";
+		this.extremumType = CorpRelFeatureSelf.ExtremumType.Maximum;
 	}
 	
 	protected double selfCompare(String mentioner, String mentioned) {
