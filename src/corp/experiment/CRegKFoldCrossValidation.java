@@ -165,9 +165,9 @@ public class CRegKFoldCrossValidation {
 				new CorpRelFeatureSelfInitialism()
 		);
 		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfPrefixTokens(1)
-		);
+		//dataSet.addFeature(
+			//	new CorpRelFeatureSelfPrefixTokens(1)
+		//);
 		
 		System.out.println("Running CReg Cross Validation...");
 		
