@@ -11,6 +11,7 @@ import corp.util.StanfordUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.trees.GrammaticalRelation;
 
 public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 	public enum Mode {
@@ -64,8 +65,12 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 					if (depIndex < tokens.size() - this.n + 1 
 							&& (depIndex < startIndex || depIndex >= endIndex)) {
 						String ngram = getCleanNGram(tokens, depIndex);
-						if (this.useRelationTypes)
-							ngram += "_" + deps.reln(word, depWord).getShortName();
+						if (this.useRelationTypes) {
+							GrammaticalRelation gr = deps.reln(word, depWord);
+							if (gr == null)
+								gr = deps.reln(depWord, word);
+							ngram += "_" + ((gr == null) ? "" : gr.getShortName());
+						}
 						ngrams.add(ngram);
 					}
 				}
