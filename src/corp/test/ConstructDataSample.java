@@ -49,6 +49,7 @@ public class ConstructDataSample {
 			yearsToPossibleSamples.get(year).remove(sample);
 			
 			String sampleFileName = getFileNameFromSample(sample);
+			System.out.println("Trying to add sample " + sampleFileName);
 			if (currentAnnotationFileNames.contains(sampleFileName)) {
 				System.out.println("Data already contains " + sampleFileName + ". Skipping. ");
 				continue;
@@ -143,8 +144,10 @@ public class ConstructDataSample {
 	private static HashSet<String> readCurrentAnnotationFileNames(String currentAnnotationDir) {
 		HashSet<String> annotationFileNames = new HashSet<String>();
 		File[] corpRelFiles = (new File(currentAnnotationDir)).listFiles();
-		for (int i = 0; i < corpRelFiles.length; i++)
+		for (int i = 0; i < corpRelFiles.length; i++) {
+			System.out.println("Reading current annotation file name: " + corpRelFiles[i].getName());
 			annotationFileNames.add(corpRelFiles[i].getName());
+		}
 		return annotationFileNames;
 	}
 	
