@@ -18,12 +18,21 @@ public class CorpDocument {
 	private String annotationFileName;
 	private AnnotationCache annotationCache;
 	private List<CorpRelDatum> corpRelDatums;
+	private int year;
 
 	public CorpDocument(String annotationFileName,
 						AnnotationCache annotationCache) {	
 		this.annotationFileName = annotationFileName;
 		this.annotationCache = annotationCache;
 		this.corpRelDatums = new ArrayList<CorpRelDatum>();
+		
+		/* FIXME: Do this slightly differently... */
+		int dateStartIndex = this.annotationFileName.indexOf("-8-K-") + 5;
+		this.year = Integer.parseInt(this.annotationFileName.substring(dateStartIndex, dateStartIndex+4));
+	}
+	
+	public int getYear() {
+		return this.year;
 	}
 	
 	public List<CorpRelDatum> getCorpRelDatums() {
