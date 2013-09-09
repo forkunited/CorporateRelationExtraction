@@ -30,7 +30,10 @@ public class StringUtil {
 		if (!allowPrefix && strTokens.length != cleanInitialism.length())
 			return false;
 		
-		for (int i = 0; i < Math.min(cleanInitialism.length(), strTokens.length); i++) {
+		if (cleanInitialism.length() > strTokens.length)
+			return false;
+		
+		for (int i = 0; i < cleanInitialism.length(); i++) {
 			if (cleanInitialism.charAt(i) != strTokens[i].charAt(0))
 				return false;
 		}
