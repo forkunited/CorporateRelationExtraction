@@ -78,9 +78,9 @@ public class ConstructDataSample {
 			yearDistribution.put(datum.getDocument().getYear(), yearDistribution.get(datum.getDocument().getYear()) + 1);
 		}
 		
-		for (Integer year : yearsToPossibleSamples.keySet())
-			if (!yearDistribution.containsKey(year))
-				yearDistribution.put(year, 0);
+		for (Entry<Integer, HashSet<String>> entry : yearsToPossibleSamples.entrySet())
+			if (!yearDistribution.containsKey(entry.getKey()))
+				yearDistribution.put(entry.getKey(), 0);
 		
 		HashMap<Integer, Double> newYearSamplingDistribution = new HashMap<Integer, Double>();
 		for (Entry<Integer, Integer> e : yearDistribution.entrySet()) {
