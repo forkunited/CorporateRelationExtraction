@@ -18,12 +18,16 @@ import corp.util.CorpProperties;
 
 public class ConstructDataSample {
 	private static Random rand;
+	private static CorpProperties properties;
 	
 	public static void main(String[] args) {
-		int n = Integer.parseInt(args[0]);
-		String possibleSamplesFilePath = args[1];
-		String currentAnnotationDir = args[2];
-		int seed = Integer.parseInt(args[3]);
+		properties = new CorpProperties("corp.properties");
+		
+		// Hard-coded paths to places on cab for now... this is just a one-off
+		int n = Integer.parseInt("1500"/*args[0]*/);
+		String possibleSamplesFilePath = "/home/wmcdowel/sloan/Data/CorpRelAnnotation/Setup/examplesFromParsed.txt"/*args[1]*/;
+		String currentAnnotationDir = properties.getCorpRelDirPath()/*args[2]*/;
+		int seed = Integer.parseInt("1"/*args[3]*/);
 		
 		rand = new Random(seed);
 		
@@ -51,14 +55,12 @@ public class ConstructDataSample {
 	}
 	
 	private static HashMap<Integer, Double> getYearSamplingDistribution(HashMap<Integer, HashSet<String>> yearsToPossibleSamples) {
-		CorpProperties properties = new CorpProperties("corp.properties");
 		AnnotationCache annotationCache = new AnnotationCache(
 			properties.getStanfordAnnotationDirPath(),
 			properties.getStanfordAnnotationCacheSize(),
 			properties.getStanfordCoreMapDirPath(),
 			properties.getStanfordCoreMapCacheSize()
 		);
-		
 		
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
