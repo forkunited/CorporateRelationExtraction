@@ -122,7 +122,7 @@ public class ConstructDataSample {
 	private static String getFileNameFromSample(String sample) {
 		String[] sampleParts = sample.split("\t"); 
 		File sampleFile = new File(sampleParts[0]);
-		int lineNumber = Integer.parseInt(sampleParts[2]);
+		int lineNumber = Integer.parseInt(sampleParts[3]);
 		return sampleFile.getName() + ".line" + lineNumber;
 	}
 	
