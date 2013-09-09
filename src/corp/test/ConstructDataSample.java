@@ -138,7 +138,7 @@ public class ConstructDataSample {
 		String[] sampleParts = sample.split("\t"); 
 		File sampleFile = new File(sampleParts[0]);
 		int lineNumber = Integer.parseInt(sampleParts[3]);
-		return sampleFile.getName() + ".line" + lineNumber;
+		return sampleFile.getName() + ".line" + lineNumber + ".txt";
 	}
 	
 	private static HashSet<String> readCurrentAnnotationFileNames(String currentAnnotationDir) {
