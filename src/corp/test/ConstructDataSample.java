@@ -27,7 +27,7 @@ public class ConstructDataSample {
 		properties = new CorpProperties("corp.properties");
 		
 		// Hard-coded paths to places on cab for now... this is just a one-off
-		int n = Integer.parseInt("1500"/*args[0]*/);
+		int n = Integer.parseInt("2500"/*args[0]*/);
 		String possibleSamplesFilePath = "/home/wmcdowel/sloan/Data/CorpRelAnnotation/Setup/examplesFromParsed.txt"/*args[1]*/;
 		String currentAnnotationDir = properties.getCorpRelDirPath()/*args[2]*/;
 		int seed = Integer.parseInt("1"/*args[3]*/);
@@ -48,9 +48,12 @@ public class ConstructDataSample {
 			String sample = uniformSample(yearsToPossibleSamples.get(year));
 			yearsToPossibleSamples.get(year).remove(sample);
 			
-			if (currentAnnotationFileNames.contains(getFileNameFromSample(sample)))
+			String sampleFileName = getFileNameFromSample(sample);
+			if (currentAnnotationFileNames.contains(sampleFileName)) {
+				System.out.println("Data already contains " + sampleFileName + ". Skipping. ");
 				continue;
-			
+			}
+				
 			newSamples.add(sample);
 		}
 		
