@@ -32,8 +32,8 @@ public class ConstructDataSample {
 		rand = new Random(seed);
 		
 		HashMap<Integer, HashSet<String>> yearsToPossibleSamples = readYearsToPossibleSamples(possibleSamplesFilePath);
-		HashSet<String> currentAnnotationFileNames = readCurrentAnnotationFileNames(currentAnnotationDir);
 		HashMap<Integer, Double> yearSamplingDistribution = getYearSamplingDistribution(yearsToPossibleSamples);
+		HashSet<String> currentAnnotationFileNames = readCurrentAnnotationFileNames(currentAnnotationDir);
 		
 		List<String> newSamples = new ArrayList<String>();
 		while (newSamples.size() < n) {
@@ -78,7 +78,6 @@ public class ConstructDataSample {
 			yearDistribution.put(datum.getDocument().getYear(), yearDistribution.get(datum.getDocument().getYear()) + 1);
 		}
 		
-		System.out.println("hi" + yearsToPossibleSamples);
 		for (Entry<Integer, HashSet<String>> entry : yearsToPossibleSamples.entrySet())
 			if (!yearDistribution.containsKey(entry.getKey()))
 				yearDistribution.put(entry.getKey(), 0);
@@ -104,6 +103,8 @@ public class ConstructDataSample {
 			yearsToPossibleSamples.get(year).add(sample);
 			
 	        br.close();
+	        
+	        System.out.println("Read samples from " + yearsToPossibleSamples.size() + " years.");
 	        return yearsToPossibleSamples;
 	    } catch (Exception e) {
 	    	System.out.println("Failed to read samples: " + e.getMessage());
