@@ -56,14 +56,24 @@ public class Scratch {
 		
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
-		List<CorpRelDatum> datums = dataSet.getData();
-		for (CorpRelDatum datum : datums) {
+		
+		
+		List<String> featureNames = dataSet.getFeatureNames();
+		for (String featureName : featureNames)
+			
+		
+		
+		List<CorpRelFeaturizedDatum> datums = dataSet.getFeaturizedData();
+		for (CorpRelFeaturizedDatum datum : datums) {
 			System.out.println("Author: " + datum.getAuthorCorpName());
 			List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
 			for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
 				System.out.println("Mentioned: " + tokenSpan.toString() + "(" + tokenSpan.getSentenceIndex() + " "+  tokenSpan.getTokenStartIndex() + " " + tokenSpan.getTokenEndIndex() + ")");
 				System.out.println("Mentioned Corp: " + corpGazette.contains(tokenSpan.toString()));
 				System.out.println("Author Corp: " + corpGazette.contains(datum.getAuthorCorpName().toString()));
+				
+				
+				List<Double> values = datum.getFeatureValues();
 			}
 		}
 	}

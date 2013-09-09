@@ -115,7 +115,7 @@ public class KFoldCrossValidation {
 	
 	private List<CorpRelDatum> randomPermutation(List<CorpRelDatum> data) {
 		for (int i = 0; i < data.size(); i++) {
-			int j = this.rand.nextInt(i);
+			int j = this.rand.nextInt(i+1);
 			CorpRelDatum temp = data.get(i);
 			data.set(i, data.get(j));
 			data.set(j, temp);
