@@ -95,10 +95,8 @@ public class ModelCReg extends Model {
     		
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : data) {
-    			System.out.println(datum);
     			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
-    			
     			List<String> features = datum.getSourceDataSet().getFeatureNames();
     			List<Double> values = datum.getFeatureValues();
     			writeX.write("id" + datumIndex + "\t{");
