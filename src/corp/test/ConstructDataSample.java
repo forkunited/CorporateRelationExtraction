@@ -91,6 +91,10 @@ public class ConstructDataSample {
 			newYearSamplingDistribution.put(e.getKey(), (data.size() - e.getValue())/((yearDistribution.size() - 1.0)*(double)dataSize));
 		}
 		
+		System.out.println("Year sampling distribution: ");
+		for (Entry<Integer, Double> entry : newYearSamplingDistribution.entrySet())
+			System.out.println(entry.getKey() + " " + entry.getValue());
+		
 		return newYearSamplingDistribution;
 	}
 	
@@ -142,7 +146,7 @@ public class ConstructDataSample {
 		double distributionSum = 0;
 		for (Entry<Integer, Double> entry : distribution.entrySet()) {
 			distributionSum += entry.getValue();
-			if (p <= distributionSum)
+			if (p < distributionSum)
 				return entry.getKey();
 		}
 		
