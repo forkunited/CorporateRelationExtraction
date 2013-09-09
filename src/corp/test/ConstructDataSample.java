@@ -1,8 +1,11 @@
 package corp.test;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +31,7 @@ public class ConstructDataSample {
 		String possibleSamplesFilePath = "/home/wmcdowel/sloan/Data/CorpRelAnnotation/Setup/examplesFromParsed.txt"/*args[1]*/;
 		String currentAnnotationDir = properties.getCorpRelDirPath()/*args[2]*/;
 		int seed = Integer.parseInt("1"/*args[3]*/);
+		String outputPath = "/home/wmcdowel/sloan/Data/CorpRelAnnotation/Setup/newSample.txt";
 		
 		rand = new Random(seed);
 		
@@ -50,8 +54,7 @@ public class ConstructDataSample {
 			newSamples.add(sample);
 		}
 		
-		for (String sample : newSamples)
-			System.out.println(sample);
+		outputSamples(outputPath, newSamples);
 	}
 	
 	private static HashMap<Integer, Double> getYearSamplingDistribution(HashMap<Integer, HashSet<String>> yearsToPossibleSamples) {
@@ -155,5 +158,16 @@ public class ConstructDataSample {
 			i++;
 		}
 		return null;
+	}
+	
+	private static void outputSamples(String outputPath, List<String> samples) {
+        try {
+    		BufferedWriter w = new BufferedWriter(new FileWriter(outputPath));
+    		for (String sample : samples) {
+    			w.write(sample + "\n");
+    		}    		
+    		
+            w.close();
+        } catch (IOException e) { e.printStackTrace(); }
 	}
 }
