@@ -95,6 +95,7 @@ public class ModelCReg extends Model {
     		
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : data) {
+    			System.out.println(datum);
     			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
     				continue;
     			

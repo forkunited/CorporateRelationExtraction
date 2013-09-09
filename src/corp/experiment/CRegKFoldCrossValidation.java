@@ -64,11 +64,11 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Adding features...");
 		
 		/* Add features to data set */
-		dataSet.addFeature(
-				new CorpRelFeatureNGramSentence(
-						1 /* n */, 
-						2  /* minFeatureOccurrence */)
-		);
+		//dataSet.addFeature(
+		//		new CorpRelFeatureNGramSentence(
+		//				1 /* n */, 
+		//				2  /* minFeatureOccurrence */)
+		//);
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramContext(
