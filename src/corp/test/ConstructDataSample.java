@@ -91,7 +91,7 @@ public class ConstructDataSample {
 		
 		double N_1 = data.size();
 		double N = N_2+N_1;
-		double f_2 = N_2/(double)(N);
+		double f_2 = N_2/N;
 		double k = yearDistribution.size();
 		
 		List<Integer> overSampledYears = new ArrayList<Integer>();
@@ -102,8 +102,12 @@ public class ConstructDataSample {
 		}
 		
 		k = k - overSampledYears.size();
-		for (Integer overSampledYear : overSampledYears)
+		for (Integer overSampledYear : overSampledYears) {
+			N_1 = N_1 - yearDistribution.get(overSampledYear);
 			yearDistribution.remove(overSampledYear);
+		}
+		N = N_1+N_2;
+		f_2=N_2/N;
 		
 		HashMap<Integer, Double> newYearSamplingDistribution = new HashMap<Integer, Double>();
 		for (Entry<Integer, Integer> e : yearDistribution.entrySet()) {
