@@ -105,6 +105,7 @@ public class ConstructDataSample {
 	        br.close();
 	        return yearsToPossibleSamples;
 	    } catch (Exception e) {
+	    	System.out.println("Failed to read samples: " + e.getMessage());
 	    	e.printStackTrace();
 	    	return null;
 	    }
