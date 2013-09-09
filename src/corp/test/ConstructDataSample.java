@@ -94,6 +94,17 @@ public class ConstructDataSample {
 		double f_2 = N_2/(double)(N);
 		double k = yearDistribution.size();
 		
+		List<Integer> overSampledYears = new ArrayList<Integer>();
+		for (Entry<Integer, Integer> e : yearDistribution.entrySet()) {
+			if (e.getValue() >= N/k) {
+				overSampledYears.add(e.getKey());
+			}
+		}
+		
+		k = k - overSampledYears.size();
+		for (Integer overSampledYear : overSampledYears)
+			yearDistribution.remove(overSampledYear);
+		
 		HashMap<Integer, Double> newYearSamplingDistribution = new HashMap<Integer, Double>();
 		for (Entry<Integer, Integer> e : yearDistribution.entrySet()) {
 			double n_i = e.getValue();
