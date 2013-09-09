@@ -58,11 +58,6 @@ public class Scratch {
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
 		
-		List<String> featureNames = dataSet.getFeatureNames();
-		for (String featureName : featureNames)
-			
-		
-		
 		List<CorpRelFeaturizedDatum> datums = dataSet.getFeaturizedData();
 		for (CorpRelFeaturizedDatum datum : datums) {
 			System.out.println("Author: " + datum.getAuthorCorpName());
