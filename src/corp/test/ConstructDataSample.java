@@ -95,13 +95,13 @@ public class ConstructDataSample {
 		try {
 			HashMap<Integer, HashSet<String>> yearsToPossibleSamples = new HashMap<Integer, HashSet<String>>();
 			BufferedReader br = new BufferedReader(new FileReader(path));
-				
-			String sample = br.readLine();
-			int year = getYearFromSample(sample);
-			if (!yearsToPossibleSamples.containsKey(year))
-				yearsToPossibleSamples.put(year, new HashSet<String>());
-			yearsToPossibleSamples.get(year).add(sample);
-			
+			String sample = null;
+			while ((sample = br.readLine()) != null) {
+				int year = getYearFromSample(sample);
+				if (!yearsToPossibleSamples.containsKey(year))
+					yearsToPossibleSamples.put(year, new HashSet<String>());
+				yearsToPossibleSamples.get(year).add(sample);
+			}
 	        br.close();
 	        
 	        System.out.println("Read samples from " + yearsToPossibleSamples.size() + " years.");
