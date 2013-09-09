@@ -15,6 +15,7 @@ public class CorpProperties {
 	private String nonCorpGazettePath;
 	private int maxThreads;
 	private int crossValidationFolds;
+	private int randomSeed;
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -33,6 +34,7 @@ public class CorpProperties {
 			this.nonCorpGazettePath = properties.getProperty("nonCorpGazettePath");
 			this.maxThreads = Integer.valueOf(properties.getProperty("maxThreads"));
 			this.crossValidationFolds = Integer.valueOf(properties.getProperty("crossValidationFolds"));
+			this.randomSeed = Integer.valueOf(properties.getProperty("randomSeed"));
 			
 			reader.close();
 		} catch (Exception e) {
@@ -82,5 +84,9 @@ public class CorpProperties {
 	
 	public int getCrossValidationFolds() {
 		return this.crossValidationFolds;
+	}
+	
+	public int getRandomSeed() {
+		return this.randomSeed;
 	}
 }

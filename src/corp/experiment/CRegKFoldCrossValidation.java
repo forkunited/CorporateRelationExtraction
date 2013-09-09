@@ -3,6 +3,7 @@ package corp.experiment;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import corp.data.Gazette;
 import corp.data.annotation.AnnotationCache;
@@ -29,6 +30,8 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Loading configuration properties...");
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
+		
+		Random rand = new Random(properties.getRandomSeed());
 		
 		System.out.println("Loading Gazettes...");
 		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
@@ -61,11 +64,11 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Adding features...");
 		
 		/* Add features to data set */
-		//dataSet.addFeature(
-		//		new CorpRelFeatureNGramSentence(
-		//				1 /* n */, 
-		//				2  /* minFeatureOccurrence */)
-		//);
+		dataSet.addFeature(
+				new CorpRelFeatureNGramSentence(
+						1 /* n */, 
+						2  /* minFeatureOccurrence */)
+		);
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramContext(
@@ -183,7 +186,8 @@ public class CRegKFoldCrossValidation {
 				model, 
 				dataSet,
 				properties.getCrossValidationFolds(),
-				new File(properties.getCregDataDirPath(), properties.getCrossValidationFolds() + "FoldCV").getAbsolutePath()
+				new File(properties.getCregDataDirPath(), properties.getCrossValidationFolds() + "FoldCV").getAbsolutePath(),
+				rand
 		);
 		
 		validation.run(properties.getMaxThreads());

@@ -2,6 +2,7 @@ package corp.model.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,17 +19,20 @@ public class KFoldCrossValidation {
 	private CorpRelFeaturizedDataSet[] folds;
 	private String outputPath;
 	private List<CorpRelFeature> originalFeatures;
+	private Random rand;
 	
 	public KFoldCrossValidation(Model model, 
 								CorpRelFeaturizedDataSet data,
 								int k,
-								String outputPath) {
+								String outputPath,
+								Random rand) {
 		this.model = model;
 		this.folds = new CorpRelFeaturizedDataSet[k];
 		this.outputPath = outputPath;
 		this.originalFeatures = data.getFeatures();
+		this.rand = rand;
 		
-		List<CorpRelDatum> datums = data.getData();
+		List<CorpRelDatum> datums = randomPermutation(data.getData());
 		for (int i = 0; i < k; i++) {
 			folds[i] = new CorpRelFeaturizedDataSet();
 			for (int d = i*datums.size()/k; d < (i+1)*datums.size()/k; d++) {
@@ -107,5 +111,15 @@ public class KFoldCrossValidation {
 				return computedAccuracy;
 			}
 		}
+	}
+	
+	private List<CorpRelDatum> randomPermutation(List<CorpRelDatum> data) {
+		for (int i = 0; i < data.size(); i++) {
+			int j = this.rand.nextInt(i);
+			CorpRelDatum temp = data.get(i);
+			data.set(i, data.get(j));
+			data.set(j, temp);
+		}
+		return data;
 	}
 }
