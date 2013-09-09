@@ -23,13 +23,14 @@ public class StringUtil {
 		return Math.min(str1Tokens.length, str2Tokens.length);
 	}
 	
-	public static boolean isInitialism(String initialism, String str) {
+	public static boolean isInitialism(String initialism, String str, boolean allowPrefix) {
 		String[] strTokens = str.trim().toLowerCase().split("\\s+");
 		String cleanInitialism = initialism.trim().toLowerCase();
-		if (strTokens.length != cleanInitialism.length())
+		
+		if (!allowPrefix && strTokens.length != cleanInitialism.length())
 			return false;
 		
-		for (int i = 0; i < strTokens.length; i++) {
+		for (int i = 0; i < Math.min(cleanInitialism.length(), strTokens.length); i++) {
 			if (cleanInitialism.charAt(i) != strTokens[i].charAt(0))
 				return false;
 		}
