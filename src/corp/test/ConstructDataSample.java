@@ -27,7 +27,7 @@ public class ConstructDataSample {
 		properties = new CorpProperties("corp.properties");
 		
 		// Hard-coded paths to places on cab for now... this is just a one-off
-		int n = Integer.parseInt("2500"/*args[0]*/);
+		int N_2 = Integer.parseInt("2500"/*args[0]*/);
 		String possibleSamplesFilePath = "/home/wmcdowel/sloan/Data/CorpRelAnnotation/Setup/examplesFromParsed.txt"/*args[1]*/;
 		String currentAnnotationDir = properties.getCorpRelDirPath()/*args[2]*/;
 		int seed = Integer.parseInt("1"/*args[3]*/);
@@ -36,11 +36,11 @@ public class ConstructDataSample {
 		rand = new Random(seed);
 		
 		HashMap<Integer, HashSet<String>> yearsToPossibleSamples = readYearsToPossibleSamples(possibleSamplesFilePath);
-		HashMap<Integer, Double> yearSamplingDistribution = getYearSamplingDistribution(yearsToPossibleSamples);
+		HashMap<Integer, Double> yearSamplingDistribution = getYearSamplingDistribution(yearsToPossibleSamples, N_2);
 		HashSet<String> currentAnnotationFileNames = readCurrentAnnotationFileNames(currentAnnotationDir);
 		
 		List<String> newSamples = new ArrayList<String>();
-		while (newSamples.size() < n) {
+		while (newSamples.size() < N_2) {
 			Integer year = sample(yearSamplingDistribution);
 			if (yearsToPossibleSamples.get(year).size() == 0)
 				continue;
@@ -61,7 +61,7 @@ public class ConstructDataSample {
 		outputSamples(outputPath, newSamples);
 	}
 	
-	private static HashMap<Integer, Double> getYearSamplingDistribution(HashMap<Integer, HashSet<String>> yearsToPossibleSamples) {
+	private static HashMap<Integer, Double> getYearSamplingDistribution(HashMap<Integer, HashSet<String>> yearsToPossibleSamples, int N_2) {
 		AnnotationCache annotationCache = new AnnotationCache(
 			properties.getStanfordAnnotationDirPath(),
 			properties.getStanfordAnnotationCacheSize(),
@@ -89,10 +89,15 @@ public class ConstructDataSample {
 			if (!yearDistribution.containsKey(entry.getKey()))
 				yearDistribution.put(entry.getKey(), 0);
 		
+		double N_1 = data.size();
+		double N = N_2+N_1;
+		double f_2 = N_2/(double)(N);
+		double k = yearDistribution.size();
+		
 		HashMap<Integer, Double> newYearSamplingDistribution = new HashMap<Integer, Double>();
 		for (Entry<Integer, Integer> e : yearDistribution.entrySet()) {
-			int dataSize = data.size();
-			newYearSamplingDistribution.put(e.getKey(), (data.size() - e.getValue())/((yearDistribution.size() - 1.0)*(double)dataSize));
+			double n_i = e.getValue();
+			newYearSamplingDistribution.put(e.getKey(), 1.0/(f_2*k)-n_i/(f_2*N));
 		}
 		
 		System.out.println("Original year distribution: ");
