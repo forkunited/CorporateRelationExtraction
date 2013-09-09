@@ -78,6 +78,7 @@ public class ConstructDataSample {
 			yearDistribution.put(datum.getDocument().getYear(), yearDistribution.get(datum.getDocument().getYear()) + 1);
 		}
 		
+		System.out.println("hi" + yearsToPossibleSamples);
 		for (Entry<Integer, HashSet<String>> entry : yearsToPossibleSamples.entrySet())
 			if (!yearDistribution.containsKey(entry.getKey()))
 				yearDistribution.put(entry.getKey(), 0);
