@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class CounterTable{
 	public HashMap<String, Integer> counts;
@@ -41,6 +42,16 @@ public class CounterTable{
 		}
 		
 		return index;
+	}
+	
+	public TreeMap<Integer, String> getSortedCounts() {
+		TreeMap<Integer, String> sortedCounts = new TreeMap<Integer, String>();
+		
+		for (Entry<String, Integer> entry : this.counts.entrySet()) {
+			sortedCounts.put(entry.getValue(), entry.getKey());
+		}
+		
+		return sortedCounts;
 	}
 	
 	public int getSize() {

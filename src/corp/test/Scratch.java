@@ -1,6 +1,5 @@
 package corp.test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,20 +7,13 @@ import corp.data.Gazette;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
-import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
-import corp.data.feature.CorpRelFeatureNGramContext;
-import corp.data.feature.CorpRelFeatureNGramDep;
-import corp.data.feature.CorpRelFeatureNGramSentence;
 import corp.data.feature.CorpRelFeatureSelfEditDistance;
 import corp.data.feature.CorpRelFeatureSelfInitialism;
 import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
-import corp.model.ModelCReg;
 import corp.util.CorpProperties;
-import corp.util.StanfordUtil;
-import edu.stanford.nlp.util.Pair;
 
 /**
  * For periodically testing out short temporary snippets of code
