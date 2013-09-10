@@ -77,7 +77,7 @@ public class AccuracyValidation {
 			confusionMatrixStr.append(validLabels.get(i)).append("\t");
 		}
 		
-		confusionMatrixStr.append("\t");
+		confusionMatrixStr.append("\n");
 		
 		for (int i = 0; i < validLabels.size(); i++) {
 			confusionMatrixStr.append(validLabels.get(i)).append("\t");
