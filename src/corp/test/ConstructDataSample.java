@@ -19,6 +19,12 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
 
+/**
+ * Construct a random sample of data from documents that have gone
+ * through the Stanford pipeline (to be annotated)
+ * 
+ * @author Bill
+ */
 public class ConstructDataSample {
 	private static Random rand;
 	private static CorpProperties properties;
