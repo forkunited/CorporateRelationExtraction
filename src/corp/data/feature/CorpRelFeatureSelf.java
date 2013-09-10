@@ -12,8 +12,13 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 		Maximum
 	}
 	
+	protected StringUtil.StringTransform cleanFn;
 	protected String namePrefix;
 	protected ExtremumType extremumType;
+	
+	public CorpRelFeatureSelf() {
+		this.cleanFn = StringUtil.getDefaultCleanFn();
+	}
 	
 	@Override
 	public void init(List<CorpRelDatum> data) {
@@ -23,7 +28,7 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 
 	@Override
 	public List<String> getNames(List<String> existingNames) {
-		existingNames.add("Self_" + this.namePrefix);
+		existingNames.add("Self_" + this.namePrefix + "_" + this.cleanFn.toString());
 		return existingNames;
 	}
 
@@ -33,10 +38,11 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 		List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
 		double extremum = (this.extremumType == ExtremumType.Maximum) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
+			double compareValue = selfCompare(this.cleanFn.transform(datum.getAuthorCorpName()), this.cleanFn.transform(tokenSpan.toString()));
 			if (this.extremumType == ExtremumType.Maximum)
-				extremum = Math.max(extremum, selfCompare(StringUtil.clean(datum.getAuthorCorpName()), StringUtil.clean(tokenSpan.toString())));
+				extremum = Math.max(extremum, compareValue);
 			else 
-				extremum = Math.min(extremum, selfCompare(StringUtil.clean(datum.getAuthorCorpName()), StringUtil.clean(tokenSpan.toString())));
+				extremum = Math.min(extremum, compareValue);
 		}
 		
 		existingVector.add(extremum);

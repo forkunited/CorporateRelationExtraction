@@ -16,7 +16,7 @@ public abstract class CorpRelFeatureGazette extends CorpRelFeature {
 	protected CorpRelFeatureGazette.ExtremumType extremumType;
 	protected CorpRelFeatureGazette.InputType inputType;
 	protected String namePrefix;
-
+	
 	@Override
 	public void init(List<CorpRelDatum> data) {
 		// TODO Auto-generated method stub

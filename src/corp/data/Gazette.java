@@ -15,8 +15,15 @@ import corp.util.StringUtil;
 public class Gazette {
 	private HashSet<String> gazette;
 	private String name;
+	private StringUtil.StringTransform cleanFn;
 	
-	public Gazette(String name, String sourceFilePath){
+	public Gazette(String name, String sourceFilePath, StringUtil.StringTransform cleanFn) {
+		this(name, sourceFilePath);
+		this.cleanFn = cleanFn;
+	}
+	
+	public Gazette(String name, String sourceFilePath) {
+		this.cleanFn = StringUtil.getDefaultCleanFn();
 		this.gazette = new HashSet<String>();
 		this.name = name;
 		
@@ -46,7 +53,7 @@ public class Gazette {
 	}
 	
 	private String cleanString(String str) {		
-		return StringUtil.clean(str);
+		return this.cleanFn.transform(str);
 	}
 	
 	public boolean contains(String str) {

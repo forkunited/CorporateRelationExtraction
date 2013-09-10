@@ -1,12 +1,44 @@
 package corp.util;
 
+import corp.data.Gazette;
+
 public class StringUtil {
+	/* String cleaning and measure helpers... maybe move these to separate classes later. */
+
 	public interface StringTransform {
 		String transform(String str);
+		String toString(); // Return constant name for this transformation (used in feature names)
 	}
 	
 	public interface StringPairMeasure {
 		double compute(String str1, String str2);
+	}
+	
+	public static StringUtil.StringTransform getDefaultCleanFn() {
+		return new StringUtil.StringTransform() {
+			public String toString() {
+				return "DefaultClean";
+			}
+			
+			public String transform(String str) {
+				return StringUtil.clean(str);
+			}
+		};	
+	}
+	
+	public static StringUtil.StringTransform getStopWordsCleanFn(final Gazette stopWords) {
+		final String stopWordsName = stopWords.getName();
+		
+		return new StringUtil.StringTransform() {
+			public String toString() {
+				return "StopWordsClean_" + stopWordsName;
+			}
+			
+			public String transform(String str) {
+				str = StringUtil.clean(str);
+				return stopWords.removeTerms(str);
+			}
+		};
 	}
 	
 	/**

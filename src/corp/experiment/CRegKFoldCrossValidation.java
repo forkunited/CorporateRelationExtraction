@@ -24,6 +24,7 @@ import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.ModelCReg;
 import corp.model.evaluation.KFoldCrossValidation;
 import corp.util.CorpProperties;
+import corp.util.StringUtil;
 
 public class CRegKFoldCrossValidation {
 	public static void main(String[] args) {
@@ -34,9 +35,13 @@ public class CRegKFoldCrossValidation {
 		Random rand = new Random(properties.getRandomSeed());
 		
 		System.out.println("Loading Gazettes...");
-		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
-		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
+
 		Gazette stopWordsGazette = new Gazette("StopWords", properties.getStopWordGazettePath());
+		StringUtil.StringTransform stopWordsCleanFn = StringUtil.getStopWordsCleanFn(stopWordsGazette);
+		
+		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
+		Gazette cleanCorpGazette = new Gazette("StopWordsCorp", properties.getCorpGazettePath(), stopWordsCleanFn);
+		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
 		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(
@@ -102,6 +107,12 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
+						cleanCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned)
+			);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteContains(
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
@@ -113,6 +124,13 @@ public class CRegKFoldCrossValidation {
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteEditDistance(
+						cleanCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned)
+			);
+		
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
@@ -130,6 +148,13 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
+						cleanCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned, true)
+			);
+		
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteInitialism(
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned, true)
 			);
@@ -139,6 +164,13 @@ public class CRegKFoldCrossValidation {
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
 						corpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned,
+						1)
+			);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazettePrefixTokens(
+						cleanCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned,
 						1)
 			);
@@ -163,6 +195,18 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfPrefixTokens(1)
+		);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureSelfEditDistance(stopWordsCleanFn)
+		);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureSelfInitialism(true, stopWordsCleanFn)
+		);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureSelfPrefixTokens(1, stopWordsCleanFn)
 		);
 		
 		System.out.println("Running CReg Cross Validation...");

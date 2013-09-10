@@ -6,9 +6,15 @@ public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 	private int minTokens;
 	
 	public CorpRelFeatureSelfPrefixTokens(int minTokens) {
+		super();
 		this.namePrefix = "PrefixTokens";
 		this.minTokens = minTokens;
 		this.extremumType = CorpRelFeatureSelf.ExtremumType.Maximum;
+	}
+	
+	public CorpRelFeatureSelfPrefixTokens(int minTokens, StringUtil.StringTransform cleanFn) {
+		this(minTokens);
+		this.cleanFn = cleanFn;
 	}
 	
 	protected double selfCompare(String mentioner, String mentioned) {

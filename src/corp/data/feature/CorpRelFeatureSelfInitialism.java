@@ -6,9 +6,15 @@ public class CorpRelFeatureSelfInitialism extends CorpRelFeatureSelf {
 	private boolean allowPrefix;
 	
 	public CorpRelFeatureSelfInitialism(boolean allowPrefix) {
+		super();
 		this.namePrefix = "Initialism";
 		this.extremumType = CorpRelFeatureSelf.ExtremumType.Maximum;
 		this.allowPrefix = allowPrefix;
+	}
+	
+	public CorpRelFeatureSelfInitialism(boolean allowPrefix, StringUtil.StringTransform cleanFn) {
+		this(allowPrefix);
+		this.cleanFn = cleanFn;
 	}
 	
 	protected double selfCompare(String mentioner, String mentioned) {
