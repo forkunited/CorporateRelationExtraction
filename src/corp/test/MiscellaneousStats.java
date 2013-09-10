@@ -73,9 +73,11 @@ public class MiscellaneousStats {
 			}
 		}
 		
-		TreeMap<Integer, String> sortedCounts = terms.getSortedCounts();
-		for (Entry<Integer, String> entry : sortedCounts.entrySet()) {
-			System.out.println(entry.getKey() + " " + entry.getValue());
+		TreeMap<Integer, List<String>> sortedCounts = terms.getSortedCounts();
+		for (Entry<Integer, List<String>> entry : sortedCounts.entrySet()) {
+			for (String term : entry.getValue()) {
+				System.out.println(entry.getKey() + " " + term);
+			}
 		}
 	}
 }

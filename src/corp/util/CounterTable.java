@@ -44,11 +44,14 @@ public class CounterTable{
 		return index;
 	}
 	
-	public TreeMap<Integer, String> getSortedCounts() {
-		TreeMap<Integer, String> sortedCounts = new TreeMap<Integer, String>();
+	public TreeMap<Integer, List<String>> getSortedCounts() {
+		TreeMap<Integer, List<String>> sortedCounts = new TreeMap<Integer, List<String>>();
 		
 		for (Entry<String, Integer> entry : this.counts.entrySet()) {
-			sortedCounts.put(entry.getValue(), entry.getKey());
+			if (!sortedCounts.containsKey(entry.getValue()))
+				sortedCounts.put(entry.getValue(), new ArrayList<String>());
+			
+			sortedCounts.get(entry.getValue()).add(entry.getKey());
 		}
 		
 		return sortedCounts;
