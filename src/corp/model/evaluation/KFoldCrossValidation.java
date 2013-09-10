@@ -108,6 +108,8 @@ public class KFoldCrossValidation {
 				return -1.0;
 			} else {
 				System.out.println("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
+				System.out.println("Confusion matrix on fold " + foldIndex + ":\n" + accuracy.getConfusionMatrixString());
+				
 				return computedAccuracy;
 			}
 		}
