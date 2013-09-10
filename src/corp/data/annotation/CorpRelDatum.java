@@ -57,4 +57,27 @@ public class CorpRelDatum {
 		
 		return null;
 	}
+	
+	public String toString() {
+		StringBuilder datumStr = new StringBuilder();
+		
+		if (this.labelPath != null) {
+			datumStr.append("Label: ");
+			
+			for (CorpRelLabel label : this.labelPath)
+				datumStr.append(label).append("-");
+			
+			datumStr.delete(datumStr.length() - 1, datumStr.length());
+			datumStr.append("\n");
+		}
+		
+		datumStr.append("Author Corporation: " + this.authorCorpName).append("\n");
+		datumStr.append("Mentioned Organizations: \n");
+		for (CorpDocumentTokenSpan tokenSpan : this.otherOrgTokenSpans) {
+			datumStr.append(tokenSpan.toString());
+			datumStr.append("\n");
+		}
+		
+		return datumStr.toString();
+	}
 }
