@@ -13,9 +13,11 @@ public class CorpProperties {
 	private String cregCommandPath;
 	private String corpGazettePath;
 	private String nonCorpGazettePath;
+	private String stopWordGazettePath;
 	private int maxThreads;
 	private int crossValidationFolds;
 	private int randomSeed;
+	
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -32,6 +34,7 @@ public class CorpProperties {
 			this.cregCommandPath = properties.getProperty("cregCommandPath");
 			this.corpGazettePath = properties.getProperty("corpGazettePath");
 			this.nonCorpGazettePath = properties.getProperty("nonCorpGazettePath");
+			this.stopWordGazettePath = properties.getProperty("stopWordGazettePath");
 			this.maxThreads = Integer.valueOf(properties.getProperty("maxThreads"));
 			this.crossValidationFolds = Integer.valueOf(properties.getProperty("crossValidationFolds"));
 			this.randomSeed = Integer.valueOf(properties.getProperty("randomSeed"));
@@ -76,6 +79,10 @@ public class CorpProperties {
 	
 	public String getNonCorpGazettePath() {
 		return this.nonCorpGazettePath;
+	}
+	
+	public String getStopWordGazettePath() {
+		return this.stopWordGazettePath;
 	}
 	
 	public int getMaxThreads() {

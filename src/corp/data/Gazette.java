@@ -72,4 +72,15 @@ public class Gazette {
 		}
 		return max;
 	}
+	
+	public String removeTerms(String str) {
+		String[] strTokens = str.split("\\s+");
+		StringBuilder termsRemoved = new StringBuilder();
+		for (int i = 0; i < strTokens.length; i++) {
+			if (!contains(strTokens[i]))
+				termsRemoved.append(strTokens[i]).append(" ");
+		}
+		
+		return termsRemoved.toString().trim();
+	}
 }

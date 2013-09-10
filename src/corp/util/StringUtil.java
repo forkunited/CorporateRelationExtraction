@@ -1,6 +1,10 @@
 package corp.util;
 
 public class StringUtil {
+	public interface StringTransform {
+		String transform(String str);
+	}
+	
 	public interface StringPairMeasure {
 		double compute(String str1, String str2);
 	}
@@ -60,7 +64,31 @@ public class StringUtil {
 		return distance[str1.length()][str2.length()];
 	}
 	
+	// FIXME: This function is messy and inefficient.
 	public static String clean(String str) {
-		return str.trim().toLowerCase().replaceAll("[\\W&&[^\\s]]+", "").replaceAll("\\s+", " ");
+		StringBuilder cleanStrBuilder = new StringBuilder();
+		
+		// Remove words with slashes
+		String[] tokens = str.split("\\s+");
+		for (int i = 0; i < tokens.length; i++) {
+			if (!tokens[i].contains("/") && !tokens[i].contains("\\"))
+				cleanStrBuilder.append(tokens[i]).append(" ");
+		}
+		
+		// Remove non alpha-numeric characters
+		String cleanStr = cleanStrBuilder.toString();
+		cleanStr = cleanStr.toLowerCase()
+						   .replaceAll("[\\W&&[^\\s]]+", "")
+						   .replaceAll("\\s+", " ");
+		
+		// Remove single character words
+		cleanStrBuilder = new StringBuilder();
+		tokens = str.split(" ");
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i].length() > 1)
+				cleanStrBuilder.append(tokens[i]).append(" ");
+		}
+		
+		return cleanStr.trim();
 	}
 }

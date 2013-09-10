@@ -36,6 +36,7 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Loading Gazettes...");
 		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
 		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
+		Gazette stopWordsGazette = new Gazette("StopWords", properties.getStopWordGazettePath());
 		
 		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(
@@ -86,6 +87,12 @@ public class CRegKFoldCrossValidation {
 		//);
 		
 		/* Gazette contains features */
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteContains(
+						stopWordsGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned)
+			);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
