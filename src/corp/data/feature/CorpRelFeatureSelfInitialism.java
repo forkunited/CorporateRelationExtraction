@@ -23,7 +23,7 @@ public class CorpRelFeatureSelfInitialism extends CorpRelFeatureSelf {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureSelfInitialism(this.allowPrefix);
+		return new CorpRelFeatureSelfInitialism(this.allowPrefix, this.cleanFn);
 	}
 
 }

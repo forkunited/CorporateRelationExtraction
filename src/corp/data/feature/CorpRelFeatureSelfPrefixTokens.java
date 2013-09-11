@@ -23,7 +23,7 @@ public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureSelfPrefixTokens(this.minTokens);
+		return new CorpRelFeatureSelfPrefixTokens(this.minTokens, this.cleanFn);
 	}
 
 }

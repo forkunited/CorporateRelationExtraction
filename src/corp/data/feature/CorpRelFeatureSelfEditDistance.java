@@ -20,7 +20,7 @@ public class CorpRelFeatureSelfEditDistance extends CorpRelFeatureSelf {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureSelfEditDistance();
+		return new CorpRelFeatureSelfEditDistance(this.cleanFn);
 	}
 
 }

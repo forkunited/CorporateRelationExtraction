@@ -18,12 +18,7 @@ public class Gazette {
 	private StringUtil.StringTransform cleanFn;
 	
 	public Gazette(String name, String sourceFilePath, StringUtil.StringTransform cleanFn) {
-		this(name, sourceFilePath);
 		this.cleanFn = cleanFn;
-	}
-	
-	public Gazette(String name, String sourceFilePath) {
-		this.cleanFn = StringUtil.getDefaultCleanFn();
 		this.gazette = new HashSet<String>();
 		this.name = name;
 		
@@ -46,6 +41,10 @@ public class Gazette {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Gazette(String name, String sourceFilePath) {
+		this(name, sourceFilePath, StringUtil.getDefaultCleanFn());
 	}
 
 	public String getName() {
