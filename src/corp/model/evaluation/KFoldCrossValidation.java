@@ -113,7 +113,7 @@ public class KFoldCrossValidation {
 				System.out.println("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
 				
 				/* FIXME: REMOVE THIS */
-				/*ConfusionMatrix confusions = accuracy.getConfusionMatrix();
+				ConfusionMatrix confusions = accuracy.getConfusionMatrix();
 				System.out.println(confusions.toString());
 				Map<CorpRelLabel, List<CorpRelDatum>> actualForOCorp = confusions.getActualForPredicted(CorpRelLabel.OCorp);
 				System.out.println("Actual for predicted OCorp");
@@ -121,7 +121,7 @@ public class KFoldCrossValidation {
 					System.out.println("ACTUAL: " + entry.getKey());
 					for (CorpRelDatum datum : entry.getValue())
 						System.out.println(datum.toString() + "\n");
-				}*/
+				}
 				/*                  */
 				
 				return computedAccuracy;

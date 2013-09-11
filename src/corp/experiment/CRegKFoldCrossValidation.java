@@ -185,7 +185,7 @@ public class CRegKFoldCrossValidation {
 		
 		/* Self features */
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance()
 		);
 		
@@ -195,7 +195,7 @@ public class CRegKFoldCrossValidation {
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfPrefixTokens(1)
-		);
+		);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance(stopWordsCleanFn)
