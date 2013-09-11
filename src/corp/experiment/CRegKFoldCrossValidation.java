@@ -158,6 +158,25 @@ public class CRegKFoldCrossValidation {
 						nonCorpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned, true)
 			);
+		
+		/*dataSet.addFeature(
+		new CorpRelFeatureGazetteInitialism(
+				corpGazette, 
+				CorpRelFeatureGazette.InputType.Mentioned, false)
+		);
+		*/
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteInitialism(
+						cleanCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned, false)
+			);
+		
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazetteInitialism(
+						nonCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned, false)
+			);
 	
 		/* Gazette prefix token features */
 		
@@ -182,6 +201,28 @@ public class CRegKFoldCrossValidation {
 						1)
 			);
 		
+		/*dataSet.addFeature(
+		new CorpRelFeatureGazettePrefixTokens(
+				corpGazette, 
+				CorpRelFeatureGazette.InputType.Mentioned,
+				2)
+	);
+*/
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazettePrefixTokens(
+						cleanCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned,
+						2)
+			);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureGazettePrefixTokens(
+						nonCorpGazette, 
+						CorpRelFeatureGazette.InputType.Mentioned,
+						2)
+			);
+		
 		
 		/* Self features */
 		
@@ -194,8 +235,18 @@ public class CRegKFoldCrossValidation {
 		);
 		
 		dataSet.addFeature(
+				new CorpRelFeatureSelfInitialism(false)
+		);
+		
+		dataSet.addFeature(
 				new CorpRelFeatureSelfPrefixTokens(1)
-		);*/
+		);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureSelfPrefixTokens(2)
+		);
+		
+		*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance(stopWordsCleanFn)
@@ -206,7 +257,15 @@ public class CRegKFoldCrossValidation {
 		);
 		
 		dataSet.addFeature(
+				new CorpRelFeatureSelfInitialism(false, stopWordsCleanFn)
+		);
+		
+		dataSet.addFeature(
 				new CorpRelFeatureSelfPrefixTokens(1, stopWordsCleanFn)
+		);
+		
+		dataSet.addFeature(
+				new CorpRelFeatureSelfPrefixTokens(2, stopWordsCleanFn)
 		);
 		
 		System.out.println("Running CReg Cross Validation...");
