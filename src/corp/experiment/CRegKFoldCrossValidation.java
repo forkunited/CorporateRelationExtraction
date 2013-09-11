@@ -39,7 +39,7 @@ public class CRegKFoldCrossValidation {
 		Gazette stopWordsGazette = new Gazette("StopWords", properties.getStopWordGazettePath());
 		StringUtil.StringTransform stopWordsCleanFn = StringUtil.getStopWordsCleanFn(stopWordsGazette);
 		
-		//Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
+		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
 		Gazette cleanCorpGazette = new Gazette("StopWordsCorp", properties.getCorpGazettePath(), stopWordsCleanFn);
 		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
@@ -99,12 +99,12 @@ public class CRegKFoldCrossValidation {
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
-		*/
+		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
 						cleanCorpGazette, 
@@ -119,12 +119,12 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette edit distance features */
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
-		*/
+		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
 						cleanCorpGazette, 
@@ -140,12 +140,12 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette initialism features */
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned, true)
 			);
-		*/
+		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
 						cleanCorpGazette, 
@@ -159,12 +159,12 @@ public class CRegKFoldCrossValidation {
 						CorpRelFeatureGazette.InputType.Mentioned, true)
 			);
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 		new CorpRelFeatureGazetteInitialism(
 				corpGazette, 
 				CorpRelFeatureGazette.InputType.Mentioned, false)
 		);
-		*/
+		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
 						cleanCorpGazette, 
@@ -180,13 +180,13 @@ public class CRegKFoldCrossValidation {
 	
 		/* Gazette prefix token features */
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned,
 						1)
 			);
-		*/
+		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
 						cleanCorpGazette, 
@@ -201,13 +201,12 @@ public class CRegKFoldCrossValidation {
 						1)
 			);
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 		new CorpRelFeatureGazettePrefixTokens(
 				corpGazette, 
 				CorpRelFeatureGazette.InputType.Mentioned,
 				2)
-	);
-*/
+		);
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
@@ -226,7 +225,7 @@ public class CRegKFoldCrossValidation {
 		
 		/* Self features */
 		
-		/*dataSet.addFeature(
+		dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance()
 		);
 		
@@ -245,8 +244,6 @@ public class CRegKFoldCrossValidation {
 		dataSet.addFeature(
 				new CorpRelFeatureSelfPrefixTokens(2)
 		);
-		
-		*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance(stopWordsCleanFn)
