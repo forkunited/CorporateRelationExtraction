@@ -116,7 +116,9 @@ public class ModelTree extends Model {
 			return partialPosterior.get(path);
 		
 		CorpRelLabelPath prefixPath = path.getPrefix(path.size() - 1);
-		if (modelPosteriors.get(prefixPath) == null)
+		if (!modelPosteriors.containsKey(prefixPath))
+			System.out.println("MISSING MODEL POSTERIOR " + prefixPath);
+		else if (modelPosteriors.get(prefixPath) == null)
 			System.out.println("NULL AT MODEL POSTERIOR " + prefixPath);
 		if (modelPosteriors.get(prefixPath).get(index) == null)
 			System.out.println("NULL AT " + prefixPath + " " + index);
