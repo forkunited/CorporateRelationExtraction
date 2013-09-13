@@ -60,7 +60,7 @@ public class CRegTreeKFoldCrossValidation {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
-				args.length > 0 ? Integer.parseInt(args[0]) : 5
+				args.length > 0 ? Integer.parseInt(args[0]) : 0
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
@@ -85,13 +85,13 @@ public class CRegTreeKFoldCrossValidation {
 					0 /* contextWindowSize */)
 		);
 		
-		dataSet.addFeature(
-			new CorpRelFeatureNGramDep(
-				1 /* n */, 
-					2  /* minFeatureOccurrence */,
-					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-					true /* useRelationTypes */)
-		);
+		//dataSet.addFeature(
+		//	new CorpRelFeatureNGramDep(
+		//		1 /* n */, 
+		//			2  /* minFeatureOccurrence */,
+		//			CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
+		//			true /* useRelationTypes */)
+		//);
 		
 		/* Gazette contains features */
 		
