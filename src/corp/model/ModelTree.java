@@ -64,6 +64,9 @@ public class ModelTree extends Model {
 			List<CorpRelDatum> pathData = data.getDataUnderPath(entry.getKey(), this.allowSubpaths);
 			CorpRelFeaturizedDataSet pathDataSet = new CorpRelFeaturizedDataSet();
 			pathDataSet.addData(pathData);
+			for (int i = 0; i < data.getFeatureCount(); i++)
+				pathDataSet.addFeature(data.getFeature(i));
+			
 			if (!entry.getValue().train(pathDataSet, outputPath + "." + entry.getKey().toString()))
 				return false;
 		}
