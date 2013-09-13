@@ -43,8 +43,8 @@ public class AccuracyValidation {
 			correct += classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.model.getValidLabelPaths()).equals(classifiedDatum.second()) ? 1.0 : 0;
 		}
 		
-		//this.confusionMatrix = new ConfusionMatrix(this.model.getValidLabelPaths());
-		//this.confusionMatrix.addData(classifiedData);
+		this.confusionMatrix = new ConfusionMatrix(this.model.getValidLabelPaths());
+		this.confusionMatrix.addData(classifiedData);
 		
 		return correct/classifiedData.size();
 	}

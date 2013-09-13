@@ -141,6 +141,7 @@ public class ModelTree extends Model {
 			cloneModel.models.put(entry.getKey(), entry.getValue());
 		}
 		
+		cloneModel.validPaths = new ArrayList<CorpRelLabelPath>();
 		for (CorpRelLabelPath validPath : this.validPaths) {
 			cloneModel.validPaths.add(validPath);
 		}
