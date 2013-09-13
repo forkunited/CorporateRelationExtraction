@@ -40,7 +40,12 @@ public class AccuracyValidation {
 		
 		double correct = 0;
 		for (Pair<CorpRelFeaturizedDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
-			correct += classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.model.getValidLabelPaths()).equals(classifiedDatum.second()) ? 1.0 : 0;
+			if (classifiedDatum.first().getLabelPath() == null)
+				continue;
+			CorpRelLabelPath actual = classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.model.getValidLabelPaths());
+			if (actual == null)
+				continue;
+			correct += actual.equals(classifiedDatum.second()) ? 1.0 : 0;
 		}
 		
 		this.confusionMatrix = new ConfusionMatrix(this.model.getValidLabelPaths());
