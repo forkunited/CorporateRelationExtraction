@@ -1,8 +1,9 @@
 package corp.data.feature;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -11,10 +12,12 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDataSet;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
+import corp.data.annotation.CorpRelLabelPath;
 
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private List<CorpRelFeature> features;
 	private int maxThreads;
+	private Map<CorpRelDatum, CorpRelFeaturizedDatum> featurizedDatums;
 	
 	public CorpRelFeaturizedDataSet() {
 		this(1);
@@ -28,6 +31,7 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		super();
 		this.features = features;
 		this.maxThreads = maxThreads;
+		this.featurizedDatums = new HashMap<CorpRelDatum, CorpRelFeaturizedDatum>();
 	}
 	
 	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments) {
@@ -79,8 +83,8 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		return featurize(getData());
 	}
 	
-	public List<CorpRelFeaturizedDatum> getFeaturizedDataUnderLabel(CorpRelLabel root, boolean includeRoot) {
-		return featurize(getDataUnderLabel(root, includeRoot));
+	public List<CorpRelFeaturizedDatum> getFeaturizedDataUnderPath(CorpRelLabelPath path , boolean includePathRoot) {
+		return featurize(getDataUnderPath(path, includePathRoot));
 	}
 	
 	public List<CorpRelFeaturizedDatum> getFeaturizedDataInLabel(CorpRelLabel label) {
@@ -94,7 +98,10 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 		
 		for (int i = 0; i < data.size(); i++) {
-			threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
+			if (this.featurizedDatums.containsKey(data.get(i)))
+				featurizedData[i] = this.featurizedDatums.get(data.get(i));
+			else 
+				threadPool.submit(new FeaturizeDatumThread(this, featurizedData, data.get(i), i));
 		}
 		
 		try {
@@ -104,7 +111,14 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 			e.printStackTrace();
 		}
 		
-		return new ArrayList<CorpRelFeaturizedDatum>(Arrays.asList(featurizedData));
+		List<CorpRelFeaturizedDatum> featurizedDataList = new ArrayList<CorpRelFeaturizedDatum>();
+		for (int i = 0; i < featurizedData.length; i++) {
+			if (!this.featurizedDatums.containsKey(data.get(i)))
+				this.featurizedDatums.put(data.get(i), featurizedData[i]);
+			featurizedDataList.add(featurizedData[i]);
+		}
+		
+		return featurizedDataList;
 	}
 	
 	private class FeaturizeDatumThread implements Runnable {
@@ -127,7 +141,6 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 				featureValues = feature.computeVector(datum, featureValues);
 			}
 			this.featurizedDatums[this.index] = new CorpRelFeaturizedDatum(this.dataSet, this.datum, featureValues);
-			//System.out.println("Finished featurizing Datum " + this.index);
 		}
 	}
 	

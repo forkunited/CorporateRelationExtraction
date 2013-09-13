@@ -1,12 +1,11 @@
 package corp.data.annotation;
 
-import java.util.Collection;
 import java.util.List;
 
 public class CorpRelDatum {
 	private String authorCorpName;
 	private List<CorpDocumentTokenSpan> otherOrgTokenSpans;
-	private CorpRelLabel[] labelPath;
+	private CorpRelLabelPath labelPath;
 	
 	public CorpRelDatum(String authorCorpName, List<CorpDocumentTokenSpan> otherOrgTokenSpans) {
 		if (otherOrgTokenSpans.size() == 0)
@@ -22,7 +21,7 @@ public class CorpRelDatum {
 		this.labelPath = copy.labelPath;
 	}
 	
-	public boolean setLabelPath(CorpRelLabel[] labelPath) {
+	public boolean setLabelPath(CorpRelLabelPath labelPath) {
 		this.labelPath = labelPath;
 		return true;
 	}
@@ -39,36 +38,18 @@ public class CorpRelDatum {
 		return this.otherOrgTokenSpans.get(0).getDocument();
 	}
 	
-	public CorpRelLabel[] getLabelPath() {
+	public CorpRelLabelPath getLabelPath() {
 		return this.labelPath;
-	}
-	
-	public CorpRelLabel getLastLabel() {
-		if (this.labelPath == null)
-			return null;
-		return this.labelPath[this.labelPath.length-1];
-	}
-	
-	public CorpRelLabel getLabel(Collection<CorpRelLabel> validLabels) {
-		for (CorpRelLabel label : this.labelPath) {
-			if (validLabels.contains(label))
-				return label;
-		}
-		
-		return null;
 	}
 	
 	public String toString() {
 		StringBuilder datumStr = new StringBuilder();
 		
+		datumStr.append("Label: ");
 		if (this.labelPath != null) {
-			datumStr.append("Label: ");
-			
-			for (CorpRelLabel label : this.labelPath)
-				datumStr.append(label).append("-");
-			
-			datumStr.delete(datumStr.length() - 1, datumStr.length());
-			datumStr.append("\n");
+			datumStr.append(this.labelPath.toString()).append("\n");
+		} else {
+			datumStr.append("null\n");
 		}
 		
 		datumStr.append("Author Corporation: " + this.authorCorpName).append("\n");

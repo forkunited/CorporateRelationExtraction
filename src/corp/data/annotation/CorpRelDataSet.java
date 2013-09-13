@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class CorpRelDataSet {
-	private HashMap<CorpRelLabel, List<CorpRelLabel>> labeledDAG; // Label graph... should be a acyclic
+	// Label graph... should be a acyclic.  Kept as DAG instead of tree just in case want to build a DAG model later...
+	private HashMap<CorpRelLabel, List<CorpRelLabel>> labeledDAG; 
 	private HashMap<CorpRelLabel, List<CorpRelDatum>> labeledData;
 	private List<CorpRelDatum> unlabeledData;
 	
@@ -36,23 +37,29 @@ public class CorpRelDataSet {
 	}
 	
 	public boolean addDatum(CorpRelDatum datum) {
-		CorpRelLabel[] labelPath = datum.getLabelPath();
-		if (labelPath == null || labelPath.length == 0) {
+		CorpRelLabelPath labelPath = datum.getLabelPath();
+		if (labelPath == null) {
 			this.unlabeledData.add(datum);
 			return true;
 		}
 		
-		for (int i = 0; i < labelPath.length; i++) {
-			if (!this.labeledDAG.containsKey(labelPath[i])) {
-				this.labeledDAG.put(labelPath[i], new ArrayList<CorpRelLabel>());
-				this.labeledData.put(labelPath[i], new ArrayList<CorpRelDatum>());
+		CorpRelLabel[] labelPathArray = labelPath.toArray();
+		if (!this.labeledDAG.containsKey(null))
+			this.labeledDAG.put(null, new ArrayList<CorpRelLabel>());
+		if (!this.labeledDAG.get(null).contains(labelPathArray[0]))
+			this.labeledDAG.get(null).add(labelPathArray[0]);
+		
+		for (int i = 0; i < labelPathArray.length; i++) {
+			if (!this.labeledDAG.containsKey(labelPathArray[i])) {
+				this.labeledDAG.put(labelPathArray[i], new ArrayList<CorpRelLabel>());
+				this.labeledData.put(labelPathArray[i], new ArrayList<CorpRelDatum>());
 			}
 			
-			if (i + 1 < labelPath.length) {
-				if (!this.labeledDAG.get(labelPath[i]).contains(labelPath[i+1]))
-					this.labeledDAG.get(labelPath[i]).add(labelPath[i+1]);
+			if (i + 1 < labelPathArray.length) {
+				if (!this.labeledDAG.get(labelPathArray[i]).contains(labelPathArray[i+1]))
+					this.labeledDAG.get(labelPathArray[i]).add(labelPathArray[i+1]);
 			} else {
-				this.labeledData.get(labelPath[i]).add(datum);
+				this.labeledData.get(labelPathArray[i]).add(datum);
 			}
 		}
 		
@@ -76,18 +83,25 @@ public class CorpRelDataSet {
 		return data;
 	}
 	
-	public List<CorpRelDatum> getDataUnderLabel(CorpRelLabel root, boolean includeRootData) {
+	public List<CorpRelDatum> getDataUnderPath(CorpRelLabelPath path, boolean includePathRootData) {
 		List<CorpRelDatum> data = new ArrayList<CorpRelDatum>();
 		Stack<CorpRelLabel> labelsToVisit = new Stack<CorpRelLabel>();
 		HashSet<CorpRelLabel> visited = new HashSet<CorpRelLabel>();
 		
-		if (includeRootData) {
-			labelsToVisit.add(root);
+		if (path.size() == 0) {
+			if (!this.labeledDAG.containsKey(null))
+				return data;
+			List<CorpRelLabel> childLabels = this.labeledDAG.get(null);
+			for (CorpRelLabel childLabel : childLabels)
+				labelsToVisit.add(childLabel);		
+		} else if (includePathRootData) {
+			labelsToVisit.add(path.getLastLabel());
 		} else {
-			if (!this.labeledDAG.containsKey(root))
+			CorpRelLabel pathRoot = path.getLastLabel();
+			if (!this.labeledDAG.containsKey(pathRoot))
 				return data;
 			
-			List<CorpRelLabel> childLabels = this.labeledDAG.get(root);
+			List<CorpRelLabel> childLabels = this.labeledDAG.get(pathRoot);
 			for (CorpRelLabel childLabel : childLabels)
 				labelsToVisit.add(childLabel);
 		}
@@ -97,6 +111,12 @@ public class CorpRelDataSet {
 			visited.add(currentLabel);
 			
 			if (this.labeledData.containsKey(currentLabel)) {
+				List<CorpRelDatum> currentLabelData = this.labeledData.get(currentLabel);
+				for (CorpRelDatum datum : currentLabelData) {
+					if (datum.getLabelPath().isPrefixedBy(path))
+						data.add(datum);
+				}
+				
 				data.addAll(this.labeledData.get(currentLabel));
 			}
 			

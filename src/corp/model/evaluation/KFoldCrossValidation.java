@@ -2,8 +2,6 @@ package corp.model.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -12,7 +10,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import corp.data.annotation.CorpRelDatum;
-import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.Model;
@@ -113,7 +110,7 @@ public class KFoldCrossValidation {
 				System.out.println("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
 				
 				/* FIXME: REMOVE THIS */
-				ConfusionMatrix confusions = accuracy.getConfusionMatrix();
+				/*ConfusionMatrix confusions = accuracy.getConfusionMatrix();
 				System.out.println(confusions.toString());
 				Map<CorpRelLabel, List<CorpRelDatum>> actualForOCorp = confusions.getActualForPredicted(CorpRelLabel.OCorp);
 				System.out.println("Actual for predicted OCorp");
@@ -121,7 +118,7 @@ public class KFoldCrossValidation {
 					System.out.println("ACTUAL: " + entry.getKey());
 					for (CorpRelDatum datum : entry.getValue())
 						System.out.println(datum.toString() + "\n");
-				}
+				}*/
 				/*                  */
 				
 				return computedAccuracy;

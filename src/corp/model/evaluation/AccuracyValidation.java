@@ -2,7 +2,7 @@ package corp.model.evaluation;
 
 import java.util.List;
 
-import corp.data.annotation.CorpRelLabel;
+import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.model.Model;
@@ -32,19 +32,19 @@ public class AccuracyValidation {
 		
 		System.out.println("Model classifying data (" + this.outputPath + ")");
 		
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classifiedData =  this.model.classify(this.testData);
+		List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classifiedData =  this.model.classify(this.testData);
 		if (classifiedData == null)
 			return -1.0;
 		
 		System.out.println("Computing model score (" + this.outputPath + ")");
 		
 		double correct = 0;
-		for (Pair<CorpRelFeaturizedDatum, CorpRelLabel> classifiedDatum : classifiedData) {
-			correct += classifiedDatum.first().getLabel(this.model.getValidLabels()) == classifiedDatum.second() ? 1.0 : 0;
+		for (Pair<CorpRelFeaturizedDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
+			correct += classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.model.getValidLabelPaths()).equals(classifiedDatum.second()) ? 1.0 : 0;
 		}
 		
-		this.confusionMatrix = new ConfusionMatrix(this.model.getValidLabels());
-		this.confusionMatrix.addData(classifiedData);
+		//this.confusionMatrix = new ConfusionMatrix(this.model.getValidLabelPaths());
+		//this.confusionMatrix.addData(classifiedData);
 		
 		return correct/classifiedData.size();
 	}

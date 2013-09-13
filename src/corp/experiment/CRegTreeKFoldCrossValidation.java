@@ -23,11 +23,12 @@ import corp.data.feature.CorpRelFeatureSelfInitialism;
 import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.ModelCReg;
+import corp.model.ModelTree;
 import corp.model.evaluation.KFoldCrossValidation;
 import corp.util.CorpProperties;
 import corp.util.StringUtil;
 
-public class CRegKFoldCrossValidation {
+public class CRegTreeKFoldCrossValidation {
 	public static void main(String[] args) {
 		System.out.println("Loading configuration properties...");
 		
@@ -40,7 +41,7 @@ public class CRegKFoldCrossValidation {
 		Gazette stopWordsGazette = new Gazette("StopWords", properties.getStopWordGazettePath());
 		StringUtil.StringTransform stopWordsCleanFn = StringUtil.getStopWordsCleanFn(stopWordsGazette);
 		
-		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
+		//Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
 		Gazette cleanCorpGazette = new Gazette("StopWordsCorp", properties.getCorpGazettePath(), stopWordsCleanFn);
 		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
@@ -71,11 +72,11 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Adding features...");
 		
 		/* Add features to data set */
-		//dataSet.addFeature(
-		//		new CorpRelFeatureNGramSentence(
-		//				1 /* n */, 
-		//				2  /* minFeatureOccurrence */)
-		//);
+		dataSet.addFeature(
+				new CorpRelFeatureNGramSentence(
+						1 /* n */, 
+						2  /* minFeatureOccurrence */)
+		);
 		
 		dataSet.addFeature(
 			new CorpRelFeatureNGramContext(
@@ -84,13 +85,13 @@ public class CRegKFoldCrossValidation {
 					0 /* contextWindowSize */)
 		);
 		
-		//dataSet.addFeature(
-		//	new CorpRelFeatureNGramDep(
-		//			1 /* n */, 
-		//			2  /* minFeatureOccurrence */,
-		//			CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-		//			true /* useRelationTypes */)
-		//);
+		dataSet.addFeature(
+			new CorpRelFeatureNGramDep(
+				1 /* n */, 
+					2  /* minFeatureOccurrence */,
+					CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
+					true /* useRelationTypes */)
+		);
 		
 		/* Gazette contains features */
 		
@@ -100,11 +101,11 @@ public class CRegKFoldCrossValidation {
 						CorpRelFeatureGazette.InputType.Mentioned)
 			);
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
-			);
+			);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteContains(
@@ -120,11 +121,11 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette edit distance features */
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned)
-			);
+			);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteEditDistance(
@@ -141,11 +142,11 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazette initialism features */
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned, true)
-			);
+			);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
@@ -160,11 +161,11 @@ public class CRegKFoldCrossValidation {
 						CorpRelFeatureGazette.InputType.Mentioned, true)
 			);
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 		new CorpRelFeatureGazetteInitialism(
 				corpGazette, 
 				CorpRelFeatureGazette.InputType.Mentioned, false)
-		);
+		);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteInitialism(
@@ -181,12 +182,12 @@ public class CRegKFoldCrossValidation {
 	
 		/* Gazette prefix token features */
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
 						corpGazette, 
 						CorpRelFeatureGazette.InputType.Mentioned,
 						1)
-			);
+			);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
@@ -202,12 +203,12 @@ public class CRegKFoldCrossValidation {
 						1)
 			);
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 		new CorpRelFeatureGazettePrefixTokens(
 				corpGazette, 
 				CorpRelFeatureGazette.InputType.Mentioned,
 				2)
-		);
+		);*/
 		
 		dataSet.addFeature(
 				new CorpRelFeatureGazettePrefixTokens(
@@ -266,18 +267,37 @@ public class CRegKFoldCrossValidation {
 				new CorpRelFeatureSelfPrefixTokens(2, stopWordsCleanFn)
 		);
 		
-		System.out.println("Running CReg Cross Validation...");
+		System.out.println("Running CReg Cross Validation on tree model...");
 		
-		List<CorpRelLabelPath> validLabelPaths = new ArrayList<CorpRelLabelPath>();
-		validLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.SelfRef));
-		validLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.OCorp));
-		validLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.NonCorp));
-		validLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.Generic));
-		validLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.Error));
-		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabelPaths);
+		List<CorpRelLabelPath> validRootLabelPaths = new ArrayList<CorpRelLabelPath>();
+		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.SelfRef));
+		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.OCorp));
+		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.NonCorp));
+		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.Generic));
+		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.Error));
+		ModelCReg rootModel = new ModelCReg(properties.getCregCommandPath(), validRootLabelPaths);
+		
+		List<CorpRelLabelPath> validOCorpLabelPaths = new ArrayList<CorpRelLabelPath>();
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Family }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Merger }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Legal }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Partner }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.NewHire }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Cust }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Suply }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Compete }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.News }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Finance }));
+		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.New }));
+
+		ModelCReg oCorpModel = new ModelCReg(properties.getCregCommandPath(), validOCorpLabelPaths);
+		
+		ModelTree treeModel = new ModelTree(false);
+		treeModel.addModel(new CorpRelLabelPath(), rootModel);
+		treeModel.addModel(new CorpRelLabelPath(CorpRelLabel.OCorp), oCorpModel);
 		
 		KFoldCrossValidation validation = new KFoldCrossValidation(
-				model, 
+				treeModel, 
 				dataSet,
 				properties.getCrossValidationFolds(),
 				new File(properties.getCregDataDirPath(), properties.getCrossValidationFolds() + "FoldCV").getAbsolutePath(),

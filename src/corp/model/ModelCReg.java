@@ -8,9 +8,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import corp.util.CommandRunner;
-import corp.data.annotation.CorpRelLabel;
+import corp.data.annotation.CorpRelLabelPath;
+import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
@@ -24,37 +28,31 @@ public class ModelCReg extends Model {
 	private String cmdPath;
 	private String modelPath;
 	
-	public ModelCReg(String cmdPath, List<CorpRelLabel> validLabels) {
+	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths) {
 		this.cmdPath = cmdPath;
 		this.modelPath = null;
-		this.validLabels = validLabels;
+		this.validPaths = validPaths;
 	}
 	
 	@Override
-	public List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(
-			List<CorpRelFeaturizedDatum> data) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data) {
+		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
+		String predictPPath = predict(datums);
+		if (predictPPath == null)
+			return null;
+		else 
+			return loadPData(predictPPath, datums, false);
 	}
 	
 	@Override
-	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(List<CorpRelFeaturizedDatum> data) {
-		String predictXPath = this.modelPath + ".predict.x";
-		String predictYPath = this.modelPath + ".predict.y";
+	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classify(CorpRelFeaturizedDataSet data) {
+		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
 		
-		System.out.println("CReg outputting classification data for " + this.modelPath);
-		
-		if (!outputXData(predictXPath, data))
+		String predictYPath = predict(datums);
+		if (predictYPath == null)
 			return null;
-		
-		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -W --tx " + predictXPath + " > " + predictYPath;
-		predictCmd = predictCmd.replace("\\", "/"); 
-		if (!CommandRunner.run(predictCmd))
-			return null;
-		
-		System.out.println("CReg classifying data for " + this.modelPath);
-		
-		return loadYData(predictYPath, data);
+		else 
+			return loadYData(predictYPath, datums, false);
 	}
 
 	@Override
@@ -64,15 +62,17 @@ public class ModelCReg extends Model {
 	}
 
 	@Override
-	public boolean train(List<CorpRelFeaturizedDatum> data, String outputPath) {
+	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
+		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedLabeledData();
+		
 		String trainXPath = outputPath + ".train.x";
 		String trainYPath = outputPath + ".train.y";
 		
 		System.out.println("CReg outputting training data for " + outputPath);
 		
-		if (!outputXData(trainXPath, data))
+		if (!outputXData(trainXPath, datums, true))
 			return false;
-		if (!outputYData(trainYPath, data))
+		if (!outputYData(trainYPath, datums))
 			return false;
 		
 		System.out.println("CReg training model for " + outputPath);
@@ -89,13 +89,13 @@ public class ModelCReg extends Model {
 		return true;
 	}
 	
-	private boolean outputXData(String outputPath, List<CorpRelFeaturizedDatum> data) {
+	private boolean outputXData(String outputPath, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
         try {
     		BufferedWriter writeX = new BufferedWriter(new FileWriter(outputPath));
     		
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : data) {
-    			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
+    			if (requireLabels && (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null))
     				continue;
     			List<String> features = datum.getSourceDataSet().getFeatureNames();
     			List<Double> values = datum.getFeatureValues();
@@ -121,10 +121,12 @@ public class ModelCReg extends Model {
 
     		int datumIndex = 0;
     		for (CorpRelFeaturizedDatum datum : data) {
-    			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
+    			if (datum.getLabelPath() == null)
     				continue;
-    			
-				writeY.write("id" + datumIndex + "\t" + datum.getLabel(this.validLabels) + "\n");
+    			CorpRelLabelPath labelPath = datum.getLabelPath().getLongestValidPrefix(this.validPaths);
+    			if (labelPath == null)
+    				continue;
+				writeY.write("id" + datumIndex + "\t" + labelPath + "\n");
 				datumIndex++;
     		}    		
     		
@@ -133,13 +135,13 @@ public class ModelCReg extends Model {
         } catch (IOException e) { e.printStackTrace(); return false; }
 	}
 	
-	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> loadYData(String path, List<CorpRelFeaturizedDatum> data) {
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> yData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabel>>();
+	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> loadYData(String path, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
+		List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> yData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			
 			for (CorpRelFeaturizedDatum datum : data) {
-    			if (datum.getLabelPath() != null && datum.getLabel(this.validLabels) == null)
+    			if (requireLabels && (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null))
     				continue;
 				
 				String line = br.readLine();
@@ -154,7 +156,7 @@ public class ModelCReg extends Model {
 					return null;
 				}
 				
-				yData.add(new Pair<CorpRelFeaturizedDatum, CorpRelLabel>(datum, CorpRelLabel.valueOf(lineParts[1])));
+				yData.add(new Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>(datum, CorpRelLabelPath.fromString(lineParts[1])));
 			}
 	        
 	        br.close();
@@ -165,8 +167,70 @@ public class ModelCReg extends Model {
 		return yData;
 	}
 
+	private List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> loadPData(String path, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
+		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> pData = new ArrayList<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			
+			for (CorpRelFeaturizedDatum datum : data) {
+    			if (requireLabels && (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null))
+    				continue;
+				
+				String line = br.readLine();
+				if (line == null) {
+					br.close();
+					return null;
+				}
+					
+				String[] lineParts = line.split("\t");
+				if (lineParts.length < 3) {
+					br.close();
+					return null;
+				}
+				
+				/* NOTE: Should probably use a JSON parser for this... but I'm just doing it the quick and dirty way for now */
+				String posteriorStr = lineParts[2];
+				Matcher m = Pattern.compile("\"([A-Za-z0-9\\-]*)\"\\s*:\\s*([0-9\\.]*)").matcher(posteriorStr);
+		        Map<CorpRelLabelPath, Double> p = new HashMap<CorpRelLabelPath, Double>();
+				while(m.find()) {
+		        	CorpRelLabelPath labelPath = CorpRelLabelPath.fromString(m.group(1));
+		        	double pLabel = Double.parseDouble(m.group(2));
+		        	p.put(labelPath, pLabel);
+		        }
+				pData.add(new Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>(datum, p));
+			}
+	        
+	        br.close();
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+		
+		return pData;
+	}
+	
+	private String predict(List<CorpRelFeaturizedDatum> data) {
+		String predictXPath = this.modelPath + ".predict.x";
+		String predictOutPath = this.modelPath + ".predict.y";
+		
+		System.out.println("CReg outputting prediction data for " + this.modelPath);
+		
+		if (!outputXData(predictXPath, data, false))
+			return null;
+		
+		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -W -D --tx " + predictXPath + " > " + predictOutPath;
+		predictCmd = predictCmd.replace("\\", "/"); 
+		if (!CommandRunner.run(predictCmd))
+			return null;
+		
+		System.out.println("CReg predicting data for " + this.modelPath);
+		
+		return predictOutPath;
+	}
+	
 	@Override
 	public Model clone() {
-		return new ModelCReg(this.cmdPath, this.validLabels);
+		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths);
+		cloneModel.modelPath = this.modelPath;
+		return cloneModel;
 	}
 }

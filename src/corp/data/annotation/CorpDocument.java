@@ -133,7 +133,7 @@ public class CorpDocument {
 			if (!keyToTokenSpans.containsKey(keyLabelEntry.getKey()))
 				continue;
 			CorpRelDatum datum = new CorpRelDatum(authorCorpName, keyToTokenSpans.get(keyLabelEntry.getKey()));
-			datum.setLabelPath(keyLabelEntry.getValue());
+			datum.setLabelPath(new CorpRelLabelPath(keyLabelEntry.getValue()));
 			this.corpRelDatums.add(datum);
 		}
 			

@@ -1,19 +1,23 @@
 package corp.test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import corp.data.Gazette;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
-import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelLabel;
+import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeatureSelfEditDistance;
 import corp.data.feature.CorpRelFeatureSelfInitialism;
 import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
+import corp.model.ModelCReg;
 import corp.util.CorpProperties;
+import edu.stanford.nlp.util.Pair;
 
 /**
  * For periodically testing out short temporary snippets of code
@@ -23,10 +27,6 @@ public class Scratch {
 		System.out.println("Loading configuration properties...");
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
-		
-		System.out.println("Loading Gazettes...");
-		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
-		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
 		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(
@@ -43,21 +43,22 @@ public class Scratch {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
-				args.length > 0 ? Integer.parseInt(args[0]) : 8
+				args.length > 0 ? Integer.parseInt(args[0]) : 5
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
 		System.out.println("Constructing data set...");
 		
-		List<CorpRelLabel> validLabels = new ArrayList<CorpRelLabel>();
-		validLabels.add(CorpRelLabel.SelfRef);
-		validLabels.add(CorpRelLabel.OCorp);
-		validLabels.add(CorpRelLabel.NonCorp);
-		validLabels.add(CorpRelLabel.Generic);
-		validLabels.add(CorpRelLabel.Error);
+		List<CorpRelLabelPath> validLabels = new ArrayList<CorpRelLabelPath>();
+		validLabels.add(new CorpRelLabelPath(CorpRelLabel.SelfRef));
+		validLabels.add(new CorpRelLabelPath(CorpRelLabel.OCorp));
+		validLabels.add(new CorpRelLabelPath(CorpRelLabel.NonCorp));
+		validLabels.add(new CorpRelLabelPath(CorpRelLabel.Generic));
+		validLabels.add(new CorpRelLabelPath(CorpRelLabel.Error));
 		
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
+		System.out.println("Loaded " + dataSet.getData().size() + " datums.");
 		
 		dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance()
@@ -71,7 +72,17 @@ public class Scratch {
 				new CorpRelFeatureSelfPrefixTokens(1)
 		);
 		
-		List<String> features = dataSet.getFeatureNames();
+		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabels);
+		model.train(dataSet, new File(properties.getCregDataDirPath(), "PosteriorTest").getAbsolutePath());
+		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior = model.posterior(dataSet);
+		for (Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {
+			System.out.println(datumPosterior.first().toString());
+			for (Entry<CorpRelLabelPath, Double> entry : datumPosterior.second().entrySet())
+				System.out.print(entry.getKey() + " " + entry.getValue() + "\t");
+			System.out.println();
+		}
+		
+		/*List<String> features = dataSet.getFeatureNames();
 		List<CorpRelFeaturizedDatum> datums = dataSet.getFeaturizedData();
 		for (CorpRelFeaturizedDatum datum : datums) {
 			System.out.println("Author: " + datum.getAuthorCorpName());
@@ -88,9 +99,11 @@ public class Scratch {
 				for (int i = 0; i < features.size(); i++) {
 					System.out.println(features.get(i) + "\t" + values.get(i));
 				}
-				System.out.println("");
+				
+				break;
+				//System.out.println("");
 			}
 			System.out.println("");
-		}
+		}*/
 	}
 }

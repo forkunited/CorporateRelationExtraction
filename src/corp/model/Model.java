@@ -1,40 +1,44 @@
 package corp.model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import corp.data.annotation.CorpRelLabel;
+import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class Model {
-	protected List<CorpRelLabel> validLabels;
+	protected List<CorpRelLabelPath> validPaths;
 	
-	public boolean setValidLabels(List<CorpRelLabel> validLabels) {
-		this.validLabels = validLabels;
-		return true;
+	public List<CorpRelLabelPath> getValidLabelPaths() {
+		return this.validPaths;
 	}
 	
-	public List<CorpRelLabel> getValidLabels() {
-		return this.validLabels;
-	}
+	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classify(CorpRelFeaturizedDataSet data) {
+		List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classifiedData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>>();
+		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior = posterior(data);
 	
-	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
-		return train(data.getFeaturizedData(), outputPath);
-	}
+		for (Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {
+			Map<CorpRelLabelPath, Double> p = datumPosterior.second();
+			double max = Double.NEGATIVE_INFINITY;
+			CorpRelLabelPath argMax = null;
+			for (Entry<CorpRelLabelPath, Double> entry : p.entrySet()) {
+				if (entry.getValue() > max) {
+					max = entry.getValue();
+					argMax = entry.getKey();
+				}
+			}
+			classifiedData.add(new Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>(datumPosterior.first(), argMax));
+		}
 	
-	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(CorpRelFeaturizedDataSet data) {
-		return classify(data.getFeaturizedData());
-	}
-	
-	public List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(CorpRelFeaturizedDataSet data) {
-		return posterior(data.getFeaturizedData());
+		return classifiedData;
 	}
 	
 	public abstract boolean deserialize(String modelPath);
-	public abstract boolean train(List<CorpRelFeaturizedDatum> data, String outputPath);
-	public abstract List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classify(List<CorpRelFeaturizedDatum> data);
-	public abstract List<Pair<CorpRelFeaturizedDatum, HashMap<CorpRelLabel, Double>>> posterior(List<CorpRelFeaturizedDatum> data);
+	public abstract boolean train(CorpRelFeaturizedDataSet data, String outputPath);
+	public abstract List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data);
 	public abstract Model clone();
 }

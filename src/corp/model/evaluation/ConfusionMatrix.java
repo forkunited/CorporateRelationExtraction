@@ -7,45 +7,47 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
-import corp.data.annotation.CorpRelLabel;
+import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
 public class ConfusionMatrix {
-	private Map<CorpRelLabel, Map<CorpRelLabel, List<CorpRelDatum>>> actualToPredicted;
-	private List<CorpRelLabel> labels;
+	private Map<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> actualToPredicted;
+	private List<CorpRelLabelPath> labelPaths;
 	
-	public ConfusionMatrix(List<CorpRelLabel> labels) {
-		this.labels = labels;
+	public ConfusionMatrix(List<CorpRelLabelPath> labelPaths) {
+		this.labelPaths = labelPaths;
 	}
 	
-	public boolean addData(List<Pair<CorpRelFeaturizedDatum, CorpRelLabel>> classifiedData) {
-		this.actualToPredicted = new HashMap<CorpRelLabel, Map<CorpRelLabel, List<CorpRelDatum>>>();
+	public boolean addData(List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classifiedData) {
+		this.actualToPredicted = new HashMap<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>>();
 		
-		for (CorpRelLabel actualLabel : this.labels) {
-			this.actualToPredicted.put(actualLabel, new HashMap<CorpRelLabel, List<CorpRelDatum>>());
-			for (CorpRelLabel predictedLabel : this.labels) {
-				this.actualToPredicted.get(actualLabel).put(predictedLabel, new ArrayList<CorpRelDatum>());
+		for (CorpRelLabelPath actual : this.labelPaths) {
+			this.actualToPredicted.put(actual, new HashMap<CorpRelLabelPath, List<CorpRelDatum>>());
+			for (CorpRelLabelPath predicted : this.labelPaths) {
+				this.actualToPredicted.get(actual).put(predicted, new ArrayList<CorpRelDatum>());
 			}
 		}
 		
-		for (Pair<CorpRelFeaturizedDatum, CorpRelLabel> classifiedDatum : classifiedData) {
-			CorpRelLabel actualLabel = classifiedDatum.first().getLabel(this.labels);
-			CorpRelLabel predictedLabel = classifiedDatum.second();
-			this.actualToPredicted.get(actualLabel).get(predictedLabel).add(classifiedDatum.first());
+		for (Pair<CorpRelFeaturizedDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
+			if (classifiedDatum.first().getLabelPath() == null)
+				continue;
+			CorpRelLabelPath actualLabelPath = classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.labelPaths);
+			CorpRelLabelPath predictedLabelPath = classifiedDatum.second().getLongestValidPrefix(this.labelPaths);
+			this.actualToPredicted.get(actualLabelPath).get(predictedLabelPath).add(classifiedDatum.first());
 		}
 		
 		return true;
 	}
 	
-	public Map<CorpRelLabel, Map<CorpRelLabel, Integer>> getConfusionMatrix() {
+	public Map<CorpRelLabelPath, Map<CorpRelLabelPath, Integer>> getConfusionMatrix() {
 		if (this.actualToPredicted == null)
 			return null;
 		
-		Map<CorpRelLabel, Map<CorpRelLabel, Integer>> confusionMatrix = new HashMap<CorpRelLabel, Map<CorpRelLabel, Integer>>();
-		for (Entry<CorpRelLabel, Map<CorpRelLabel, List<CorpRelDatum>>> entryActual : this.actualToPredicted.entrySet()) {
-			confusionMatrix.put(entryActual.getKey(), new HashMap<CorpRelLabel, Integer>());
-			for (Entry<CorpRelLabel, List<CorpRelDatum>> entryPredicted : entryActual.getValue().entrySet()) {
+		Map<CorpRelLabelPath, Map<CorpRelLabelPath, Integer>> confusionMatrix = new HashMap<CorpRelLabelPath, Map<CorpRelLabelPath, Integer>>();
+		for (Entry<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> entryActual : this.actualToPredicted.entrySet()) {
+			confusionMatrix.put(entryActual.getKey(), new HashMap<CorpRelLabelPath, Integer>());
+			for (Entry<CorpRelLabelPath, List<CorpRelDatum>> entryPredicted : entryActual.getValue().entrySet()) {
 				confusionMatrix.get(entryActual.getKey()).put(entryPredicted.getKey(), entryPredicted.getValue().size());
 			}
 		}
@@ -54,20 +56,20 @@ public class ConfusionMatrix {
 	}
 	
 	public String toString() {
-		Map<CorpRelLabel, Map<CorpRelLabel, Integer>> confusionMatrix = getConfusionMatrix();
+		Map<CorpRelLabelPath, Map<CorpRelLabelPath, Integer>> confusionMatrix = getConfusionMatrix();
 		StringBuilder confusionMatrixStr = new StringBuilder();
 		
 		confusionMatrixStr.append("\t");
-		for (int i = 0; i < this.labels.size(); i++) {
-			confusionMatrixStr.append(this.labels.get(i)).append(" (P)\t");
+		for (int i = 0; i < this.labelPaths.size(); i++) {
+			confusionMatrixStr.append(this.labelPaths.get(i)).append(" (P)\t");
 		}
 		
 		confusionMatrixStr.append("\n");
 		
-		for (int i = 0; i < this.labels.size(); i++) {
-			confusionMatrixStr.append(this.labels.get(i)).append(" (A)\t");
-			for (int j = 0; j < this.labels.size(); j++) {
-				confusionMatrixStr.append(confusionMatrix.get(this.labels.get(i)).get(this.labels.get(j)))
+		for (int i = 0; i < this.labelPaths.size(); i++) {
+			confusionMatrixStr.append(this.labelPaths.get(i)).append(" (A)\t");
+			for (int j = 0; j < this.labelPaths.size(); j++) {
+				confusionMatrixStr.append(confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j)))
 								  .append("\t");
 			}
 			confusionMatrixStr.append("\n");
@@ -76,14 +78,14 @@ public class ConfusionMatrix {
 		return confusionMatrixStr.toString();
 	}
 	
-	public Map<CorpRelLabel, List<CorpRelDatum>> getPredictedForActual(CorpRelLabel actual) {
+	public Map<CorpRelLabelPath, List<CorpRelDatum>> getPredictedForActual(CorpRelLabelPath actual) {
 		return this.actualToPredicted.get(actual);
 	}
 	
-	public Map<CorpRelLabel, List<CorpRelDatum>> getActualForPredicted(CorpRelLabel predicted) {
-		Map<CorpRelLabel, List<CorpRelDatum>> actual = new HashMap<CorpRelLabel, List<CorpRelDatum>>();
+	public Map<CorpRelLabelPath, List<CorpRelDatum>> getActualForPredicted(CorpRelLabelPath predicted) {
+		Map<CorpRelLabelPath, List<CorpRelDatum>> actual = new HashMap<CorpRelLabelPath, List<CorpRelDatum>>();
 	
-		for (Entry<CorpRelLabel, Map<CorpRelLabel, List<CorpRelDatum>>> entry : this.actualToPredicted.entrySet()) {
+		for (Entry<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> entry : this.actualToPredicted.entrySet()) {
 			if (!actual.containsKey(entry.getKey()))
 				actual.put(entry.getKey(), new ArrayList<CorpRelDatum>());
 			actual.get(entry.getKey()).addAll(entry.getValue().get(predicted));
@@ -92,7 +94,7 @@ public class ConfusionMatrix {
 		return actual;
 	}
 	
-	public List<CorpRelDatum> getActualPredicted(CorpRelLabel actual, CorpRelLabel predicted) {
+	public List<CorpRelDatum> getActualPredicted(CorpRelLabelPath actual, CorpRelLabelPath predicted) {
 		return this.actualToPredicted.get(actual).get(predicted);
 	}
 }
