@@ -179,12 +179,14 @@ public class ModelCReg extends Model {
 				String line = br.readLine();
 				if (line == null) {
 					br.close();
+					System.out.println("NOT ENOUGH LINES " + path);
 					return null;
 				}
 					
 				String[] lineParts = line.split("\t");
 				if (lineParts.length < 3) {
 					br.close();
+					System.out.println("NOT ENOUGH LINE PARTS IN " + path + " " + line);
 					return null;
 				}
 				
