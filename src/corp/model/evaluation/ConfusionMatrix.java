@@ -33,6 +33,9 @@ public class ConfusionMatrix {
 			if (classifiedDatum.first().getLabelPath() == null)
 				continue;
 			CorpRelLabelPath actualLabelPath = classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.labelPaths);
+			if (actualLabelPath == null)
+				continue;
+			
 			CorpRelLabelPath predictedLabelPath = classifiedDatum.second().getLongestValidPrefix(this.labelPaths);
 			this.actualToPredicted.get(actualLabelPath).get(predictedLabelPath).add(classifiedDatum.first());
 		}
