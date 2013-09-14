@@ -116,8 +116,6 @@ public class CorpRelDataSet {
 					if (datum.getLabelPath().isPrefixedBy(path))
 						data.add(datum);
 				}
-				
-				data.addAll(this.labeledData.get(currentLabel));
 			}
 			
 			if (!this.labeledDAG.containsKey(currentLabel))
