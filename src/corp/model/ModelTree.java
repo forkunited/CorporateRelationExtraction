@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
+import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
-import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
 /**
@@ -26,6 +26,7 @@ public class ModelTree extends Model {
 	// It's not the most space-efficient representation... but the tree is small... it will work for now.
 	private Map<CorpRelLabelPath, Model> models = new HashMap<CorpRelLabelPath, Model>();
 	private boolean allowSubpaths;
+	private Map<CorpRelLabelPath, List<CorpRelFeature>> extraFeatures;
 	
 	public ModelTree(boolean allowSubpaths) {
 		this.validPaths = new ArrayList<CorpRelLabelPath>();
@@ -33,9 +34,10 @@ public class ModelTree extends Model {
 		
 		this.allowSubpaths = allowSubpaths;
 		this.models = new HashMap<CorpRelLabelPath, Model>();
+		this.extraFeatures = new HashMap<CorpRelLabelPath, List<CorpRelFeature>>();
 	}
 	
-	public boolean addModel(CorpRelLabelPath path, Model model) {
+	public boolean addModel(CorpRelLabelPath path, Model model, List<CorpRelFeature> extraFeatures) {
 		if (!this.validPaths.contains(path))
 			return false;
 		
@@ -49,6 +51,7 @@ public class ModelTree extends Model {
 		}
 		
 		this.models.put(path, model);
+		this.extraFeatures.put(path, extraFeatures);
 		for (int i = 0; i < model.validPaths.size(); i++) {
 			if (!this.validPaths.contains(model.validPaths.get(i)))
 				this.validPaths.add(model.validPaths.get(i));
@@ -66,6 +69,10 @@ public class ModelTree extends Model {
 			pathDataSet.addData(pathData);
 			for (int i = 0; i < data.getFeatureCount(); i++)
 				pathDataSet.addFeature(data.getFeature(i));
+			for (int i = 0; i < this.extraFeatures.get(entry.getKey()).size(); i++) {
+				this.extraFeatures.get(entry.getKey()).get(i).init(pathData);
+				pathDataSet.addFeature(this.extraFeatures.get(entry.getKey()).get(i));
+			}
 			
 			if (!entry.getValue().train(pathDataSet, outputPath + "." + entry.getKey().toString()))
 				return false;
@@ -75,27 +82,34 @@ public class ModelTree extends Model {
 	}
 	
 	@Override
-	public List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data) {
-		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior = new ArrayList<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>();
+	public List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data) {
+		List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior = new ArrayList<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>();
 		if (this.models.size() == 0)
 			return null;
 		
-		Map<CorpRelLabelPath, List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors = new HashMap<CorpRelLabelPath, List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>>();
+		Map<CorpRelLabelPath, List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors = new HashMap<CorpRelLabelPath, List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>>();
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
-			modelPosteriors.put(entry.getKey(), entry.getValue().posterior(data));
+			CorpRelFeaturizedDataSet dataExtraFeatures = new CorpRelFeaturizedDataSet();
+			dataExtraFeatures.addData(data.getData());
+			for (int i = 0; i < data.getFeatureCount(); i++)
+				dataExtraFeatures.addFeature(data.getFeature(i));
+			for (int i = 0; i < this.extraFeatures.get(entry.getKey()).size(); i++)
+				dataExtraFeatures.addFeature(this.extraFeatures.get(entry.getKey()).get(i));
+			
+			modelPosteriors.put(entry.getKey(), entry.getValue().posterior(dataExtraFeatures));
 		}
 		
-		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
+		List<CorpRelDatum> datums = data.getData();
 		for (int i = 0; i < datums.size(); i++) {
 			Map<CorpRelLabelPath, Double> posteriorForDatum = posteriorForDatum(i, modelPosteriors);
-			posterior.add(new Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>(datums.get(i), posteriorForDatum));
+			posterior.add(new Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>(datums.get(i), posteriorForDatum));
 		}
 		
 		return posterior;
 	}
 	
 	private Map<CorpRelLabelPath, Double> posteriorForDatum(int index, 
-															Map<CorpRelLabelPath, List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors) {
+															Map<CorpRelLabelPath, List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors) {
 		Map<CorpRelLabelPath, Double> posterior = new HashMap<CorpRelLabelPath, Double>();
 		Map<CorpRelLabelPath, Double> partialPosterior = new HashMap<CorpRelLabelPath, Double>();
 		for (CorpRelLabelPath validPath : this.validPaths) {
@@ -110,7 +124,7 @@ public class ModelTree extends Model {
 	}
 	
 	private Double posteriorForDatumHelper(int index, 
-										   Map<CorpRelLabelPath, List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors,
+										   Map<CorpRelLabelPath, List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors,
 										   Map<CorpRelLabelPath, Double> partialPosterior,
 										   CorpRelLabelPath path) {
 		if (path.size() == 0)
@@ -148,7 +162,11 @@ public class ModelTree extends Model {
 	public Model clone() {
 		ModelTree cloneModel = new ModelTree(this.allowSubpaths);
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
-			cloneModel.models.put(entry.getKey(), entry.getValue());
+			cloneModel.models.put(entry.getKey(), entry.getValue().clone());
+			cloneModel.extraFeatures.put(entry.getKey(), new ArrayList<CorpRelFeature>());
+			List<CorpRelFeature> features = this.extraFeatures.get(entry.getKey());
+			for (CorpRelFeature feature : features)
+				cloneModel.extraFeatures.get(entry.getKey()).add(feature.clone());
 		}
 		
 		cloneModel.validPaths = new ArrayList<CorpRelLabelPath>();

@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import corp.util.CommandRunner;
+import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
@@ -35,7 +36,7 @@ public class ModelCReg extends Model {
 	}
 	
 	@Override
-	public List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data) {
+	public List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data) {
 		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
 		String predictPPath = predict(datums);
 		if (predictPPath == null)
@@ -45,7 +46,7 @@ public class ModelCReg extends Model {
 	}
 	
 	@Override
-	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classify(CorpRelFeaturizedDataSet data) {
+	public List<Pair<CorpRelDatum, CorpRelLabelPath>> classify(CorpRelFeaturizedDataSet data) {
 		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
 		
 		String predictYPath = predict(datums);
@@ -135,12 +136,12 @@ public class ModelCReg extends Model {
         } catch (IOException e) { e.printStackTrace(); return false; }
 	}
 	
-	private List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> loadYData(String path, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> yData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>>();
+	private List<Pair<CorpRelDatum, CorpRelLabelPath>> loadYData(String path, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
+		List<Pair<CorpRelDatum, CorpRelLabelPath>> yData = new ArrayList<Pair<CorpRelDatum, CorpRelLabelPath>>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			
-			for (CorpRelFeaturizedDatum datum : data) {
+			for (CorpRelDatum datum : data) {
     			if (requireLabels && (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null))
     				continue;
 				
@@ -156,7 +157,7 @@ public class ModelCReg extends Model {
 					return null;
 				}
 				
-				yData.add(new Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>(datum, CorpRelLabelPath.fromString(lineParts[1])));
+				yData.add(new Pair<CorpRelDatum, CorpRelLabelPath>(datum, CorpRelLabelPath.fromString(lineParts[1])));
 			}
 	        
 	        br.close();
@@ -167,8 +168,8 @@ public class ModelCReg extends Model {
 		return yData;
 	}
 
-	private List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> loadPData(String path, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
-		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> pData = new ArrayList<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>>();
+	private List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> loadPData(String path, List<CorpRelFeaturizedDatum> data, boolean requireLabels) {
+		List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> pData = new ArrayList<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			
@@ -197,7 +198,7 @@ public class ModelCReg extends Model {
 		        	double pLabel = Double.parseDouble(m.group(2));
 		        	p.put(labelPath, pLabel);
 		        }
-				pData.add(new Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>(datum, p));
+				pData.add(new Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>(datum, p));
 			}
 	        
 	        br.close();

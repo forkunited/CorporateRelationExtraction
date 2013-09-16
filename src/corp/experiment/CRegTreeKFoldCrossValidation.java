@@ -10,6 +10,7 @@ import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.annotation.CorpRelLabelPath;
+import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeatureGazette;
 import corp.data.feature.CorpRelFeatureGazetteContains;
 import corp.data.feature.CorpRelFeatureGazetteEditDistance;
@@ -41,7 +42,7 @@ public class CRegTreeKFoldCrossValidation {
 		Gazette stopWordsGazette = new Gazette("StopWords", properties.getStopWordGazettePath());
 		StringUtil.StringTransform stopWordsCleanFn = StringUtil.getStopWordsCleanFn(stopWordsGazette);
 		
-		//Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
+		Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
 		Gazette cleanCorpGazette = new Gazette("StopWordsCorp", properties.getCorpGazettePath(), stopWordsCleanFn);
 		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
 		
@@ -64,208 +65,47 @@ public class CRegTreeKFoldCrossValidation {
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
+		
 		System.out.println("Constructing data set...");
 		
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
-		System.out.println("Adding features...");
-		
-		/* Add features to data set */
-		dataSet.addFeature(
-				new CorpRelFeatureNGramSentence(
-						1 /* n */, 
-						2  /* minFeatureOccurrence */)
-		);
-		
-		dataSet.addFeature(
-			new CorpRelFeatureNGramContext(
-					1 /* n */, 
-					2 /*minFeatureOccurrence*/,
-					0 /* contextWindowSize */)
-		);
-		
-		//dataSet.addFeature(
-		//	new CorpRelFeatureNGramDep(
-		//		1 /* n */, 
-		//			2  /* minFeatureOccurrence */,
-		//			CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,
-		//			true /* useRelationTypes */)
-		//);
-		
-		/* Gazette contains features */
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						stopWordsGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		/*dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);*/
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		/* Gazette edit distance features */
-		
-		/*dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);*/
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
-			);
-		
-		/* Gazette initialism features */
-		
-		/*dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, true)
-			);*/
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, true)
-			);
-		
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, true)
-			);
-		
-		/*dataSet.addFeature(
-		new CorpRelFeatureGazetteInitialism(
-				corpGazette, 
-				CorpRelFeatureGazette.InputType.Mentioned, false)
-		);*/
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, false)
-			);
-		
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, false)
-			);
-	
-		/* Gazette prefix token features */
-		
-		/*dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
-						1)
-			);*/
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
-						1)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
-						1)
-			);
-		
-		/*dataSet.addFeature(
-		new CorpRelFeatureGazettePrefixTokens(
-				corpGazette, 
-				CorpRelFeatureGazette.InputType.Mentioned,
-				2)
-		);*/
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
-						2)
-			);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
-						2)
-			);
-		
-		
-		/* Self features */
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfEditDistance()
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfInitialism(true)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfInitialism(false)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfPrefixTokens(1)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfPrefixTokens(2)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfEditDistance(stopWordsCleanFn)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfInitialism(true, stopWordsCleanFn)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfInitialism(false, stopWordsCleanFn)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfPrefixTokens(1, stopWordsCleanFn)
-		);
-		
-		dataSet.addFeature(
-				new CorpRelFeatureSelfPrefixTokens(2, stopWordsCleanFn)
-		);
+		System.out.println("Constructing features...");
+
+		/* Construct features */
+		CorpRelFeature oneGramSentence = new CorpRelFeatureNGramSentence(1 /* n */,  2  /* minFeatureOccurrence */);
+		CorpRelFeature oneGramContext = new CorpRelFeatureNGramContext(1 /* n */, 2 /* minFeatureOccurrence */, 0 /* contextWindowSize */);
+		CorpRelFeature oneGramDep = new CorpRelFeatureNGramDep(1 /* n */, 2  /* minFeatureOccurrence */, CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,true /* useRelationTypes */);
+		CorpRelFeature stopWordsContains = new CorpRelFeatureGazetteContains(stopWordsGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature corpGazetteContains = new CorpRelFeatureGazetteContains(corpGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature cleanCorpGazetteContains = new CorpRelFeatureGazetteContains(cleanCorpGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature nonCorpGazetteContains = new CorpRelFeatureGazetteContains(nonCorpGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature corpGazetteDistance = new CorpRelFeatureGazetteEditDistance(corpGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature cleanCorpGazetteDistance = new CorpRelFeatureGazetteEditDistance(cleanCorpGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature nonCorpGazetteDistance = new CorpRelFeatureGazetteEditDistance(nonCorpGazette, CorpRelFeatureGazette.InputType.Mentioned);
+		CorpRelFeature corpGazetteInitialismPrefix = new CorpRelFeatureGazetteInitialism(corpGazette, CorpRelFeatureGazette.InputType.Mentioned, true);
+		CorpRelFeature cleanCorpGazetteInitialismPrefix = new CorpRelFeatureGazetteInitialism(cleanCorpGazette, CorpRelFeatureGazette.InputType.Mentioned, true);
+		CorpRelFeature nonCorpGazetteInitialismPrefix = new CorpRelFeatureGazetteInitialism(nonCorpGazette, CorpRelFeatureGazette.InputType.Mentioned, true);
+		CorpRelFeature corpGazetteInitialism = new CorpRelFeatureGazetteInitialism(corpGazette, CorpRelFeatureGazette.InputType.Mentioned, false);
+		CorpRelFeature cleanCorpGazetteInitialism = new CorpRelFeatureGazetteInitialism(cleanCorpGazette, CorpRelFeatureGazette.InputType.Mentioned, false);
+		CorpRelFeature nonCorpGazetteInitialism = new CorpRelFeatureGazetteInitialism(nonCorpGazette, CorpRelFeatureGazette.InputType.Mentioned, false);
+		CorpRelFeature corpGazettePrefixTokensMin1 = new CorpRelFeatureGazettePrefixTokens(corpGazette, CorpRelFeatureGazette.InputType.Mentioned, 1);
+		CorpRelFeature cleanCorpGazettePrefixTokensMin1 = new CorpRelFeatureGazettePrefixTokens(cleanCorpGazette, CorpRelFeatureGazette.InputType.Mentioned,1);
+		CorpRelFeature nonCorpGazettePrefixTokensMin1 = new CorpRelFeatureGazettePrefixTokens(nonCorpGazette, CorpRelFeatureGazette.InputType.Mentioned, 1);
+		CorpRelFeature corpGazettePrefixTokensMin2 = new CorpRelFeatureGazettePrefixTokens(corpGazette, CorpRelFeatureGazette.InputType.Mentioned, 2);
+		CorpRelFeature cleanCorpGazettePrefixTokensMin2 = new CorpRelFeatureGazettePrefixTokens(cleanCorpGazette, CorpRelFeatureGazette.InputType.Mentioned,2);
+		CorpRelFeature nonCorpGazettePrefixTokensMin2 = new CorpRelFeatureGazettePrefixTokens(nonCorpGazette, CorpRelFeatureGazette.InputType.Mentioned, 2);
+		CorpRelFeature selfDistance = new CorpRelFeatureSelfEditDistance();
+		CorpRelFeature selfInitialismPrefix = new CorpRelFeatureSelfInitialism(true);
+		CorpRelFeature selfInitialism = new CorpRelFeatureSelfInitialism(false);
+		CorpRelFeature selfPrefixTokensMin1 = new CorpRelFeatureSelfPrefixTokens(1);
+		CorpRelFeature selfPrefixTokensMin2 = new CorpRelFeatureSelfPrefixTokens(2);
+		CorpRelFeature selfDistanceClean = new CorpRelFeatureSelfEditDistance(stopWordsCleanFn);
+		CorpRelFeature selfInitialismPrefixClean = new CorpRelFeatureSelfInitialism(true, stopWordsCleanFn);
+		CorpRelFeature selfInitialismClean = new CorpRelFeatureSelfInitialism(false, stopWordsCleanFn);
+		CorpRelFeature selfPrefixTokensMin1Clean = new CorpRelFeatureSelfPrefixTokens(1, stopWordsCleanFn);
+		CorpRelFeature selfPrefixTokensMin2Clean = new CorpRelFeatureSelfPrefixTokens(2, stopWordsCleanFn);
 		
 		System.out.println("Running CReg Cross Validation on tree model...");
 		
@@ -275,6 +115,41 @@ public class CRegTreeKFoldCrossValidation {
 		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.NonCorp));
 		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.Generic));
 		validRootLabelPaths.add(new CorpRelLabelPath(CorpRelLabel.Error));
+		
+		List<CorpRelFeature> rootModelFeatures = new ArrayList<CorpRelFeature>();
+		//rootModelFeatures.add(oneGramSentence);
+		rootModelFeatures.add(oneGramContext);
+		//rootModelFeatures.add(oneGramDep);
+		rootModelFeatures.add(stopWordsContains);
+		rootModelFeatures.add(corpGazetteContains);
+		//rootModelFeatures.add(cleanCorpGazetteContains);
+		rootModelFeatures.add(nonCorpGazetteContains);
+		rootModelFeatures.add(corpGazetteDistance);
+		//rootModelFeatures.add(cleanCorpGazetteDistance);
+		rootModelFeatures.add(nonCorpGazetteDistance);
+		rootModelFeatures.add(corpGazetteInitialismPrefix);
+		//rootModelFeatures.add(cleanCorpGazetteInitialismPrefix);
+		rootModelFeatures.add(nonCorpGazetteInitialismPrefix);
+		rootModelFeatures.add(corpGazetteInitialism); 
+		//rootModelFeatures.add(cleanCorpGazetteInitialism); 
+		rootModelFeatures.add(nonCorpGazetteInitialism);
+		rootModelFeatures.add(corpGazettePrefixTokensMin1);
+		//rootModelFeatures.add(cleanCorpGazettePrefixTokensMin1);
+		rootModelFeatures.add(nonCorpGazettePrefixTokensMin1);
+		//rootModelFeatures.add(corpGazettePrefixTokensMin2);
+		//rootModelFeatures.add(cleanCorpGazettePrefixTokensMin2);
+		//rootModelFeatures.add(nonCorpGazettePrefixTokensMin2);
+		rootModelFeatures.add(selfDistance);
+		rootModelFeatures.add(selfInitialismPrefix);
+		rootModelFeatures.add(selfInitialism);
+		rootModelFeatures.add(selfPrefixTokensMin1);
+		//rootModelFeatures.add(selfPrefixTokensMin2);
+		//rootModelFeatures.add(selfDistanceClean); 
+		//rootModelFeatures.add(selfInitialismPrefixClean);
+		//rootModelFeatures.add(selfInitialismClean);
+		//rootModelFeatures.add(selfPrefixTokensMin1Clean);
+		//rootModelFeatures.add(selfPrefixTokensMin2Clean); 
+		
 		ModelCReg rootModel = new ModelCReg(properties.getCregCommandPath(), validRootLabelPaths);
 		
 		List<CorpRelLabelPath> validOCorpLabelPaths = new ArrayList<CorpRelLabelPath>();
@@ -290,11 +165,26 @@ public class CRegTreeKFoldCrossValidation {
 		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.Finance }));
 		validOCorpLabelPaths.add(new CorpRelLabelPath(new CorpRelLabel[] { CorpRelLabel.OCorp, CorpRelLabel.New }));
 
+		List<CorpRelFeature> oCorpModelFeatures = new ArrayList<CorpRelFeature>();
+		oCorpModelFeatures.add(oneGramSentence);
+		oCorpModelFeatures.add(oneGramContext);
+		oCorpModelFeatures.add(oneGramDep);
+		oCorpModelFeatures.add(selfDistance);
+		oCorpModelFeatures.add(selfInitialismPrefix);
+		oCorpModelFeatures.add(selfInitialism);
+		oCorpModelFeatures.add(selfPrefixTokensMin1);
+		//oCorpModelFeatures.add(selfPrefixTokensMin2);
+		//oCorpModelFeatures.add(selfDistanceClean); 
+		//oCorpModelFeatures.add(selfInitialismPrefixClean);
+		//oCorpModelFeatures.add(selfInitialismClean);
+		//oCorpModelFeatures.add(selfPrefixTokensMin1Clean);
+		//oCorpModelFeatures.add(selfPrefixTokensMin2Clean); 
+		
 		ModelCReg oCorpModel = new ModelCReg(properties.getCregCommandPath(), validOCorpLabelPaths);
 		
 		ModelTree treeModel = new ModelTree(false);
-		treeModel.addModel(new CorpRelLabelPath(), rootModel);
-		treeModel.addModel(new CorpRelLabelPath(CorpRelLabel.OCorp), oCorpModel);
+		treeModel.addModel(new CorpRelLabelPath(), rootModel, rootModelFeatures);
+		treeModel.addModel(new CorpRelLabelPath(CorpRelLabel.OCorp), oCorpModel, oCorpModelFeatures);
 		
 		KFoldCrossValidation validation = new KFoldCrossValidation(
 				treeModel, 

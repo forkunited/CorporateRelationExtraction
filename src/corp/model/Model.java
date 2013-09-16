@@ -5,23 +5,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
+import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
-import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class Model {
 	protected List<CorpRelLabelPath> validPaths;
+	protected List<CorpRelFeature> features;
 	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
 		return this.validPaths;
 	}
 	
-	public List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classify(CorpRelFeaturizedDataSet data) {
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classifiedData = new ArrayList<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>>();
-		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior = posterior(data);
+	public List<Pair<CorpRelDatum, CorpRelLabelPath>> classify(CorpRelFeaturizedDataSet data) {
+		List<Pair<CorpRelDatum, CorpRelLabelPath>> classifiedData = new ArrayList<Pair<CorpRelDatum, CorpRelLabelPath>>();
+		List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior = posterior(data);
 	
-		for (Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {
+		for (Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {
 			Map<CorpRelLabelPath, Double> p = datumPosterior.second();
 			double max = Double.NEGATIVE_INFINITY;
 			CorpRelLabelPath argMax = null;
@@ -31,7 +33,7 @@ public abstract class Model {
 					argMax = entry.getKey();
 				}
 			}
-			classifiedData.add(new Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>(datumPosterior.first(), argMax));
+			classifiedData.add(new Pair<CorpRelDatum, CorpRelLabelPath>(datumPosterior.first(), argMax));
 		}
 	
 		return classifiedData;
@@ -39,6 +41,6 @@ public abstract class Model {
 	
 	public abstract boolean deserialize(String modelPath);
 	public abstract boolean train(CorpRelFeaturizedDataSet data, String outputPath);
-	public abstract List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data);
+	public abstract List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data);
 	public abstract Model clone();
 }

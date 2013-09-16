@@ -2,9 +2,9 @@ package corp.model.evaluation;
 
 import java.util.List;
 
+import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
-import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.model.Model;
 import edu.stanford.nlp.util.Pair;
 
@@ -32,14 +32,14 @@ public class AccuracyValidation {
 		
 		System.out.println("Model classifying data (" + this.outputPath + ")");
 		
-		List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classifiedData =  this.model.classify(this.testData);
+		List<Pair<CorpRelDatum, CorpRelLabelPath>> classifiedData =  this.model.classify(this.testData);
 		if (classifiedData == null)
 			return -1.0;
 		
 		System.out.println("Computing model score (" + this.outputPath + ")");
 		
 		double correct = 0;
-		for (Pair<CorpRelFeaturizedDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
+		for (Pair<CorpRelDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
 			if (classifiedDatum.first().getLabelPath() == null)
 				continue;
 			CorpRelLabelPath actual = classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.model.getValidLabelPaths());

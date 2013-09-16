@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
+import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeatureSelfEditDistance;
@@ -74,8 +75,8 @@ public class Scratch {
 		
 		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabels);
 		model.train(dataSet, new File(properties.getCregDataDirPath(), "PosteriorTest").getAbsolutePath());
-		List<Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>>> posterior = model.posterior(dataSet);
-		for (Pair<CorpRelFeaturizedDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {
+		List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior = model.posterior(dataSet);
+		for (Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {
 			System.out.println(datumPosterior.first().toString());
 			for (Entry<CorpRelLabelPath, Double> entry : datumPosterior.second().entrySet())
 				System.out.print(entry.getKey() + " " + entry.getValue() + "\t");

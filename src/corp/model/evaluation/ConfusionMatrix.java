@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
-import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
 public class ConfusionMatrix {
@@ -19,7 +18,7 @@ public class ConfusionMatrix {
 		this.labelPaths = labelPaths;
 	}
 	
-	public boolean addData(List<Pair<CorpRelFeaturizedDatum, CorpRelLabelPath>> classifiedData) {
+	public boolean addData(List<Pair<CorpRelDatum, CorpRelLabelPath>> classifiedData) {
 		this.actualToPredicted = new HashMap<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>>();
 		
 		for (CorpRelLabelPath actual : this.labelPaths) {
@@ -29,7 +28,7 @@ public class ConfusionMatrix {
 			}
 		}
 		
-		for (Pair<CorpRelFeaturizedDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
+		for (Pair<CorpRelDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
 			if (classifiedDatum.first().getLabelPath() == null)
 				continue;
 			CorpRelLabelPath actualLabelPath = classifiedDatum.first().getLabelPath().getLongestValidPrefix(this.labelPaths);
