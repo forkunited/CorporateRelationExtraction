@@ -13,6 +13,7 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.Model;
+import edu.stanford.nlp.util.Pair;
 
 public class KFoldCrossValidation {
 	private Model model;
@@ -43,6 +44,9 @@ public class KFoldCrossValidation {
 	
 	public double run(int maxThreads) {
 		double avgAccuracy = 0.0;
+		
+		ConfusionMatrix aggregateConfusions = new ConfusionMatrix(this.model.getValidLabelPaths());
+		
 		ExecutorService threadPool = Executors.newFixedThreadPool(2);
 		List<ValidationThread> tasks = new ArrayList<ValidationThread>();
 		for (int i = 0; i < this.folds.length; i++) {
@@ -50,11 +54,13 @@ public class KFoldCrossValidation {
 		}
 		
 		try {
-			List<Future<Double>> results = threadPool.invokeAll(tasks);
+			List<Future<Pair<Double, ConfusionMatrix>>> results = threadPool.invokeAll(tasks);
 			threadPool.shutdown();
 			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-			for (Future<Double> result : results) {
-				avgAccuracy += result.get();
+			for (Future<Pair<Double, ConfusionMatrix>> result : results) {
+				Pair<Double, ConfusionMatrix> accuracyAndConfusion = result.get();
+				avgAccuracy += accuracyAndConfusion.first();
+				aggregateConfusions.add(accuracyAndConfusion.second());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,11 +69,12 @@ public class KFoldCrossValidation {
 		
 		avgAccuracy /= this.folds.length;
 		System.out.println("Average Accuracy: " + avgAccuracy);
+		System.out.println("Average Confusion Matrix:\n " + aggregateConfusions.toString(1.0/this.folds.length));
 		
 		return avgAccuracy;
 	}
 	
-	private class ValidationThread implements Callable<Double> {
+	private class ValidationThread implements Callable<Pair<Double, ConfusionMatrix>> {
 		private int foldIndex;
 		private int maxThreads;
 		
@@ -76,7 +83,7 @@ public class KFoldCrossValidation {
 			this.maxThreads = maxThreads;
 		}
 		
-		public Double call() {
+		public Pair<Double, ConfusionMatrix> call() {
 			System.out.println("Initializing CV data sets for fold " + this.foldIndex);
 			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet(this.maxThreads);
 			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet(this.maxThreads);
@@ -105,23 +112,10 @@ public class KFoldCrossValidation {
 			double computedAccuracy = accuracy.run();
 			if (computedAccuracy < 0) {
 				System.err.println("Error: Validation failed on fold " + foldIndex);
-				return -1.0;
+				return new Pair<Double, ConfusionMatrix>(-1.0, null);
 			} else {
 				System.out.println("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
-				
-				/* FIXME: REMOVE THIS */
-				/*ConfusionMatrix confusions = accuracy.getConfusionMatrix();
-				System.out.println(confusions.toString());
-				Map<CorpRelLabel, List<CorpRelDatum>> actualForOCorp = confusions.getActualForPredicted(CorpRelLabel.OCorp);
-				System.out.println("Actual for predicted OCorp");
-				for (Entry<CorpRelLabel, List<CorpRelDatum>> entry : actualForOCorp.entrySet()) {
-					System.out.println("ACTUAL: " + entry.getKey());
-					for (CorpRelDatum datum : entry.getValue())
-						System.out.println(datum.toString() + "\n");
-				}*/
-				/*                  */
-				
-				return computedAccuracy;
+				return new Pair<Double, ConfusionMatrix>(computedAccuracy, accuracy.getConfusionMatrix());
 			}
 		}
 	}
