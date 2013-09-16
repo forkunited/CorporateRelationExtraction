@@ -1,26 +1,44 @@
 package corp.data.annotation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 
 public class CorpRelDataSet {
 	// Label graph... should be a acyclic.  Kept as DAG instead of tree just in case want to build a DAG model later...
-	private HashMap<CorpRelLabel, List<CorpRelLabel>> labeledDAG; 
-	private HashMap<CorpRelLabel, List<CorpRelDatum>> labeledData;
+	private Map<CorpRelLabel, List<CorpRelLabel>> labeledDAG; 
+	private Map<CorpRelLabel, List<CorpRelDatum>> labeledData;
 	private List<CorpRelDatum> unlabeledData;
+	private Comparator<CorpRelLabel> labelComparator = new Comparator<CorpRelLabel>() {
+	      @Override
+          public int compare(CorpRelLabel o1, CorpRelLabel o2) {
+	    	  if (o1 == null && o2 == null)
+	    		  return 0;
+	    	  else if (o1 == null)
+	    		  return -1;
+	    	  else if (o2 == null)
+	    		  return 1;
+	    	  else 
+	    		  return o1.toString().compareTo(o2.toString());
+          }
+	};
 	
 	public CorpRelDataSet() {
-		this.labeledDAG  = new HashMap<CorpRelLabel, List<CorpRelLabel>>();
-		this.labeledData = new HashMap<CorpRelLabel, List<CorpRelDatum>>();
+		// Used treemap to ensure same ordering when iterating over data across
+		// multiple runs.  Possibly not same ordering because CorpRelLabel.hashCode()
+		// is from Object (based on reference).  This is because it's an enum.
+		this.labeledDAG  = new TreeMap<CorpRelLabel, List<CorpRelLabel>>(this.labelComparator);
+		this.labeledData = new TreeMap<CorpRelLabel, List<CorpRelDatum>>(this.labelComparator);
 		this.unlabeledData = new ArrayList<CorpRelDatum>();
 	}
 	
 	public CorpRelDataSet(CorpDocumentSet sourceDocuments) {
-		this.labeledDAG  = new HashMap<CorpRelLabel, List<CorpRelLabel>>();
-		this.labeledData = new HashMap<CorpRelLabel, List<CorpRelDatum>>();
+		this.labeledDAG  = new TreeMap<CorpRelLabel, List<CorpRelLabel>>(this.labelComparator);
+		this.labeledData = new TreeMap<CorpRelLabel, List<CorpRelDatum>>(this.labelComparator);
 		this.unlabeledData = new ArrayList<CorpRelDatum>();
 		
 		List<CorpDocument> documents = sourceDocuments.getDocuments();

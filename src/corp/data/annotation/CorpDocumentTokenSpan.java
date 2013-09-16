@@ -45,14 +45,23 @@ public class CorpDocumentTokenSpan {
 		return this.tokenEndIndex;
 	}
 	
+	@Override
+	public int hashCode() {
+		// TODO Make this better
+		return this.document.hashCode()^(this.sentenceIndex*3)^(this.tokenEndIndex*31)^(this.tokenStartIndex*23);
+	}
+	
+	@Override
 	public boolean equals(Object o) {
 		CorpDocumentTokenSpan tokenSpan = (CorpDocumentTokenSpan)o;
 		return this.sentenceIndex == tokenSpan.sentenceIndex
 				&& this.tokenStartIndex == tokenSpan.tokenStartIndex
-				&& this.tokenEndIndex == tokenSpan.tokenEndIndex;
+				&& this.tokenEndIndex == tokenSpan.tokenEndIndex
+				&& this.document.equals(tokenSpan.document);
 		
 	}
 	
+	@Override
 	public String toString() {
 		List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(this.document.getSentenceAnnotation(this.sentenceIndex));
 		List<String> tokenSpanTokens = StanfordUtil.getTokensNGramTexts(tokens, this.tokenStartIndex, this.tokenEndIndex-this.tokenStartIndex);

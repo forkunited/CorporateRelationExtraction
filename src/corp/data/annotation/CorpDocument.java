@@ -172,4 +172,15 @@ public class CorpDocument {
 		
 		return spans;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		CorpDocument document = (CorpDocument)o;
+		return this.annotationFileName.equals(document.annotationFileName);
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.annotationFileName.hashCode();
+	}
 }

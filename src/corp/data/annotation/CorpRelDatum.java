@@ -42,6 +42,7 @@ public class CorpRelDatum {
 		return this.labelPath;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuilder datumStr = new StringBuilder();
 		
@@ -60,5 +61,26 @@ public class CorpRelDatum {
 		}
 		
 		return datumStr.toString();
+	}
+	
+	@Override
+	public int hashCode() {
+		// FIXME: Make better
+		return this.toString().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		CorpRelDatum datum = (CorpRelDatum)o;
+		if (!this.authorCorpName.equals(datum.authorCorpName))
+			return false;
+		if (!this.labelPath.equals(datum.labelPath))
+			return false;
+		if (this.otherOrgTokenSpans.size() != datum.otherOrgTokenSpans.size())
+			return false;
+		for (int i = 0; i < this.otherOrgTokenSpans.size(); i++)
+			if (!this.otherOrgTokenSpans.get(i).equals(datum.otherOrgTokenSpans.get(i)))
+				return false;
+		return true;
 	}
 }

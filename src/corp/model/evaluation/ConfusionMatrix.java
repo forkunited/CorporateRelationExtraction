@@ -20,7 +20,7 @@ public class ConfusionMatrix {
 	}
 	
 	public boolean add(ConfusionMatrix otherMatrix) {
-		for (Entry<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> otherMatrixEntryActual : this.actualToPredicted.entrySet()) {
+		for (Entry<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> otherMatrixEntryActual : otherMatrix.actualToPredicted.entrySet()) {
 			CorpRelLabelPath actual = otherMatrixEntryActual.getKey();
 			if (!this.actualToPredicted.containsKey(actual))
 				this.actualToPredicted.put(actual, new HashMap<CorpRelLabelPath, List<CorpRelDatum>>());
@@ -63,6 +63,7 @@ public class ConfusionMatrix {
 			return null;
 		
 		Map<CorpRelLabelPath, Map<CorpRelLabelPath, Double>> confusionMatrix = new HashMap<CorpRelLabelPath, Map<CorpRelLabelPath, Double>>();
+		
 		for (Entry<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> entryActual : this.actualToPredicted.entrySet()) {
 			confusionMatrix.put(entryActual.getKey(), new HashMap<CorpRelLabelPath, Double>());
 			for (Entry<CorpRelLabelPath, List<CorpRelDatum>> entryPredicted : entryActual.getValue().entrySet()) {
@@ -91,8 +92,11 @@ public class ConfusionMatrix {
 		for (int i = 0; i < this.labelPaths.size(); i++) {
 			confusionMatrixStr.append(this.labelPaths.get(i)).append(" (A)\t");
 			for (int j = 0; j < this.labelPaths.size(); j++) {
-				confusionMatrixStr.append(confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j)))
-								  .append("\t");
+				if (confusionMatrix.containsKey(this.labelPaths.get(i)) && confusionMatrix.get(this.labelPaths.get(i)).containsKey(this.labelPaths.get(j)))
+					confusionMatrixStr.append(confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j)))
+									  .append("\t");
+				else
+					confusionMatrixStr.append("0\t");
 			}
 			confusionMatrixStr.append("\n");
 		}

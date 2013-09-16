@@ -95,11 +95,7 @@ public class CorpRelLabelPath {
 	
 	@Override
 	public int hashCode() {
-		int code = 0;
-		for (CorpRelLabel label : this.labelPath) {
-			code ^= label.hashCode();
-		}
-		return code;
+		return this.toString().hashCode();
 	}
 	
 	@Override

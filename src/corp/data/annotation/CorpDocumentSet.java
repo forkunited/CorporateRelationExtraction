@@ -2,6 +2,8 @@ package corp.data.annotation;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -44,6 +46,12 @@ public class CorpDocumentSet {
 
 			ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 			File[] corpRelFiles = corpRelDir.listFiles();
+			Arrays.sort(corpRelFiles, new Comparator<File>() { // Ensure determinism
+			    public int compare(File o1, File o2) {
+			        return o1.getAbsolutePath().compareTo(o2.getAbsolutePath());
+			    }
+			});
+			
 			int numDocuments = 0;
 			for (File corpRelFile : corpRelFiles) {
 				threadPool.submit(new DocumentLoadThread(corpRelFile));

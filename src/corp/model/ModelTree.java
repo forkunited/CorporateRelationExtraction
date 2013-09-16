@@ -74,7 +74,7 @@ public class ModelTree extends Model {
 				pathDataSet.addFeature(this.extraFeatures.get(entry.getKey()).get(i));
 			}
 			
-			if (!entry.getValue().train(pathDataSet, outputPath + "." + entry.getKey().toString()))
+			if (!entry.getValue().train(pathDataSet, outputPath + "." + entry.getKey().toString() + "Path"))
 				return false;
 		}
 		
