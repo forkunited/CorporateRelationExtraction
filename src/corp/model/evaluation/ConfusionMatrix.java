@@ -120,7 +120,7 @@ public class ConfusionMatrix {
 				for (CorpRelDatum datum: entryPredicted.getValue()) {
 					List<String> sentenceTokens = StanfordUtil.getSentenceTokenTexts(datum.getDocument().getSentenceAnnotation(datum.getOtherOrgTokenSpans().get(0).getSentenceIndex()));
 					description.append("PREDICTED: ").append(entryPredicted.getKey()).append("\n");
-					description.append("ACTUAL: ").append(entryPredicted.getKey()).append("\n");
+					description.append("ACTUAL: ").append(entryActual.getKey()).append("\n");
 					description.append("FIRST SENTENCE: ");
 					for (String token : sentenceTokens)
 						description.append(token).append(" ");
