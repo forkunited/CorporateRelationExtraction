@@ -61,7 +61,7 @@ public class CRegTreeKFoldCrossValidation {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
-				args.length > 0 ? Integer.parseInt(args[0]) : 0
+				args.length > 0 ? Integer.parseInt(args[0]) : 3
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");

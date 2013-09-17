@@ -1,5 +1,6 @@
 package corp.model.evaluation;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
+import corp.util.StanfordUtil;
+import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Pair;
 
 public class ConfusionMatrix {
@@ -70,7 +73,6 @@ public class ConfusionMatrix {
 				confusionMatrix.get(entryActual.getKey()).put(entryPredicted.getKey(), entryPredicted.getValue().size()*scale);
 			}
 		}
-		
 		return confusionMatrix;
 	}
 	
@@ -88,15 +90,17 @@ public class ConfusionMatrix {
 		}
 		
 		confusionMatrixStr.append("\n");
-		
+		DecimalFormat cleanDouble = new DecimalFormat("0.00");
 		for (int i = 0; i < this.labelPaths.size(); i++) {
 			confusionMatrixStr.append(this.labelPaths.get(i)).append(" (A)\t");
 			for (int j = 0; j < this.labelPaths.size(); j++) {
-				if (confusionMatrix.containsKey(this.labelPaths.get(i)) && confusionMatrix.get(this.labelPaths.get(i)).containsKey(this.labelPaths.get(j)))
-					confusionMatrixStr.append(confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j)))
+				if (confusionMatrix.containsKey(this.labelPaths.get(i)) && confusionMatrix.get(this.labelPaths.get(i)).containsKey(this.labelPaths.get(j))) {
+					String cleanDoubleStr = cleanDouble.format(confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j)));
+					confusionMatrixStr.append(cleanDoubleStr)
 									  .append("\t");
-				else
-					confusionMatrixStr.append("0\t");
+				
+				} else
+					confusionMatrixStr.append("0.0\t");
 			}
 			confusionMatrixStr.append("\n");
 		}
@@ -106,6 +110,28 @@ public class ConfusionMatrix {
 	
 	public String toString() {
 		return toString(1.0);
+	}
+	
+	public String getActualToPredictedDescription() {
+		StringBuilder description = new StringBuilder();
+		
+		for (Entry<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> entryActual : this.actualToPredicted.entrySet()) {
+			for (Entry<CorpRelLabelPath, List<CorpRelDatum>> entryPredicted : entryActual.getValue().entrySet()) {
+				for (CorpRelDatum datum: entryPredicted.getValue()) {
+					List<String> sentenceTokens = StanfordUtil.getSentenceTokenTexts(datum.getDocument().getSentenceAnnotation(datum.getOtherOrgTokenSpans().get(0).getSentenceIndex()));
+					description.append("PREDICTED: ").append(entryPredicted.getKey()).append("\n");
+					description.append("ACTUAL: ").append(entryPredicted.getKey()).append("\n");
+					description.append("FIRST SENTENCE: ");
+					for (String token : sentenceTokens)
+						description.append(token).append(" ");
+					description.append("\n");
+					description.append(datum.toString()).append("\n\n");
+					
+				}
+			}
+		}
+		
+		return description.toString();
 	}
 	
 	public Map<CorpRelLabelPath, List<CorpRelDatum>> getPredictedForActual(CorpRelLabelPath actual) {

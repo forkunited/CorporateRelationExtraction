@@ -114,7 +114,10 @@ public class KFoldCrossValidation {
 				System.err.println("Error: Validation failed on fold " + foldIndex);
 				return new Pair<Double, ConfusionMatrix>(-1.0, null);
 			} else {
+				ConfusionMatrix confusions = accuracy.getConfusionMatrix();
 				System.out.println("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
+				System.out.println(confusions.getActualToPredictedDescription());
+				
 				return new Pair<Double, ConfusionMatrix>(computedAccuracy, accuracy.getConfusionMatrix());
 			}
 		}
