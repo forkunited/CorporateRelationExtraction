@@ -15,6 +15,7 @@ public class CorpProperties {
 	private String corpMetaDataGazetteerPath;
 	private String nonCorpScrapedGazetteerPath;
 	private String stopWordGazetteerPath;
+	private String corpMetaDataPath;
 	private int maxThreads;
 	private int crossValidationFolds;
 	private int randomSeed;
@@ -36,6 +37,7 @@ public class CorpProperties {
 			this.corpMetaDataGazetteerPath = properties.getProperty("corpMetaDataGazetteerPath");
 			this.nonCorpScrapedGazetteerPath = properties.getProperty("nonCorpScrapedGazetteerPath");
 			this.stopWordGazetteerPath = properties.getProperty("stopWordGazetteerPath");
+			this.corpMetaDataPath = properties.getProperty("corpMetaDataPath");
 			this.maxThreads = Integer.valueOf(properties.getProperty("maxThreads"));
 			this.crossValidationFolds = Integer.valueOf(properties.getProperty("crossValidationFolds"));
 			this.randomSeed = Integer.valueOf(properties.getProperty("randomSeed"));
@@ -88,6 +90,10 @@ public class CorpProperties {
 	
 	public String getStopWordGazetteerPath() {
 		return this.stopWordGazetteerPath;
+	}
+	
+	public String getCorpMetaDataPath() {
+		return this.corpMetaDataPath;
 	}
 	
 	public int getMaxThreads() {
