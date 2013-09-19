@@ -11,13 +11,13 @@ public class CorpProperties {
 	private int stanfordCoreMapCacheSize;
 	private String cregDataDirPath;
 	private String cregCommandPath;
-	private String corpGazettePath;
-	private String nonCorpGazettePath;
-	private String stopWordGazettePath;
+	private String corpScrapedGazetteerPath;
+	private String corpMetaDataGazetteerPath;
+	private String nonCorpScrapedGazetteerPath;
+	private String stopWordGazetteerPath;
 	private int maxThreads;
 	private int crossValidationFolds;
 	private int randomSeed;
-	
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -32,9 +32,10 @@ public class CorpProperties {
 			this.stanfordCoreMapCacheSize = Integer.valueOf(properties.getProperty("stanfordCoreMapCacheSize"));
 			this.cregDataDirPath = properties.getProperty("cregDataDirPath");
 			this.cregCommandPath = properties.getProperty("cregCommandPath");
-			this.corpGazettePath = properties.getProperty("corpGazettePath");
-			this.nonCorpGazettePath = properties.getProperty("nonCorpGazettePath");
-			this.stopWordGazettePath = properties.getProperty("stopWordGazettePath");
+			this.corpScrapedGazetteerPath = properties.getProperty("corpScrapedGazetteerPath");
+			this.corpMetaDataGazetteerPath = properties.getProperty("corpMetaDataGazetteerPath");
+			this.nonCorpScrapedGazetteerPath = properties.getProperty("nonCorpScrapedGazetteerPath");
+			this.stopWordGazetteerPath = properties.getProperty("stopWordGazetteerPath");
 			this.maxThreads = Integer.valueOf(properties.getProperty("maxThreads"));
 			this.crossValidationFolds = Integer.valueOf(properties.getProperty("crossValidationFolds"));
 			this.randomSeed = Integer.valueOf(properties.getProperty("randomSeed"));
@@ -73,16 +74,20 @@ public class CorpProperties {
 		return this.cregCommandPath;
 	}
 	
-	public String getCorpGazettePath() {
-		return this.corpGazettePath;
+	public String getCorpScrapedGazetteerPath() {
+		return this.corpScrapedGazetteerPath;
 	}
 	
-	public String getNonCorpGazettePath() {
-		return this.nonCorpGazettePath;
+	public String getCorpMetaDataGazetteerPath() {
+		return this.corpMetaDataGazetteerPath;
 	}
 	
-	public String getStopWordGazettePath() {
-		return this.stopWordGazettePath;
+	public String getNonCorpGazetteerPath() {
+		return this.nonCorpScrapedGazetteerPath;
+	}
+	
+	public String getStopWordGazetteerPath() {
+		return this.stopWordGazetteerPath;
 	}
 	
 	public int getMaxThreads() {

@@ -2,7 +2,9 @@ package corp.data;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import corp.util.StringUtil;
 
@@ -12,29 +14,34 @@ import corp.util.StringUtil;
  * @authors Lingpeng Kong, Bill McDowell
  *
  */
-public class Gazette {
-	private HashSet<String> gazette;
+public class Gazetteer {
+	private HashMap<String, List<String>> gazetteer;
 	private String name;
 	private StringUtil.StringTransform cleanFn;
 	
-	public Gazette(String name, String sourceFilePath, StringUtil.StringTransform cleanFn) {
+	public Gazetteer(String name, String sourceFilePath, StringUtil.StringTransform cleanFn) {
 		this.cleanFn = cleanFn;
-		this.gazette = new HashSet<String>();
+		this.gazetteer = new HashMap<String, List<String>>();
 		this.name = name;
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(sourceFilePath));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				String content = line.split("\\t")[0].trim();
-				if (content.matches(".+\\(.+\\)")) {
-					String s1 = content.substring(0, content.indexOf("("));
-					String s2 = content.substring(content.indexOf("(")+1, content.lastIndexOf(")"));
-					this.gazette.add(cleanString(s1));
-					this.gazette.add(cleanString(s2));
+				String[] lineValues = line.trim().split("\\t");
+				if (lineValues.length < 2) {
+					br.close();
+					throw new IllegalArgumentException();
 				}
 				
-				this.gazette.add(cleanString(content));
+				String id = lineValues[0];
+				for (int i = 1; i < lineValues.length; i++) {
+					String cleanValue = cleanString(lineValues[i]);
+					if (!this.gazetteer.containsKey(cleanValue))
+						this.gazetteer.put(cleanValue, new ArrayList<String>(2));
+					if (!this.gazetteer.get(cleanValue).contains(id))
+						this.gazetteer.get(cleanValue).add(id);
+				}
 			}
 			
 			br.close();
@@ -43,7 +50,7 @@ public class Gazette {
 		}
 	}
 	
-	public Gazette(String name, String sourceFilePath) {
+	public Gazetteer(String name, String sourceFilePath) {
 		this(name, sourceFilePath, StringUtil.getDefaultCleanFn());
 	}
 
@@ -56,13 +63,21 @@ public class Gazette {
 	}
 	
 	public boolean contains(String str) {
-		return this.gazette.contains(cleanString(str));
+		return this.gazetteer.containsKey(cleanString(str));
 	}
-
+	
+	public List<String> getIds(String str) {
+		String cleanStr = cleanString(str);
+		if (this.gazetteer.containsKey(cleanStr))
+			return this.gazetteer.get(cleanStr);
+		else
+			return null;
+	}
+	
 	public double min(String str, StringUtil.StringPairMeasure fn) {
 		double min = Double.POSITIVE_INFINITY;
 		String cleanStr = cleanString(str);
-		for (String gStr : this.gazette) {
+		for (String gStr : this.gazetteer.keySet()) {
 			double curMin = fn.compute(cleanStr, gStr);
 			min = (curMin < min) ? curMin : min;
 		}
@@ -72,7 +87,7 @@ public class Gazette {
 	public double max(String str, StringUtil.StringPairMeasure fn) {
 		double max = Double.NEGATIVE_INFINITY;
 		String cleanStr = cleanString(str);
-		for (String gStr : this.gazette) {
+		for (String gStr : this.gazetteer.keySet()) {
 			double curMax = fn.compute(cleanStr, gStr);
 			max = (curMax > max) ? curMax : max;
 		}

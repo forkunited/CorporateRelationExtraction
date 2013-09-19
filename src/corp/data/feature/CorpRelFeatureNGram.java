@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
 import corp.util.CounterTable;
@@ -47,8 +48,12 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 
 	@Override
 	public List<String> getNames(List<String> existingNames) {
-		for (String v : this.vocabulary.keySet())
-			existingNames.add("NGram_" + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_" + v);
+		List<String> names = new ArrayList<String>(Collections.nCopies(this.vocabulary.size(), (String)null));
+		String name = "NGram_" + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_"; 
+		for (Entry<String, Integer> v : this.vocabulary.entrySet())
+			names.set(v.getValue(), name + v.getKey());
+		existingNames.addAll(names);
+		
 		return existingNames;
 	}
 

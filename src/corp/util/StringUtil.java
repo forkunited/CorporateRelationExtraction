@@ -1,6 +1,6 @@
 package corp.util;
 
-import corp.data.Gazette;
+import corp.data.Gazetteer;
 
 public class StringUtil {
 	/* String cleaning and measure helpers... maybe move these to separate classes later. */
@@ -26,7 +26,7 @@ public class StringUtil {
 		};	
 	}
 	
-	public static StringUtil.StringTransform getStopWordsCleanFn(final Gazette stopWords) {
+	public static StringUtil.StringTransform getStopWordsCleanFn(final Gazetteer stopWords) {
 		final String stopWordsName = stopWords.getName();
 		
 		return new StringUtil.StringTransform() {

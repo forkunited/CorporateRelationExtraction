@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import corp.data.Gazette;
+import corp.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.annotation.CorpRelLabelPath;
-import corp.data.feature.CorpRelFeatureGazette;
-import corp.data.feature.CorpRelFeatureGazetteContains;
-import corp.data.feature.CorpRelFeatureGazetteEditDistance;
-import corp.data.feature.CorpRelFeatureGazetteInitialism;
-import corp.data.feature.CorpRelFeatureGazettePrefixTokens;
+import corp.data.feature.CorpRelFeatureGazetteer;
+import corp.data.feature.CorpRelFeatureGazetteerContains;
+import corp.data.feature.CorpRelFeatureGazetteerEditDistance;
+import corp.data.feature.CorpRelFeatureGazetteerInitialism;
+import corp.data.feature.CorpRelFeatureGazetteerPrefixTokens;
 import corp.data.feature.CorpRelFeatureNGramContext;
 import corp.data.feature.CorpRelFeatureNGramDep;
 import corp.data.feature.CorpRelFeatureNGramSentence;
@@ -35,14 +35,14 @@ public class CRegKFoldCrossValidation {
 		
 		Random rand = new Random(properties.getRandomSeed());
 		
-		System.out.println("Loading Gazettes...");
+		System.out.println("Loading Gazetteers...");
 
-		Gazette stopWordsGazette = new Gazette("StopWords", properties.getStopWordGazettePath());
-		StringUtil.StringTransform stopWordsCleanFn = StringUtil.getStopWordsCleanFn(stopWordsGazette);
+		Gazetteer stopWordsGazetteer = new Gazetteer("StopWords", properties.getStopWordGazetteerPath());
+		StringUtil.StringTransform stopWordsCleanFn = StringUtil.getStopWordsCleanFn(stopWordsGazetteer);
 		
-		//Gazette corpGazette = new Gazette("Corp", properties.getCorpGazettePath());
-		Gazette cleanCorpGazette = new Gazette("StopWordsCorp", properties.getCorpGazettePath(), stopWordsCleanFn);
-		Gazette nonCorpGazette = new Gazette("NonCorp", properties.getNonCorpGazettePath());
+		//Gazetteer corpGazetteer = new Gazetteer("Corp", properties.getCorpGazetteerPath());
+		Gazetteer cleanCorpGazetteer = new Gazetteer("StopWordsCorp", properties.getCorpScrapedGazetteerPath(), stopWordsCleanFn);
+		Gazetteer nonCorpGazetteer = new Gazetteer("NonCorp", properties.getNonCorpGazetteerPath());
 		
 		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(
@@ -92,134 +92,134 @@ public class CRegKFoldCrossValidation {
 		//			true /* useRelationTypes */)
 		//);
 		
-		/* Gazette contains features */
+		/* Gazetteer contains features */
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						stopWordsGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerContains(
+						stopWordsGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);
 		
 		/*dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerContains(
+						corpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);*/
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerContains(
+						cleanCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteContains(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerContains(
+						nonCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);
 		
-		/* Gazette edit distance features */
+		/* Gazetteer edit distance features */
 		
 		/*dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerEditDistance(
+						corpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);*/
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerEditDistance(
+						cleanCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);
 		
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteEditDistance(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned)
+				new CorpRelFeatureGazetteerEditDistance(
+						nonCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);
 		
-		/* Gazette initialism features */
+		/* Gazetteer initialism features */
 		
 		/*dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, true)
+				new CorpRelFeatureGazetteerInitialism(
+						corpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned, true)
 			);*/
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, true)
+				new CorpRelFeatureGazetteerInitialism(
+						cleanCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned, true)
 			);
 		
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, true)
+				new CorpRelFeatureGazetteerInitialism(
+						nonCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned, true)
 			);
 		
 		/*dataSet.addFeature(
-		new CorpRelFeatureGazetteInitialism(
-				corpGazette, 
-				CorpRelFeatureGazette.InputType.Mentioned, false)
+		new CorpRelFeatureGazetteerInitialism(
+				corpGazetteer, 
+				CorpRelFeatureGazetteer.InputType.Mentioned, false)
 		);*/
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, false)
+				new CorpRelFeatureGazetteerInitialism(
+						cleanCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned, false)
 			);
 		
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazetteInitialism(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned, false)
+				new CorpRelFeatureGazetteerInitialism(
+						nonCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned, false)
 			);
 	
-		/* Gazette prefix token features */
+		/* Gazetteer prefix token features */
 		
 		/*dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						corpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
+				new CorpRelFeatureGazetteerPrefixTokens(
+						corpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned,
 						1)
 			);*/
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
+				new CorpRelFeatureGazetteerPrefixTokens(
+						cleanCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned,
 						1)
 			);
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
+				new CorpRelFeatureGazetteerPrefixTokens(
+						nonCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned,
 						1)
 			);
 		
 		/*dataSet.addFeature(
-		new CorpRelFeatureGazettePrefixTokens(
-				corpGazette, 
-				CorpRelFeatureGazette.InputType.Mentioned,
+		new CorpRelFeatureGazetteerPrefixTokens(
+				corpGazetteer, 
+				CorpRelFeatureGazetteer.InputType.Mentioned,
 				2)
 		);*/
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						cleanCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
+				new CorpRelFeatureGazetteerPrefixTokens(
+						cleanCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned,
 						2)
 			);
 		
 		dataSet.addFeature(
-				new CorpRelFeatureGazettePrefixTokens(
-						nonCorpGazette, 
-						CorpRelFeatureGazette.InputType.Mentioned,
+				new CorpRelFeatureGazetteerPrefixTokens(
+						nonCorpGazetteer, 
+						CorpRelFeatureGazetteer.InputType.Mentioned,
 						2)
 			);
 		

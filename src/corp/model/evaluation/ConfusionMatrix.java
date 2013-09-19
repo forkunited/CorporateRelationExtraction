@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.util.StanfordUtil;
-import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Pair;
 
 public class ConfusionMatrix {
