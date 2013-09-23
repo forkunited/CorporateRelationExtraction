@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import corp.util.OutputWriter;
 import corp.util.StanfordUtil;
 
 import edu.stanford.nlp.pipeline.Annotation;
@@ -25,10 +26,12 @@ public class AnnotationCache {
 	private Map<String, Annotation> docAnnoCache;
 	private Map<String, CoreMap> sentenceAnnoCache;
 	private ConcurrentHashMap<String, Object> locks;
+	private OutputWriter output;
 	
-	public AnnotationCache(String docAnnoDirPath, final int docAnnoCacheSize, String sentenceAnnoDirPath, final int sentenceAnnoCacheSize) {
+	public AnnotationCache(String docAnnoDirPath, final int docAnnoCacheSize, String sentenceAnnoDirPath, final int sentenceAnnoCacheSize, OutputWriter output) {
 		this.docAnnoDirPath = docAnnoDirPath;
 		this.sentenceAnnoDirPath = sentenceAnnoDirPath;
+		this.output = output;
 		
 		this.docSentenceCountCache = Collections.synchronizedMap(new LinkedHashMap<String, Integer>(docAnnoCacheSize+1, .75F, true) {
 			private static final long serialVersionUID = 1L;
@@ -85,7 +88,7 @@ public class AnnotationCache {
 				if (this.docAnnoCache.containsKey(documentName)) {
 					return this.docAnnoCache.get(documentName);
 				} else {
-					System.out.println("Loading document annotation for " + documentName);
+					this.output.debugWriteln("Loading document annotation for " + documentName);
 				}
 			}
 			
@@ -116,7 +119,7 @@ public class AnnotationCache {
 				if (!sentenceAnnoFilesExist(documentName)) {
 					saveSentenceAnnosForDocument(documentName);
 				} else {
-					System.out.println("Loading sentence annotation for " + sentenceName);
+					this.output.debugWriteln("Loading sentence annotation for " + sentenceName);
 				}
 			}
 			
@@ -140,7 +143,7 @@ public class AnnotationCache {
 			if (!sentenceAnnoFilesExist(documentName)) {
 				saveSentenceAnnosForDocument(documentName);
 			} else {
-				System.out.println("Loading sentence count for " + documentName);
+				this.output.debugWriteln("Loading sentence count for " + documentName);
 			}
 		
 			int sentenceCount = 0;
@@ -167,7 +170,7 @@ public class AnnotationCache {
 	}
 	
 	private boolean saveSentenceAnnosForDocument(String documentName) {
-		System.out.println("Note: No sentence annotation documents for " + documentName + ".  Creating them....  ");
+		this.output.debugWriteln("Note: No sentence annotation documents for " + documentName + ".  Creating them....  ");
         Annotation anno = this.getDocumentAnnotation(documentName);
         List<CoreMap> sentences = StanfordUtil.getDocumentSentences(anno);
         for (int i = 0; i < sentences.size(); i++) {

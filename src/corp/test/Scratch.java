@@ -18,6 +18,7 @@ import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.model.ModelCReg;
 import corp.util.CorpProperties;
+import corp.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 /**
@@ -34,7 +35,8 @@ public class Scratch {
 			properties.getStanfordAnnotationDirPath(),
 			properties.getStanfordAnnotationCacheSize(),
 			properties.getStanfordCoreMapDirPath(),
-			properties.getStanfordCoreMapCacheSize()
+			properties.getStanfordCoreMapCacheSize(),
+			new OutputWriter()
 		);
 		
 		System.out.println("Loading document set...");
@@ -43,8 +45,9 @@ public class Scratch {
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
-				properties.getMaxThreads(),
-				args.length > 0 ? Integer.parseInt(args[0]) : 5
+				4,
+				args.length > 0 ? Integer.parseInt(args[0]) : 5,
+				new OutputWriter()
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
@@ -58,7 +61,7 @@ public class Scratch {
 		validLabels.add(new CorpRelLabelPath(CorpRelLabel.Error));
 		
 		/* Construct corporate relation data set from documents */
-		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
+		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());
 		System.out.println("Loaded " + dataSet.getData().size() + " datums.");
 		
 		dataSet.addFeature(
@@ -73,7 +76,7 @@ public class Scratch {
 				new CorpRelFeatureSelfPrefixTokens(1)
 		);
 		
-		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabels);
+		ModelCReg model = new ModelCReg(properties.getCregCommandPath(), validLabels, new OutputWriter());
 		model.train(dataSet, new File(properties.getCregDataDirPath(), "PosteriorTest").getAbsolutePath());
 		List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior = model.posterior(dataSet);
 		for (Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>> datumPosterior : posterior) {

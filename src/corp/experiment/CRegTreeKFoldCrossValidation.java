@@ -31,7 +31,7 @@ import corp.util.StringUtil;
 
 public class CRegTreeKFoldCrossValidation {
 	public static void main(String[] args) {
-		System.out.println("Loading configuration properties...");
+		/*System.out.println("Loading configuration properties...");
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
 		
@@ -57,7 +57,7 @@ public class CRegTreeKFoldCrossValidation {
 		System.out.println("Loading document set...");
 		
 		/* This is the document set.  It represents a set of annotated documents. */
-		CorpDocumentSet documentSet = new CorpDocumentSet(
+		/*CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
@@ -69,15 +69,15 @@ public class CRegTreeKFoldCrossValidation {
 		System.out.println("Constructing data set...");
 		
 		/* Construct corporate relation data set from documents */
-		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
+		/*CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
 		System.out.println("Constructing features...");
 
 		/* Construct features */
-		CorpRelFeature oneGramSentence = new CorpRelFeatureNGramSentence(1 /* n */,  2  /* minFeatureOccurrence */);
-		CorpRelFeature oneGramContext = new CorpRelFeatureNGramContext(1 /* n */, 2 /* minFeatureOccurrence */, 0 /* contextWindowSize */);
-		CorpRelFeature oneGramDep = new CorpRelFeatureNGramDep(1 /* n */, 2  /* minFeatureOccurrence */, CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,true /* useRelationTypes */);
-		CorpRelFeature stopWordsContains = new CorpRelFeatureGazetteerContains(stopWordsGazetteer, CorpRelFeatureGazetteer.InputType.Mentioned);
+		/*CorpRelFeature oneGramSentence = new CorpRelFeatureNGramSentence(1 /* n *///,  2  /* minFeatureOccurrence */);
+		//CorpRelFeature oneGramContext = new CorpRelFeatureNGramContext(1 /* n */, 2 /* minFeatureOccurrence */, 0 /* contextWindowSize */);
+		///CorpRelFeature oneGramDep = new CorpRelFeatureNGramDep(1 /* n */, 2  /* minFeatureOccurrence */, CorpRelFeatureNGramDep.Mode.ParentsAndChildren /* mode */,true /* useRelationTypes */);
+		/*CorpRelFeature stopWordsContains = new CorpRelFeatureGazetteerContains(stopWordsGazetteer, CorpRelFeatureGazetteer.InputType.Mentioned);
 		CorpRelFeature corpGazetteerContains = new CorpRelFeatureGazetteerContains(corpGazetteer, CorpRelFeatureGazetteer.InputType.Mentioned);
 		CorpRelFeature cleanCorpGazetteerContains = new CorpRelFeatureGazetteerContains(cleanCorpGazetteer, CorpRelFeatureGazetteer.InputType.Mentioned);
 		CorpRelFeature nonCorpGazetteerContains = new CorpRelFeatureGazetteerContains(nonCorpGazetteer, CorpRelFeatureGazetteer.InputType.Mentioned);
@@ -196,6 +196,6 @@ public class CRegTreeKFoldCrossValidation {
 		
 		validation.run(properties.getMaxThreads());
 		
-		System.out.println("Done.");
+		System.out.println("Done.");*/
 	}
 }

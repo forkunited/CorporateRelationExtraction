@@ -116,6 +116,9 @@ public class CorpRelLabelPath {
 	}
 	
 	public static CorpRelLabelPath fromString(String pathStr) {
+		if (pathStr.length() == 0)
+			return new CorpRelLabelPath();
+		
 		String[] labelStrs = pathStr.split("-");
 		CorpRelLabel[] labelPath = new CorpRelLabel[labelStrs.length];
 		for (int i = 0; i < labelStrs.length; i++)

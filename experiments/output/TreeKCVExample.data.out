@@ -1,0 +1,98 @@
+Parsing tree models...
+--------------- Fold: 1 ---------------
+PREDICTED: SelfRef
+ACTUAL: SelfRef
+FIRST SENTENCE: GSK owns approximately 8.9 % of the outstanding common stock of PHLI . 
+Label: SelfRef
+Author Corporation: PACIFICHEALTH LABORATORIES INC
+Mentioned Organizations: 
+PHLI 
+PHLI 
+PHLI 
+
+
+PREDICTED: SelfRef
+ACTUAL: SelfRef
+FIRST SENTENCE: Restoration of MPN 's assets , operations and management responsibilities to MedPartners , which will operate MPN as a debtor in possession under the U.S. Bankruptcy Code , subject to oversight and supervision of a new court - appointed State conservator ; . 
+Label: SelfRef
+Author Corporation: MEDPARTNERS INC
+Mentioned Organizations: 
+MedPartners 
+
+
+PREDICTED: SelfRef
+ACTUAL: SelfRef
+FIRST SENTENCE: `` We believe that this agreement serves the best interests of Lumisys , '' noted Dr. Bala Manian , chairman and acting CEO of Lumisys , Inc. `` Lumisys has made great strides in developing novel , value-driven imaging technology ; however , the company has now reached the stage where the resources of a large company with broad distribution are pivotal to its products ' success . 
+Label: SelfRef
+Author Corporation: LUMISYS INC \DE\
+Mentioned Organizations: 
+Lumisys , Inc. 
+
+
+PREDICTED: SelfRef
+ACTUAL: OCorp-Finance
+FIRST SENTENCE: GSK owns approximately 8.9 % of the outstanding common stock of PHLI . 
+Label: OCorp-Finance
+Author Corporation: PACIFICHEALTH LABORATORIES INC
+Mentioned Organizations: 
+GSK 
+GSK 
+GSK 
+
+
+PREDICTED: SelfRef
+ACTUAL: OCorp-Family
+FIRST SENTENCE: First National will continue to provide Classic with the higher bank earnings that supplement the lower thrift earnings of Ashland Federal as Ashland Federal continues to make the transition to a commercial bank structure . 
+Label: OCorp-Family-Sub
+Author Corporation: CLASSIC BANCSHARES INC
+Mentioned Organizations: 
+Ashland Federal 
+Ashland Federal 
+
+
+
+--------------- Fold: 0 ---------------
+PREDICTED: SelfRef
+ACTUAL: SelfRef
+FIRST SENTENCE: `` We believe that this agreement serves the best interests of Lumisys , '' noted Dr. Bala Manian , chairman and acting CEO of Lumisys , Inc. `` Lumisys has made great strides in developing novel , value-driven imaging technology ; however , the company has now reached the stage where the resources of a large company with broad distribution are pivotal to its products ' success . 
+Label: SelfRef
+Author Corporation: LUMISYS INC \DE\
+Mentioned Organizations: 
+Lumisys 
+Lumisys 
+Lumisys 
+Lumisys 
+Lumisys 
+
+
+PREDICTED: SelfRef
+ACTUAL: NonCorp
+FIRST SENTENCE: A continuation of a monitoring role by a new conservator and the State of California Department of Corporations with primary oversight responsibilities on the fulfillment of the proposed settlement and transition plan . 
+Label: NonCorp-State
+Author Corporation: MEDPARTNERS INC
+Mentioned Organizations: 
+California Department of Corporations 
+
+
+PREDICTED: SelfRef
+ACTUAL: OCorp-Family
+FIRST SENTENCE: Earnings and earnings per share were positively impacted as a result of the inclusion of First National 's earnings . 
+Label: OCorp-Family-Sub
+Author Corporation: CLASSIC BANCSHARES INC
+Mentioned Organizations: 
+First National 
+First National 
+
+
+PREDICTED: SelfRef
+ACTUAL: OCorp-Merger
+FIRST SENTENCE: Customers will benefit from the continued investment in technology that Kodak can make , as well as from the world-class service and support for which Kodak is renowned . '' 
+Label: OCorp-Merger-Aqu
+Author Corporation: LUMISYS INC \DE\
+Mentioned Organizations: 
+Kodak 
+Kodak 
+Kodak 
+
+
+

@@ -13,35 +13,43 @@ import corp.data.annotation.CorpRelDataSet;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.annotation.CorpRelLabelPath;
+import corp.util.OutputWriter;
 
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private List<CorpRelFeature> features;
 	private int maxThreads;
 	private Map<CorpRelDatum, CorpRelFeaturizedDatum> featurizedDatums;
+	private OutputWriter output;
 	
-	public CorpRelFeaturizedDataSet() {
-		this(1);
+	public CorpRelFeaturizedDataSet(OutputWriter output) {
+		this(1, output);
 	}
 	
-	public CorpRelFeaturizedDataSet(int maxThreads) {
-		this(new ArrayList<CorpRelFeature>(), maxThreads);
+	public CorpRelFeaturizedDataSet(int maxThreads, OutputWriter output) {
+		this(new ArrayList<CorpRelFeature>(), maxThreads, output);
 	}
 	
-	public CorpRelFeaturizedDataSet(List<CorpRelFeature> features, int maxThreads) {
+	public CorpRelFeaturizedDataSet(List<CorpRelFeature> features, int maxThreads, OutputWriter output) {
 		super();
 		this.features = features;
 		this.maxThreads = maxThreads;
 		this.featurizedDatums = new HashMap<CorpRelDatum, CorpRelFeaturizedDatum>();
+		this.output = output;
 	}
 	
-	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments) {
-		this(sourceDocuments, new ArrayList<CorpRelFeature>(), 1);
+	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments, OutputWriter output) {
+		this(sourceDocuments, new ArrayList<CorpRelFeature>(), 1, output);
 	}
 	
-	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments, List<CorpRelFeature> features, int maxThreads) {
+	public CorpRelFeaturizedDataSet(CorpDocumentSet sourceDocuments, List<CorpRelFeature> features, int maxThreads, OutputWriter output) {
 		super(sourceDocuments);
 		this.features = features;
 		this.maxThreads = maxThreads;
+		this.output = output;
+	}
+	
+	public int getMaxThreads() {
+		return this.maxThreads;
 	}
 	
 	public boolean addFeature(CorpRelFeature feature) {
@@ -92,7 +100,7 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	}
 	
 	private List<CorpRelFeaturizedDatum> featurize(List<CorpRelDatum> data) {
-		System.out.println("Featurizing data set...");
+		this.output.debugWriteln("Featurizing data set...");
 		
 		CorpRelFeaturizedDatum[] featurizedData = new CorpRelFeaturizedDatum[data.size()];
 		ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);

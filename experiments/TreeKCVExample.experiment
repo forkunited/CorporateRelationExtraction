@@ -1,0 +1,95 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=2
+treeAllowSubpaths=false
+maxDocuments=4
+
+treeModelPath=
+treeModel=CReg
+treeModelValidPath=SelfRef
+treeModelValidPath=OCorp
+treeModelValidPath=NonCorp
+treeModelValidPath=Generic
+treeModelValidPath=Error
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true)
+treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerInitialism(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerInitialism(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerInitialism(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=SelfEditDistance(cleanFn=DefaultCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfEditDistance(cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=StopWordCleanFn)
+
+
+
+treeModelPath=OCorp
+treeModel=CReg
+
+treeModelValidPath=OCorp-Family
+treeModelValidPath=OCorp-Merger
+treeModelValidPath=OCorp-Legal
+treeModelValidPath=OCorp-Partner
+treeModelValidPath=OCorp-NewHire
+treeModelValidPath=OCorp-Cust
+treeModelValidPath=OCorp-Suply
+treeModelValidPath=OCorp-Compete
+treeModelValidPath=OCorp-News
+treeModelValidPath=OCorp-Finance
+treeModelValidPath=OCorp-New
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true)
+treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerInitialism(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerInitialism(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerInitialism(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=SelfEditDistance(cleanFn=DefaultCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfEditDistance(cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=StopWordCleanFn)

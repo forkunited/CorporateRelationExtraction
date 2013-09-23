@@ -1,5 +1,8 @@
 package corp.util;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class CommandRunner {
 
 	/**
@@ -15,7 +18,13 @@ public class CommandRunner {
         		p = Runtime.getRuntime().exec(cmds);
         	else
         		p = Runtime.getRuntime().exec(cmds, env);
-       
+        	
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        	while ((reader.readLine()) != null) {}
+        	
+        	reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        	while ((reader.readLine()) != null) {}
+        	
             return (p.waitFor() == 0);
         } catch (Exception e) {  
             e.printStackTrace();  

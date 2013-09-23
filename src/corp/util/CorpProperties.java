@@ -16,9 +16,8 @@ public class CorpProperties {
 	private String nonCorpScrapedGazetteerPath;
 	private String stopWordGazetteerPath;
 	private String corpMetaDataPath;
-	private int maxThreads;
-	private int crossValidationFolds;
-	private int randomSeed;
+	private String experimentInputPath;
+	private String experimentOutputPath;
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -38,9 +37,8 @@ public class CorpProperties {
 			this.nonCorpScrapedGazetteerPath = properties.getProperty("nonCorpScrapedGazetteerPath");
 			this.stopWordGazetteerPath = properties.getProperty("stopWordGazetteerPath");
 			this.corpMetaDataPath = properties.getProperty("corpMetaDataPath");
-			this.maxThreads = Integer.valueOf(properties.getProperty("maxThreads"));
-			this.crossValidationFolds = Integer.valueOf(properties.getProperty("crossValidationFolds"));
-			this.randomSeed = Integer.valueOf(properties.getProperty("randomSeed"));
+			this.experimentInputPath = properties.getProperty("experimentInputPath");
+			this.experimentOutputPath = properties.getProperty("experimentOutputPath");
 			
 			reader.close();
 		} catch (Exception e) {
@@ -84,7 +82,7 @@ public class CorpProperties {
 		return this.corpMetaDataGazetteerPath;
 	}
 	
-	public String getNonCorpGazetteerPath() {
+	public String getNonCorpScrapedGazetteerPath() {
 		return this.nonCorpScrapedGazetteerPath;
 	}
 	
@@ -95,16 +93,12 @@ public class CorpProperties {
 	public String getCorpMetaDataPath() {
 		return this.corpMetaDataPath;
 	}
-	
-	public int getMaxThreads() {
-		return this.maxThreads;
+
+	public String getExperimentOutputPath() {
+		return this.experimentOutputPath;
 	}
 	
-	public int getCrossValidationFolds() {
-		return this.crossValidationFolds;
-	}
-	
-	public int getRandomSeed() {
-		return this.randomSeed;
+	public String getExperimentInputPath() {
+		return this.experimentInputPath;
 	}
 }

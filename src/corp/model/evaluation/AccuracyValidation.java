@@ -6,37 +6,41 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.Model;
+import corp.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 public class AccuracyValidation {
 	private Model model;
 	private CorpRelFeaturizedDataSet trainData;
 	private CorpRelFeaturizedDataSet testData;
-	private String outputPath;
+	private String modelOutputPath;
 	private ConfusionMatrix confusionMatrix;
+	private OutputWriter output;
 	
 	public AccuracyValidation(Model model, 
 							  CorpRelFeaturizedDataSet trainData,
 							  CorpRelFeaturizedDataSet testData,
-							  String outputPath) {
+							  String modelOutputPath,
+							  OutputWriter output) {
 		this.model = model;
 		this.trainData = trainData;
 		this.testData = testData;
-		this.outputPath = outputPath;
+		this.modelOutputPath = modelOutputPath;
+		this.output = output;
 	}
 	
 	public double run() {
-		System.out.println("Training model and outputting to " + this.outputPath);
-		if (!this.model.train(this.trainData, this.outputPath))
+		this.output.debugWriteln("Training model and outputting to " + this.modelOutputPath);
+		if (!this.model.train(this.trainData, this.modelOutputPath))
 			return -1.0;
 		
-		System.out.println("Model classifying data (" + this.outputPath + ")");
+		this.output.debugWriteln("Model classifying data (" + this.modelOutputPath + ")");
 		
 		List<Pair<CorpRelDatum, CorpRelLabelPath>> classifiedData =  this.model.classify(this.testData);
 		if (classifiedData == null)
 			return -1.0;
 		
-		System.out.println("Computing model score (" + this.outputPath + ")");
+		this.output.debugWriteln("Computing model score (" + this.modelOutputPath + ")");
 		
 		double correct = 0;
 		for (Pair<CorpRelDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {

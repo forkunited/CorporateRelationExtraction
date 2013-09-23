@@ -29,7 +29,7 @@ import corp.util.StringUtil;
 
 public class CRegKFoldCrossValidation {
 	public static void main(String[] args) {
-		System.out.println("Loading configuration properties...");
+		/*System.out.println("Loading configuration properties...");
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
 		
@@ -55,7 +55,7 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Loading document set...");
 		
 		/* This is the document set.  It represents a set of annotated documents. */
-		CorpDocumentSet documentSet = new CorpDocumentSet(
+		/*CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				properties.getMaxThreads(),
@@ -66,7 +66,7 @@ public class CRegKFoldCrossValidation {
 		System.out.println("Constructing data set...");
 		
 		/* Construct corporate relation data set from documents */
-		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
+		/*CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
 		
 		System.out.println("Adding features...");
 		
@@ -77,12 +77,12 @@ public class CRegKFoldCrossValidation {
 		//				2  /* minFeatureOccurrence */)
 		//);
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 			new CorpRelFeatureNGramContext(
-					1 /* n */, 
-					2 /*minFeatureOccurrence*/,
-					0 /* contextWindowSize */)
-		);
+		/*			1 /* n *//*, 
+					2 /*minFeatureOccurrence*///,
+		//			0 /* contextWindowSize */)
+		//);
 		
 		//dataSet.addFeature(
 		//	new CorpRelFeatureNGramDep(
@@ -94,7 +94,7 @@ public class CRegKFoldCrossValidation {
 		
 		/* Gazetteer contains features */
 		
-		dataSet.addFeature(
+		/*dataSet.addFeature(
 				new CorpRelFeatureGazetteerContains(
 						stopWordsGazetteer, 
 						CorpRelFeatureGazetteer.InputType.Mentioned)
@@ -105,7 +105,7 @@ public class CRegKFoldCrossValidation {
 						corpGazetteer, 
 						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);*/
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteerContains(
 						cleanCorpGazetteer, 
@@ -125,7 +125,7 @@ public class CRegKFoldCrossValidation {
 						corpGazetteer, 
 						CorpRelFeatureGazetteer.InputType.Mentioned)
 			);*/
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteerEditDistance(
 						cleanCorpGazetteer, 
@@ -146,7 +146,7 @@ public class CRegKFoldCrossValidation {
 						corpGazetteer, 
 						CorpRelFeatureGazetteer.InputType.Mentioned, true)
 			);*/
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteerInitialism(
 						cleanCorpGazetteer, 
@@ -165,7 +165,7 @@ public class CRegKFoldCrossValidation {
 				corpGazetteer, 
 				CorpRelFeatureGazetteer.InputType.Mentioned, false)
 		);*/
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteerInitialism(
 						cleanCorpGazetteer, 
@@ -187,7 +187,7 @@ public class CRegKFoldCrossValidation {
 						CorpRelFeatureGazetteer.InputType.Mentioned,
 						1)
 			);*/
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteerPrefixTokens(
 						cleanCorpGazetteer, 
@@ -208,7 +208,7 @@ public class CRegKFoldCrossValidation {
 				CorpRelFeatureGazetteer.InputType.Mentioned,
 				2)
 		);*/
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureGazetteerPrefixTokens(
 						cleanCorpGazetteer, 
@@ -225,7 +225,7 @@ public class CRegKFoldCrossValidation {
 		
 		
 		/* Self features */
-		
+		/*
 		dataSet.addFeature(
 				new CorpRelFeatureSelfEditDistance()
 		);
@@ -286,6 +286,6 @@ public class CRegKFoldCrossValidation {
 		
 		validation.run(properties.getMaxThreads());
 		
-		System.out.println("Done.");
+		System.out.println("Done.");*/
 	}
 }

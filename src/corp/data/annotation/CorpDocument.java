@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import corp.util.OutputWriter;
+
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -19,9 +21,11 @@ public class CorpDocument {
 	private AnnotationCache annotationCache;
 	private List<CorpRelDatum> corpRelDatums;
 	private int year;
+	private OutputWriter output;
 
 	public CorpDocument(String annotationFileName,
-						AnnotationCache annotationCache) {	
+						AnnotationCache annotationCache,
+						OutputWriter output) {	
 		this.annotationFileName = annotationFileName;
 		this.annotationCache = annotationCache;
 		this.corpRelDatums = new ArrayList<CorpRelDatum>();
@@ -29,6 +33,8 @@ public class CorpDocument {
 		/* FIXME: Do this slightly differently... */
 		int dateStartIndex = this.annotationFileName.indexOf("-8-K-") + 5;
 		this.year = Integer.parseInt(this.annotationFileName.substring(dateStartIndex, dateStartIndex+4));
+		
+		this.output = output;
 	}
 	
 	public int getYear() {
@@ -116,7 +122,7 @@ public class CorpDocument {
 		        		keyToLabels.put(key, labelPath);
 		        	} 
 	        	} catch (Exception e) {
-	        		System.err.println("Failed to load corporate relationship document: " + path);
+	        		this.output.debugWriteln("Failed to load corporate relationship document: " + path);
 	        		e.printStackTrace();
 	        		continue;
 	        	}

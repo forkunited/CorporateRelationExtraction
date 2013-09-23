@@ -18,6 +18,7 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
+import corp.util.OutputWriter;
 
 /**
  * Construct a random sample of data from documents that have gone
@@ -72,17 +73,19 @@ public class ConstructDataSample {
 			properties.getStanfordAnnotationDirPath(),
 			properties.getStanfordAnnotationCacheSize(),
 			properties.getStanfordCoreMapDirPath(),
-			properties.getStanfordCoreMapCacheSize()
+			properties.getStanfordCoreMapCacheSize(),
+			new OutputWriter()
 		);
 		
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
-				properties.getMaxThreads(),
-				0
+				4,
+				0,
+				new OutputWriter()
 		);
 		
-		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
+		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());
 		List<CorpRelDatum> data = dataSet.getData();
 		HashMap<Integer, Integer> yearDistribution = new HashMap<Integer, Integer>();
 		for (CorpRelDatum datum : data) {

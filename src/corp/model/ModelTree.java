@@ -10,6 +10,7 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
+import corp.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 /**
@@ -27,14 +28,16 @@ public class ModelTree extends Model {
 	private Map<CorpRelLabelPath, Model> models = new HashMap<CorpRelLabelPath, Model>();
 	private boolean allowSubpaths;
 	private Map<CorpRelLabelPath, List<CorpRelFeature>> extraFeatures;
+	private OutputWriter output;
 	
-	public ModelTree(boolean allowSubpaths) {
+	public ModelTree(boolean allowSubpaths, OutputWriter output) {
 		this.validPaths = new ArrayList<CorpRelLabelPath>();
 		this.validPaths.add(new CorpRelLabelPath());
 		
 		this.allowSubpaths = allowSubpaths;
 		this.models = new HashMap<CorpRelLabelPath, Model>();
 		this.extraFeatures = new HashMap<CorpRelLabelPath, List<CorpRelFeature>>();
+		this.output = output;
 	}
 	
 	public boolean addModel(CorpRelLabelPath path, Model model, List<CorpRelFeature> extraFeatures) {
@@ -65,7 +68,7 @@ public class ModelTree extends Model {
 		// TODO Output serialized model for deserialization later
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
 			List<CorpRelDatum> pathData = data.getDataUnderPath(entry.getKey(), this.allowSubpaths);
-			CorpRelFeaturizedDataSet pathDataSet = new CorpRelFeaturizedDataSet();
+			CorpRelFeaturizedDataSet pathDataSet = new CorpRelFeaturizedDataSet(data.getMaxThreads(), this.output);
 			pathDataSet.addData(pathData);
 			for (int i = 0; i < data.getFeatureCount(); i++)
 				pathDataSet.addFeature(data.getFeature(i));
@@ -89,7 +92,7 @@ public class ModelTree extends Model {
 		
 		Map<CorpRelLabelPath, List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>> modelPosteriors = new HashMap<CorpRelLabelPath, List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>>();
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
-			CorpRelFeaturizedDataSet dataExtraFeatures = new CorpRelFeaturizedDataSet();
+			CorpRelFeaturizedDataSet dataExtraFeatures = new CorpRelFeaturizedDataSet(data.getMaxThreads(), this.output);
 			dataExtraFeatures.addData(data.getData());
 			for (int i = 0; i < data.getFeatureCount(); i++)
 				dataExtraFeatures.addFeature(data.getFeature(i));
@@ -134,11 +137,11 @@ public class ModelTree extends Model {
 		
 		CorpRelLabelPath prefixPath = path.getPrefix(path.size() - 1);
 		if (!modelPosteriors.containsKey(prefixPath))
-			System.out.println("MISSING MODEL POSTERIOR " + prefixPath);
+			this.output.debugWriteln("MISSING MODEL POSTERIOR " + prefixPath);
 		else if (modelPosteriors.get(prefixPath) == null)
-			System.out.println("NULL AT MODEL POSTERIOR " + prefixPath);
+			this.output.debugWriteln("NULL AT MODEL POSTERIOR " + prefixPath);
 		if (modelPosteriors.get(prefixPath).get(index) == null)
-			System.out.println("NULL AT " + prefixPath + " " + index);
+			this.output.debugWriteln("NULL AT " + prefixPath + " " + index);
 		
 		Map<CorpRelLabelPath, Double> modelP = modelPosteriors.get(prefixPath).get(index).second();
 		if (!modelP.containsKey(path))
@@ -160,7 +163,7 @@ public class ModelTree extends Model {
 	
 	@Override
 	public Model clone() {
-		ModelTree cloneModel = new ModelTree(this.allowSubpaths);
+		ModelTree cloneModel = new ModelTree(this.allowSubpaths, this.output);
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
 			cloneModel.models.put(entry.getKey(), entry.getValue().clone());
 			cloneModel.extraFeatures.put(entry.getKey(), new ArrayList<CorpRelFeature>());

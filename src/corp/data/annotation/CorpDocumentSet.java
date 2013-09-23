@@ -10,25 +10,29 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import corp.util.OutputWriter;
+
 public class CorpDocumentSet {
 	private String corpRelDirPath;
 	private ConcurrentHashMap<String, CorpDocument> documents; // Map Stanford annotation file names to documents
 	private AnnotationCache annotationCache;
 	private int maxThreads;
+	private OutputWriter output;
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache) {
-		this(corpRelDirPath, annotationCache, 1, 0);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, OutputWriter output) {
+		this(corpRelDirPath, annotationCache, 1, 0, output);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads) {
-		this(corpRelDirPath, annotationCache, maxThreads, 0);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, OutputWriter output) {
+		this(corpRelDirPath, annotationCache, maxThreads, 0, output);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments) {
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, OutputWriter output) {
 		this.corpRelDirPath = corpRelDirPath;
 		this.annotationCache = annotationCache;
 		this.maxThreads = maxThreads;
 		this.documents = new ConcurrentHashMap<String, CorpDocument>();
+		this.output = output;
 		
 		loadDocuments(maxCorpRelDocuments);
 	}
@@ -80,13 +84,13 @@ public class CorpDocumentSet {
 			String corpRelFilePath = this.corpRelFile.getAbsolutePath();
 			int sentenceIndex = sentenceIndexFromCorpRelFileName(corpRelFileName);
 			if (sentenceIndex < 0) {
-				System.err.println("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
+				output.debugWriteln("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
 				return;
 			}
 			
 			String annotationFileName = annotationFileNameFromCorpRelFileName(corpRelFileName);
 			if (annotationFileName == null) {
-				System.err.println("Skipped file: " + corpRelFileName + " (couldn't get annotation file name)");
+				output.debugWriteln("Skipped file: " + corpRelFileName + " (couldn't get annotation file name)");
 				return;
 			}
 				
@@ -102,7 +106,7 @@ public class CorpDocumentSet {
 		if (this.documents.containsKey(annotationFileName)) {
 			document = this.documents.get(annotationFileName);
 		} else {
-			document = new CorpDocument(annotationFileName, this.annotationCache);
+			document = new CorpDocument(annotationFileName, this.annotationCache, this.output);
 			this.documents.put(annotationFileName, document);
 		}
 		

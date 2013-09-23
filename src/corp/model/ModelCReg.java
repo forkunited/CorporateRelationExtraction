@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import corp.util.CommandRunner;
+import corp.util.OutputWriter;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
@@ -28,11 +29,13 @@ import edu.stanford.nlp.util.Pair;
 public class ModelCReg extends Model {
 	private String cmdPath;
 	private String modelPath;
+	private OutputWriter output;
 	
-	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths) {
+	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output) {
 		this.cmdPath = cmdPath;
 		this.modelPath = null;
 		this.validPaths = validPaths;
+		this.output = output;
 	}
 	
 	@Override
@@ -69,14 +72,14 @@ public class ModelCReg extends Model {
 		String trainXPath = outputPath + ".train.x";
 		String trainYPath = outputPath + ".train.y";
 		
-		System.out.println("CReg outputting training data for " + outputPath);
+		this.output.debugWriteln("CReg outputting training data for " + outputPath);
 		
 		if (!outputXData(trainXPath, datums, true))
 			return false;
 		if (!outputYData(trainYPath, datums))
 			return false;
 		
-		System.out.println("CReg training model for " + outputPath);
+		this.output.debugWriteln("CReg training model for " + outputPath);
 		
 		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath;
 		trainCmd = trainCmd.replace("\\", "/"); 
@@ -85,7 +88,7 @@ public class ModelCReg extends Model {
 		
 		this.modelPath = outputPath;
 		
-		System.out.println("CReg finished training model for " + outputPath);
+		this.output.debugWriteln("CReg finished training model for " + outputPath);
 		
 		return true;
 	}
@@ -214,7 +217,7 @@ public class ModelCReg extends Model {
 		String predictXPath = this.modelPath + ".predict.x";
 		String predictOutPath = this.modelPath + ".predict.y";
 		
-		System.out.println("CReg outputting prediction data for " + this.modelPath);
+		this.output.debugWriteln("CReg outputting prediction data for " + this.modelPath);
 		
 		if (!outputXData(predictXPath, data, false))
 			return null;
@@ -224,14 +227,14 @@ public class ModelCReg extends Model {
 		if (!CommandRunner.run(predictCmd))
 			return null;
 		
-		System.out.println("CReg predicting data for " + this.modelPath);
+		this.output.debugWriteln("CReg predicting data for " + this.modelPath);
 		
 		return predictOutPath;
 	}
 	
 	@Override
 	public Model clone() {
-		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths);
+		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output);
 		cloneModel.modelPath = this.modelPath;
 		return cloneModel;
 	}

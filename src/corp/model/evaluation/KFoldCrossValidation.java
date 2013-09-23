@@ -13,6 +13,7 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.Model;
+import corp.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 public class KFoldCrossValidation {
@@ -21,21 +22,24 @@ public class KFoldCrossValidation {
 	private String outputPath;
 	private List<CorpRelFeature> originalFeatures;
 	private Random rand;
+	private OutputWriter output;
 	
 	public KFoldCrossValidation(Model model, 
 								CorpRelFeaturizedDataSet data,
 								int k,
 								String outputPath,
-								Random rand) {
+								Random rand,
+								OutputWriter output) {
 		this.model = model;
 		this.folds = new CorpRelFeaturizedDataSet[k];
 		this.outputPath = outputPath;
 		this.originalFeatures = data.getFeatures();
 		this.rand = rand;
+		this.output = output;
 		
 		List<CorpRelDatum> datums = randomPermutation(data.getData());
 		for (int i = 0; i < k; i++) {
-			folds[i] = new CorpRelFeaturizedDataSet();
+			folds[i] = new CorpRelFeaturizedDataSet(this.output);
 			for (int d = i*datums.size()/k; d < (i+1)*datums.size()/k; d++) {
 				folds[i].addDatum(datums.get(d));
 			}
@@ -68,8 +72,8 @@ public class KFoldCrossValidation {
 		}
 		
 		avgAccuracy /= this.folds.length;
-		System.out.println("Average Accuracy: " + avgAccuracy);
-		System.out.println("Average Confusion Matrix:\n " + aggregateConfusions.toString(1.0/this.folds.length));
+		this.output.resultsWriteln("Average Accuracy: " + avgAccuracy);
+		this.output.resultsWriteln("Average Confusion Matrix:\n " + aggregateConfusions.toString(1.0/this.folds.length));
 		
 		return avgAccuracy;
 	}
@@ -84,9 +88,9 @@ public class KFoldCrossValidation {
 		}
 		
 		public Pair<Double, ConfusionMatrix> call() {
-			System.out.println("Initializing CV data sets for fold " + this.foldIndex);
-			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet(this.maxThreads);
-			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet(this.maxThreads);
+			output.debugWriteln("Initializing CV data sets for fold " + this.foldIndex);
+			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet(this.maxThreads, output);
+			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet(this.maxThreads, output);
 			for (int j = 0; j < folds.length; j++) {
 				if (foldIndex != j) {
 					trainData.addData(folds[j].getData());
@@ -95,7 +99,7 @@ public class KFoldCrossValidation {
 				}
 			}
 			
-			System.out.println("Initializing features for CV fold " + foldIndex);
+			output.debugWriteln("Initializing features for CV fold " + foldIndex);
 			
 			/* Need cloned bunch of features for each fold so that they can be reinitialized for each training set */
 			for (CorpRelFeature feature : originalFeatures) {
@@ -106,17 +110,18 @@ public class KFoldCrossValidation {
 				testData.addFeature(foldFeature);
 			}
 			
-			System.out.println("Training model for CV fold " + foldIndex);
+			output.debugWriteln("Training model for CV fold " + foldIndex);
 			
-			AccuracyValidation accuracy = new AccuracyValidation(model.clone(), trainData, testData, outputPath + "." + foldIndex);
+			AccuracyValidation accuracy = new AccuracyValidation(model.clone(), trainData, testData, outputPath + "." + foldIndex, output);
 			double computedAccuracy = accuracy.run();
 			if (computedAccuracy < 0) {
-				System.err.println("Error: Validation failed on fold " + foldIndex);
+				output.debugWriteln("Error: Validation failed on fold " + foldIndex);
 				return new Pair<Double, ConfusionMatrix>(-1.0, null);
 			} else {
 				ConfusionMatrix confusions = accuracy.getConfusionMatrix();
-				System.out.println("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
-				System.out.println(confusions.getActualToPredictedDescription());
+				output.resultsWriteln("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
+				output.dataWriteln("--------------- Fold: " + foldIndex + " ---------------");
+				output.dataWriteln(confusions.getActualToPredictedDescription());
 				
 				return new Pair<Double, ConfusionMatrix>(computedAccuracy, accuracy.getConfusionMatrix());
 			}

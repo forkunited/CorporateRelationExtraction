@@ -13,6 +13,7 @@ import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
 import corp.util.CounterTable;
+import corp.util.OutputWriter;
 import corp.util.StringUtil;
 
 public class MiscellaneousStats {
@@ -30,7 +31,8 @@ public class MiscellaneousStats {
 			properties.getStanfordAnnotationDirPath(),
 			properties.getStanfordAnnotationCacheSize(),
 			properties.getStanfordCoreMapDirPath(),
-			properties.getStanfordCoreMapCacheSize()
+			properties.getStanfordCoreMapCacheSize(),
+			new OutputWriter()
 		);
 		
 		System.out.println("Loading document set...");
@@ -39,8 +41,9 @@ public class MiscellaneousStats {
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
-				properties.getMaxThreads(),
-				0
+				4,
+				0,
+				new OutputWriter()
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");
@@ -54,7 +57,7 @@ public class MiscellaneousStats {
 		validLabels.add(CorpRelLabel.Error);
 		
 		/* Construct corporate relation data set from documents */
-		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet);
+		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());
 		List<CorpRelDatum> data = dataSet.getData();
 		CounterTable terms = new CounterTable();
 		for (CorpRelDatum datum : data) {
