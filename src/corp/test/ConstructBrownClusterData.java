@@ -15,7 +15,7 @@ import corp.util.StringUtil;
 
 public class ConstructBrownClusterData {
 	public static void main(String[] args) {
-		String outputPath = "C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Brown/Source/cleanBrownAnnotatedDocs";
+		String outputPath = "/home/wmcdowel/sloan/Data/Brown/Source/";
 		
 		CorpProperties properties = new CorpProperties("corp.properties");
 		
