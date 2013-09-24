@@ -28,6 +28,7 @@ import corp.data.feature.CorpRelFeatureSelfInitialism;
 import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeatureSelfShareGazetteerId;
 import corp.data.feature.CorpRelFeaturizedDataSet;
+import corp.util.BrownClusterer;
 import corp.util.CorpProperties;
 import corp.util.OutputWriter;
 import corp.util.StringUtil;
@@ -44,6 +45,7 @@ public abstract class Experiment {
 	protected Map<String, Gazetteer> gazetteers;
 	protected Map<String, CorpMetaData> metaData;
 	protected Map<String, StringUtil.StringTransform> cleanFns;
+	protected Map<String, BrownClusterer> clusterers;
 	
 	protected AnnotationCache annotationCache;
 	protected CorpRelFeaturizedDataSet dataSet;
@@ -81,10 +83,14 @@ public abstract class Experiment {
 		this.gazetteers.put("StopWordCorpScrapedGazetteer", new Gazetteer("StopWordCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("StopWordCleanFn")));
 		this.gazetteers.put("NonCorpScrapedGazetteer", new Gazetteer("NonCorpScraped", this.properties.getNonCorpScrapedGazetteerPath()));
 		
-		this.output.debugWriteln("Loading Meta Data");
+		this.output.debugWriteln("Loading Meta Data...");
 		
 		this.metaData = new HashMap<String, CorpMetaData>();
 		this.metaData.put("CorpMetaData", new CorpMetaData("Corp", this.properties.getCorpMetaDataPath()));
+		
+		this.output.debugWriteln("Loading clusterers...");
+		this.clusterers = new HashMap<String, BrownClusterer>();
+		this.clusterers.put("None", null);
 		
 		this.output.debugWriteln("Loading Annotation Cache...");
 		this.annotationCache = new AnnotationCache(
@@ -187,17 +193,20 @@ public abstract class Experiment {
 			feature = new CorpRelFeatureNGramContext(
 					Integer.valueOf(arguments.get("n")),
 					Integer.valueOf(arguments.get("minFeatureOccurrence")),
-					Integer.valueOf(arguments.get("contextWindowSize")));
+					Integer.valueOf(arguments.get("contextWindowSize")),
+					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("NGramDep")) {
 			feature = new CorpRelFeatureNGramDep(
 					Integer.valueOf(arguments.get("n")), 
 					Integer.valueOf(arguments.get("minFeatureOccurrence")),
 					CorpRelFeatureNGramDep.Mode.valueOf(arguments.get("mode")),
-					Boolean.valueOf(arguments.get("useRelationTypes")));
+					Boolean.valueOf(arguments.get("useRelationTypes")),
+					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("NGramSentence")) {
 			feature = new CorpRelFeatureNGramSentence(
 					Integer.valueOf(arguments.get("n")),
-					Integer.valueOf(arguments.get("minFeatureOccurrence")));
+					Integer.valueOf(arguments.get("minFeatureOccurrence")),
+					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("SelfEditDistance")) {
 			feature = new CorpRelFeatureSelfEditDistance(this.cleanFns.get(arguments.get("cleanFn")));
 		} else if (featureName.equals("SelfInitialism")) {
@@ -247,6 +256,24 @@ public abstract class Experiment {
 			return null;
 		
 		return new Pair<String, String>(first, second);
+	}
+	
+	protected BrownClusterer getClusterer(String name) {
+		if (!name.contains("Brown") || !name.contains("_"))
+			return null;
+		String[] nameParts = name.split("_");
+		int numClusters = Integer.parseInt(nameParts[0]);
+		
+		if (!this.clusterers.containsKey(name)) {
+			this.clusterers.put(name, 
+					new BrownClusterer(name, 
+										this.properties.getBrownClustererCommandPath(), 
+										new File(this.properties.getBrownClustererSourceDocument()), 
+										numClusters,
+										this.output));
+		}
+		
+		return this.clusterers.get(name);
 	}
 	
 	protected abstract void parse(List<String> lines);

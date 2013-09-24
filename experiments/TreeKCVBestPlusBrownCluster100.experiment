@@ -2,7 +2,7 @@ maxThreads=4
 randomSeed=1
 crossValidationFolds=10
 treeAllowSubpaths=false
-maxDocuments=322
+maxDocuments=0
 
 treeModelPath=
 treeModel=CReg
@@ -11,7 +11,7 @@ treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=100_Brown)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
@@ -46,10 +46,11 @@ treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
 treeModelValidPath=OCorp-New
 
-treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=None)
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=None)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=100_Brown)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=100_Brown)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=100_Brown)
 treeModelFeature=SelfEditDistance(cleanFn=DefaultCleanFn)
 treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=DefaultCleanFn)
 treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=DefaultCleanFn)
 treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=DefaultCleanFn)
+

@@ -7,6 +7,7 @@ import java.util.List;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
+import corp.util.BrownClusterer;
 import corp.util.StanfordUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
@@ -28,11 +29,21 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 			int minFeatureOccurrence,
 			CorpRelFeatureNGramDep.Mode mode,
 			boolean useRelationTypes) {
+		this(n, minFeatureOccurrence, mode, useRelationTypes, null);
+	}
+	
+	public CorpRelFeatureNGramDep(
+			int n, 
+			int minFeatureOccurrence,
+			CorpRelFeatureNGramDep.Mode mode,
+			boolean useRelationTypes,
+			BrownClusterer clusterer) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.mode = mode;
 		this.useRelationTypes = useRelationTypes;
 		this.namePrefix = "Dep_" + this.mode + ((this.useRelationTypes) ? "_Rel" : "");
+		this.clusterer = clusterer;
 	}
 
 	@Override
@@ -82,6 +93,6 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureNGramDep(this.n, this.minFeatureOccurrence, this.mode, this.useRelationTypes);
+		return new CorpRelFeatureNGramDep(this.n, this.minFeatureOccurrence, this.mode, this.useRelationTypes, this.clusterer);
 	}
 }

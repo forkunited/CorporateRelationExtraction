@@ -44,7 +44,9 @@ public class ConstructBrownClusterData {
 					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(document.getSentenceAnnotation(i));
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
-						sentenceStr = sentenceStr.append(StringUtil.clean(tokenText)).append(" ");
+						String cleanTokenText = StringUtil.clean(tokenText);
+						if (cleanTokenText.length() != 0)
+							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
 					w.write(sentenceStr.toString().trim() + "\n");
 				}

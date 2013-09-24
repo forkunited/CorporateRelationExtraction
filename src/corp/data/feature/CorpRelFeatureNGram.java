@@ -8,15 +8,19 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
+import corp.util.BrownClusterer;
 import corp.util.CounterTable;
 import corp.util.StanfordUtil;
 import corp.util.Stemmer;
+import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	protected int minFeatureOccurrence;
 	protected int n;
 	protected String namePrefix;
+	protected BrownClusterer clusterer;
+	
 	private HashMap<String, Integer> vocabulary;
 
 	@Override
@@ -49,7 +53,12 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	@Override
 	public List<String> getNames(List<String> existingNames) {
 		List<String> names = new ArrayList<String>(Collections.nCopies(this.vocabulary.size(), (String)null));
-		String name = "NGram_" + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_"; 
+		
+		String clustererName = "";
+		if (this.clusterer != null)
+			clustererName = this.clusterer.getName() + "_";
+		
+		String name = "NGram_" + clustererName + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_"; 
 		for (Entry<String, Integer> v : this.vocabulary.entrySet())
 			names.set(v.getValue(), name + v.getKey());
 		existingNames.addAll(names);
@@ -61,7 +70,16 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		List<String> ngram = StanfordUtil.getTokensNGramTexts(tokens, startIndex, this.n);
 		StringBuilder ngramGlue = new StringBuilder();
 		for (String gram : ngram) {
-			ngramGlue = ngramGlue.append(Stemmer.stem(gram.toLowerCase())).append("_");
+			if (this.clusterer != null) {
+				String cluster = this.clusterer.getCluster(StringUtil.clean(gram));
+				if (cluster != null) {
+					ngramGlue = ngramGlue.append(cluster).append("_");
+				} else {
+					ngramGlue = ngramGlue.append(Stemmer.stem(gram.toLowerCase())).append("_");
+				}
+			} else { 
+				ngramGlue = ngramGlue.append(Stemmer.stem(gram.toLowerCase())).append("_");
+			}
 		}
 		ngramGlue = ngramGlue.delete(ngramGlue.length() - 1, ngramGlue.length());
 		return ngramGlue.toString();

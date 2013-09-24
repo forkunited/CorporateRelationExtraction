@@ -6,6 +6,7 @@ import java.util.List;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
+import corp.util.BrownClusterer;
 import corp.util.StanfordUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
@@ -16,12 +17,20 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 			int n, 
 			int minFeatureOccurrence,
 			int contextWindowSize) {
+		this(n, minFeatureOccurrence, contextWindowSize, null);
+	}
+	
+	public CorpRelFeatureNGramContext(
+			int n, 
+			int minFeatureOccurrence,
+			int contextWindowSize,
+			BrownClusterer clusterer) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.contextWindowSize = contextWindowSize;
 		this.namePrefix = "Context" + contextWindowSize;
+		this.clusterer = clusterer;
 	}
-
 
 	@Override
 	protected HashSet<String> getNGramsForDatum(CorpRelDatum datum) {
@@ -42,6 +51,6 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureNGramContext(this.n, this.minFeatureOccurrence, this.contextWindowSize);
+		return new CorpRelFeatureNGramContext(this.n, this.minFeatureOccurrence, this.contextWindowSize, this.clusterer);
 	}
 }

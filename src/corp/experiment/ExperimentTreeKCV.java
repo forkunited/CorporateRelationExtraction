@@ -24,7 +24,7 @@ public class ExperimentTreeKCV extends Experiment {
 		List<Pair<Integer, Integer>> modelStartEndLines = new ArrayList<Pair<Integer, Integer>>();
 		int currentModelStartLine = -1;
 		
-		this.output.dataWriteln("Parsing tree models...");
+		this.output.debugWriteln("Parsing tree models...");
 		
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);

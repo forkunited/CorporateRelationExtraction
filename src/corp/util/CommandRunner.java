@@ -1,6 +1,7 @@
 package corp.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 
 public class CommandRunner {
@@ -9,15 +10,15 @@ public class CommandRunner {
 	 * See http://stackoverflow.com/questions/7200307/execute-unix-system-command-from-java-problem
 	 * @param cmd
 	 */
-	public static boolean run(String cmd){
+	public static boolean run(String cmd) {
+		return run(cmd, null);
+	}
+	
+	public static boolean run(String cmd, File dir){
         try {  
         	String[] cmds = constructCommandsBySystem(cmd);
         	String[] env = constructEnvironmentBySystem();
-        	Process p = null; 
-        	if (env == null)
-        		p = Runtime.getRuntime().exec(cmds);
-        	else
-        		p = Runtime.getRuntime().exec(cmds, env);
+        	Process p = Runtime.getRuntime().exec(cmds, env, dir);
         	
         	BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         	while ((reader.readLine()) != null) {}

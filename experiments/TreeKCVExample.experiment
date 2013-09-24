@@ -11,9 +11,9 @@ treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
-treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2)
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)
@@ -61,9 +61,9 @@ treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
 treeModelValidPath=OCorp-New
 
-treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2)
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)

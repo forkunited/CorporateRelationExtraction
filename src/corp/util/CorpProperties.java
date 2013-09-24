@@ -18,6 +18,8 @@ public class CorpProperties {
 	private String corpMetaDataPath;
 	private String experimentInputPath;
 	private String experimentOutputPath;
+	private String brownClustererCommandPath;
+	private String brownClustererSourceDocument;
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -39,6 +41,8 @@ public class CorpProperties {
 			this.corpMetaDataPath = properties.getProperty("corpMetaDataPath");
 			this.experimentInputPath = properties.getProperty("experimentInputPath");
 			this.experimentOutputPath = properties.getProperty("experimentOutputPath");
+			this.brownClustererCommandPath = properties.getProperty("brownClustererCommandPath");
+			this.brownClustererSourceDocument = properties.getProperty("brownClustererSourceDocument");
 			
 			reader.close();
 		} catch (Exception e) {
@@ -100,5 +104,13 @@ public class CorpProperties {
 	
 	public String getExperimentInputPath() {
 		return this.experimentInputPath;
+	}
+	
+	public String getBrownClustererCommandPath() {
+		return this.brownClustererCommandPath;
+	}
+	
+	public String getBrownClustererSourceDocument() {
+		return this.brownClustererSourceDocument;
 	}
 }
