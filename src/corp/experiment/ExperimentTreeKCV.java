@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeature;
+import corp.model.Model;
 import corp.model.ModelCReg;
 import corp.model.ModelTree;
+import corp.model.ModelUniform;
 import corp.model.evaluation.KFoldCrossValidation;
 import edu.stanford.nlp.util.Pair;
 
@@ -56,6 +58,7 @@ public class ExperimentTreeKCV extends Experiment {
 		CorpRelLabelPath modelPath = null;
 		List<CorpRelLabelPath> modelValidPaths = new ArrayList<CorpRelLabelPath>();
 		List<CorpRelFeature> modelFeatures = new ArrayList<CorpRelFeature>();
+		Model model = null;
 		for (int i = modelStartEndLine.first(); i < modelStartEndLine.second(); i++) {
 			Pair<String, String> assignment = parseAssignment(lines.get(i));
 			if (assignment == null) {
@@ -63,7 +66,10 @@ public class ExperimentTreeKCV extends Experiment {
 			} else if (assignment.first().equals("treeModelPath")) {
 				modelPath = CorpRelLabelPath.fromString(assignment.second());
 			} else if (assignment.first().equals("treeModel")) {
-				// FIXME: Doing nothing for now... so only CReg supported
+				if (assignment.second().equals("CReg"))
+					model = new ModelCReg(this.properties.getCregCommandPath(), modelValidPaths, this.output);
+				else
+					model = new ModelUniform(modelValidPaths, this.output);
 			} else if (assignment.first().equals("treeModelValidPath")) {
 				modelValidPaths.add(CorpRelLabelPath.fromString(assignment.second()));
 			} else if (assignment.first().equals("treeModelFeature")) {
@@ -75,7 +81,6 @@ public class ExperimentTreeKCV extends Experiment {
 								 " with " + modelValidPaths.size() + " valid output paths and " + modelFeatures.size() +
 								 " features.");
 		
-		ModelCReg model = new ModelCReg(this.properties.getCregCommandPath(), modelValidPaths, this.output);
 		this.modelTree.addModel(modelPath, model, modelFeatures);
 	}
 
