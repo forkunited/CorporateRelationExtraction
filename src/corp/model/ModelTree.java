@@ -179,4 +179,16 @@ public class ModelTree extends Model {
 		
 		return cloneModel;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder retStr = new StringBuilder();
+		
+		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
+			retStr.append(entry.getKey().toString()).append("\n");
+			retStr.append(entry.getValue().toString()).append("\n\n\n");
+		}
+		
+		return retStr.toString();
+	}
 }

@@ -87,22 +87,52 @@ public class ConfusionMatrix {
 		for (int i = 0; i < this.labelPaths.size(); i++) {
 			confusionMatrixStr.append(this.labelPaths.get(i)).append(" (P)\t");
 		}
+		confusionMatrixStr.append("Total\tIncorrect\t% Incorrect\n");
 		
-		confusionMatrixStr.append("\n");
 		DecimalFormat cleanDouble = new DecimalFormat("0.00");
+		double[] colTotals = new double[this.labelPaths.size()];
+		double[] colIncorrects = new double[this.labelPaths.size()];
 		for (int i = 0; i < this.labelPaths.size(); i++) {
 			confusionMatrixStr.append(this.labelPaths.get(i)).append(" (A)\t");
+			double rowTotal = 0.0;
+			double rowIncorrect = 0.0;
 			for (int j = 0; j < this.labelPaths.size(); j++) {
 				if (confusionMatrix.containsKey(this.labelPaths.get(i)) && confusionMatrix.get(this.labelPaths.get(i)).containsKey(this.labelPaths.get(j))) {
-					String cleanDoubleStr = cleanDouble.format(confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j)));
+					double value = confusionMatrix.get(this.labelPaths.get(i)).get(this.labelPaths.get(j));
+					String cleanDoubleStr = cleanDouble.format(value);
 					confusionMatrixStr.append(cleanDoubleStr)
 									  .append("\t");
 				
+					rowTotal += value;
+					rowIncorrect += ((i == j) ? 0 : value);
+					colTotals[i] += value;
+					colIncorrects[i] += ((i == j) ? 0 : value);
 				} else
 					confusionMatrixStr.append("0.0\t");
 			}
-			confusionMatrixStr.append("\n");
+			
+			confusionMatrixStr.append(cleanDouble.format(rowTotal))
+							  .append("\t")
+							  .append(cleanDouble.format(rowIncorrect))
+							  .append("\t")
+							  .append(rowTotal == 0 ? 0.0 : cleanDouble.format(100.0*rowIncorrect/rowTotal))
+							  .append("\n");
 		}
+		
+		confusionMatrixStr.append("Total\t");
+		for (int i = 0; i < colTotals.length; i++)
+			confusionMatrixStr.append(cleanDouble.format(colTotals[i])).append("\t");
+		confusionMatrixStr.append("\n");
+		
+		confusionMatrixStr.append("Incorrect\t");
+		for (int i = 0; i < colIncorrects.length; i++)
+			confusionMatrixStr.append(cleanDouble.format(colIncorrects[i])).append("\t");
+		confusionMatrixStr.append("\n");
+		
+		confusionMatrixStr.append("% Incorrect\t");
+		for (int i = 0; i < colTotals.length; i++)
+			confusionMatrixStr.append(colTotals[i] == 0 ? 0.0 : cleanDouble.format(100.0*colIncorrects[i]/colTotals[i])).append("\t");
+		confusionMatrixStr.append("\n");
 		
 		return confusionMatrixStr.toString();
 	}

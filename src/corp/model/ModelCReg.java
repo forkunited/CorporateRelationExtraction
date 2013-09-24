@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -237,5 +239,45 @@ public class ModelCReg extends Model {
 		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output);
 		cloneModel.modelPath = this.modelPath;
 		return cloneModel;
+	}
+	
+	@Override
+	public String toString() {
+		TreeMap<Double, List<String>> sortedWeights = new TreeMap<Double, List<String>>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(this.modelPath));
+			String line = null;
+			
+			while ((line = br.readLine()) != null) {
+				String[] lineParts = line.split("\t");
+				Double value = null;
+				if (lineParts.length < 3)
+					continue;
+				try {
+					value = Math.abs(Double.parseDouble(lineParts[2]));
+				} catch (NumberFormatException e) {
+					continue;
+				}
+				
+				if (!sortedWeights.containsKey(value))
+					sortedWeights.put(value, new ArrayList<String>());
+				sortedWeights.get(value).add(line);
+			}
+	        
+	        br.close();
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+		
+		StringBuilder retStr = new StringBuilder();
+		
+		retStr.append("CReg Model (").append(this.modelPath).append(")\n");
+		
+		NavigableMap<Double, List<String>> descendingWeights = sortedWeights.descendingMap();
+		for (List<String> lines : descendingWeights.values())
+			for (String line : lines)
+				retStr.append(line).append("\n");
+		
+		return retStr.toString();
 	}
 }

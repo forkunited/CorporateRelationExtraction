@@ -65,7 +65,8 @@ public abstract class Experiment {
 		this.output = new OutputWriter(
 			new File(this.properties.getExperimentOutputPath(), name + ".debug.out"),
 			new File(this.properties.getExperimentOutputPath(), name + ".results.out"),
-			new File(this.properties.getExperimentOutputPath(), name + ".data.out")
+			new File(this.properties.getExperimentOutputPath(), name + ".data.out"),
+			new File(this.properties.getExperimentOutputPath(), name + ".model.out")
 		);
 		
 		this.output.debugWriteln("Loading Gazetteers...");

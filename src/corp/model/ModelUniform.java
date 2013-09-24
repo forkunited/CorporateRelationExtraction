@@ -52,4 +52,8 @@ public class ModelUniform extends Model {
 		return cloneModel;
 	}
 
+	@Override
+	public String toString() {
+		return "";
+	}
 }

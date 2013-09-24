@@ -112,7 +112,8 @@ public class KFoldCrossValidation {
 			
 			output.debugWriteln("Training model for CV fold " + foldIndex);
 			
-			AccuracyValidation accuracy = new AccuracyValidation(model.clone(), trainData, testData, outputPath + "." + foldIndex, output);
+			Model foldModel = model.clone();
+			AccuracyValidation accuracy = new AccuracyValidation(foldModel, trainData, testData, outputPath + "." + foldIndex, output);
 			double computedAccuracy = accuracy.run();
 			if (computedAccuracy < 0) {
 				output.debugWriteln("Error: Validation failed on fold " + foldIndex);
@@ -122,6 +123,8 @@ public class KFoldCrossValidation {
 				output.resultsWriteln("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
 				output.dataWriteln("--------------- Fold: " + foldIndex + " ---------------");
 				output.dataWriteln(confusions.getActualToPredictedDescription());
+				output.modelWriteln("--------------- Fold: " + foldIndex + " ---------------");
+				output.modelWriteln(foldModel.toString());
 				
 				return new Pair<Double, ConfusionMatrix>(computedAccuracy, accuracy.getConfusionMatrix());
 			}
