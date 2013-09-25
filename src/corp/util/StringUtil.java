@@ -1,10 +1,14 @@
 package corp.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import corp.data.Gazetteer;
 
 public class StringUtil {
 	/* String cleaning and measure helpers... maybe move these to separate classes later. */
-
+	
 	public interface StringTransform {
 		String transform(String str);
 		String toString(); // Return constant name for this transformation (used in feature names)
@@ -12,6 +16,11 @@ public class StringUtil {
 	
 	public interface StringPairMeasure {
 		double compute(String str1, String str2);
+	}
+	
+	public interface StringCollectionTransform {
+		Collection<String> transform(String str);
+		String toString();
 	}
 	
 	public static StringUtil.StringTransform getDefaultCleanFn() {
@@ -39,6 +48,18 @@ public class StringUtil {
 				return stopWords.removeTerms(str);
 			}
 		};
+	}
+	
+	public static StringUtil.StringCollectionTransform getPrefixesFn() {
+		return new StringUtil.StringCollectionTransform() {
+			public String toString() {
+				return "Prefixes";
+			}
+			
+			public Collection<String> transform(String str) {
+				return StringUtil.prefixes(str);
+			}
+		};	
 	}
 	
 	/**
@@ -122,5 +143,13 @@ public class StringUtil {
 		}
 		
 		return cleanStr.trim();
+	}
+	
+	public static Collection<String> prefixes(String str) {
+		List<String> prefixes = new ArrayList<String>();
+		for (int i = 1; i <= str.length(); i++) {
+			prefixes.add(str.substring(0, i));
+		}
+		return prefixes;
 	}
 }

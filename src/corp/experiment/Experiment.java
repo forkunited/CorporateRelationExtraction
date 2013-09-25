@@ -45,6 +45,7 @@ public abstract class Experiment {
 	protected Map<String, Gazetteer> gazetteers;
 	protected Map<String, CorpMetaData> metaData;
 	protected Map<String, StringUtil.StringTransform> cleanFns;
+	protected Map<String, StringUtil.StringCollectionTransform> collectionFns;
 	protected Map<String, BrownClusterer> clusterers;
 	
 	protected AnnotationCache annotationCache;
@@ -71,9 +72,12 @@ public abstract class Experiment {
 		
 		this.output.debugWriteln("Loading Gazetteers...");
 
+		this.collectionFns = new HashMap<String, StringUtil.StringCollectionTransform>();
 		this.cleanFns = new HashMap<String, StringUtil.StringTransform>();
 		this.gazetteers = new HashMap<String, Gazetteer>();
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
+		this.collectionFns.put("Prefixes", StringUtil.getPrefixesFn());
+		this.collectionFns.put("None", null);
 		
 		this.gazetteers.put("StopWord", new Gazetteer("StopWord", properties.getStopWordGazetteerPath()));
 		this.cleanFns.put("StopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWord")));
@@ -189,7 +193,8 @@ public abstract class Experiment {
 					this.metaData.get(arguments.get("metaData")),
 					CorpMetaData.Attribute.valueOf(arguments.get("attribute")),
 					CorpRelFeatureMetaDataAttribute.InputType.valueOf(arguments.get("inputType")),
-					Integer.parseInt(arguments.get("minFeatureOccurrence")));	
+					Integer.parseInt(arguments.get("minFeatureOccurrence")),
+					this.collectionFns.get(arguments.get("attributeTransformFn")));	
 		} else if (featureName.equals("NGramContext")) {
 			feature = new CorpRelFeatureNGramContext(
 					Integer.valueOf(arguments.get("n")),

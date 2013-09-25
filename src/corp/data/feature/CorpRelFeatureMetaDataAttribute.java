@@ -12,6 +12,7 @@ import corp.data.Gazetteer;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.CounterTable;
+import corp.util.StringUtil;
 
 public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	public enum InputType {
@@ -26,6 +27,21 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	private CorpRelFeatureMetaDataAttribute.InputType inputType;
 	private HashMap<String, Integer> attributeVocabulary = new HashMap<String, Integer>();
 	private int minFeatureOccurrence;
+	private StringUtil.StringCollectionTransform attributeTransformFn;
+	
+	public CorpRelFeatureMetaDataAttribute(Gazetteer gazetteer, 
+			   CorpMetaData metaData, 
+			   CorpMetaData.Attribute attribute,
+			   CorpRelFeatureMetaDataAttribute.InputType inputType,
+			   int minFeatureOccurrence,
+			   StringUtil.StringCollectionTransform attributeTransformFn) {
+		this.gazetteer = gazetteer;
+		this.metaData = metaData;
+		this.attribute = attribute;
+		this.inputType = inputType;
+		this.minFeatureOccurrence = minFeatureOccurrence;
+		this.attributeTransformFn = attributeTransformFn;
+	}
 	
 	public CorpRelFeatureMetaDataAttribute(Gazetteer gazetteer, 
 										   CorpMetaData metaData, 
@@ -37,6 +53,7 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 		this.attribute = attribute;
 		this.inputType = inputType;
 		this.minFeatureOccurrence = minFeatureOccurrence;
+		this.attributeTransformFn = null;
 	}
 	
 	@Override
@@ -58,7 +75,9 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	public List<String> getNames(List<String> existingNames) {
 		List<String> names = new ArrayList<String>(Collections.nCopies(this.attributeVocabulary.size(), (String)null));
 		
-		String namePrefix = "MetaDataAttribute_" + this.gazetteer.getName() + "_" + this.metaData.getName() + "_" + this.attribute + "_" + this.inputType + "_";
+		String transformName = (this.attributeTransformFn == null) ? "" : this.attributeTransformFn.toString() + "_";
+		
+		String namePrefix = "MetaDataAttribute_" + this.gazetteer.getName() + "_" + this.metaData.getName() + "_" + transformName + this.attribute + "_" + this.inputType + "_";
 		for (Entry<String, Integer> entry : this.attributeVocabulary.entrySet())
 			names.set(entry.getValue(), namePrefix + entry.getKey());
 		existingNames.addAll(names);
@@ -84,7 +103,7 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureMetaDataAttribute(this.gazetteer, this.metaData, this.attribute, this.inputType, this.minFeatureOccurrence);
+		return new CorpRelFeatureMetaDataAttribute(this.gazetteer, this.metaData, this.attribute, this.inputType, this.minFeatureOccurrence, this.attributeTransformFn);
 	}
 	
 	private HashSet<String> getMentionerAttributeValues(CorpRelDatum datum) {
@@ -131,7 +150,10 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 		
 		for (String id : ids) {
 			String attributeValue = this.metaData.getAttributeById(id, this.attribute);
-			attributeValues.add(attributeValue);
+			if (this.attributeTransformFn == null)
+				attributeValues.add(attributeValue);
+			else 
+				attributeValues.addAll(this.attributeTransformFn.transform(attributeValue));
 		}
 		
 		return attributeValues;

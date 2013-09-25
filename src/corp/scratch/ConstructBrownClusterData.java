@@ -1,4 +1,4 @@
-package corp.test;
+package corp.scratch;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

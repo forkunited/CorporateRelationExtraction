@@ -1,4 +1,4 @@
-package corp.test;
+package corp.scratch;
 
 import java.util.ArrayList;
 import java.util.List;

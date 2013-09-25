@@ -1,4 +1,4 @@
-package corp.test;
+package corp.scratch;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import corp.data.feature.CorpRelFeatureSelfEditDistance;
 import corp.data.feature.CorpRelFeatureSelfInitialism;
 import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeaturizedDataSet;
-import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.model.ModelCReg;
 import corp.util.CorpProperties;
 import corp.util.OutputWriter;

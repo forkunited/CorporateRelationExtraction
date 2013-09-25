@@ -1,5 +1,5 @@
-package corp.experiment;
-
+package corp.scratch;
+/*
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import corp.model.ModelCReg;
 import corp.model.evaluation.KFoldCrossValidation;
 import corp.util.CorpProperties;
 import corp.util.StringUtil;
-
+*/
 public class CRegKFoldCrossValidation {
 	public static void main(String[] args) {
 		/*System.out.println("Loading configuration properties...");
