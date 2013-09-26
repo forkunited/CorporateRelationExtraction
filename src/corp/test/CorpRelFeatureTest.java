@@ -1,6 +1,6 @@
 package corp.test;
 
-import static org.junit.Assert.*;
+/*import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ import corp.data.feature.CorpRelFeatureNGramSentence;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
+import corp.util.OutputWriter;*/
 
 public class CorpRelFeatureTest {
-	private static OutputWriter output;
+	/*private static OutputWriter output;
 	private static CorpProperties properties;
 	private static CorpRelFeaturizedDataSet dataSet;
 	
@@ -114,5 +114,5 @@ public class CorpRelFeatureTest {
 			CorpRelFeatureTest.output.debugWriteln(datum.toString());
 			CorpRelFeatureTest.output.debugWriteln(datum.getFeatureValues().toString());
 		}
-	}
+	}*/
 }
