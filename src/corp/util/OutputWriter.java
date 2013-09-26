@@ -35,6 +35,7 @@ public class OutputWriter {
 	
 	public void debugWrite(String str) {
 		System.out.print(str);
+		System.out.flush();
 		if (this.debugWriter == null)
 			return;
 			
@@ -55,7 +56,8 @@ public class OutputWriter {
 	
 	public void resultsWrite(String str) {
 		if (this.resultsWriter == null) {
-			System.out.println(str);
+			System.out.print(str);
+			System.out.flush();
 			return;
 		}
 		
@@ -76,7 +78,8 @@ public class OutputWriter {
 	
 	public void dataWrite(String str) {
 		if (this.dataWriter == null) {
-			System.out.println(str);
+			System.out.print(str);
+			System.out.flush();
 			return;
 		}
 		
@@ -97,7 +100,8 @@ public class OutputWriter {
 	
 	public void modelWrite(String str) {
 		if (this.modelWriter == null) {
-			System.out.println(str);
+			System.out.print(str);
+			System.out.flush();
 			return;
 		}
 		

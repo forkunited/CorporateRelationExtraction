@@ -76,6 +76,9 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 					if (depIndex < tokens.size() - this.n + 1 
 							&& (depIndex < startIndex || depIndex >= endIndex)) {
 						String ngram = getCleanNGram(tokens, depIndex);
+						if (ngram == null)
+							continue;
+						
 						if (this.useRelationTypes) {
 							GrammaticalRelation gr = deps.reln(word, depWord);
 							if (gr == null)

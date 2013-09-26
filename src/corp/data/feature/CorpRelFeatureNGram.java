@@ -70,17 +70,24 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		List<String> ngram = StanfordUtil.getTokensNGramTexts(tokens, startIndex, this.n);
 		StringBuilder ngramGlue = new StringBuilder();
 		for (String gram : ngram) {
+			String cleanGram = StringUtil.clean(gram);
+			if (cleanGram.length() == 0)
+				continue;
 			if (this.clusterer != null) {
-				String cluster = this.clusterer.getCluster(StringUtil.clean(gram));
+				String cluster = this.clusterer.getCluster(cleanGram);
 				if (cluster != null) {
 					ngramGlue = ngramGlue.append(cluster).append("_");
 				} else {
-					ngramGlue = ngramGlue.append(Stemmer.stem(gram.toLowerCase())).append("_");
+					ngramGlue = ngramGlue.append(Stemmer.stem(cleanGram)).append("_");
 				}
 			} else { 
-				ngramGlue = ngramGlue.append(Stemmer.stem(gram.toLowerCase())).append("_");
+				ngramGlue = ngramGlue.append(Stemmer.stem(cleanGram)).append("_");
 			}
 		}
+		
+		if (ngramGlue.length() == 0)
+			return null;
+		
 		ngramGlue = ngramGlue.delete(ngramGlue.length() - 1, ngramGlue.length());
 		return ngramGlue.toString();
 	}

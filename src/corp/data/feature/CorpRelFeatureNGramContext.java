@@ -28,7 +28,9 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.contextWindowSize = contextWindowSize;
+		
 		this.namePrefix = "Context" + contextWindowSize;
+		
 		this.clusterer = clusterer;
 	}
 
@@ -41,8 +43,10 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 			List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(document.getSentenceAnnotation(tokenSpan.getSentenceIndex()));
 			int startIndex = Math.max(0, tokenSpan.getTokenStartIndex() - this.contextWindowSize);
 			int endIndex = Math.min(tokens.size(), tokenSpan.getTokenEndIndex() + this.contextWindowSize) - this.n + 1;
-			for (int i = startIndex; i < endIndex; i++) {
-				ngrams.add(getCleanNGram(tokens, i));
+			for (int i = startIndex; i < endIndex; i++) {				
+				String ngram = getCleanNGram(tokens, i);
+				if (ngram != null)
+					ngrams.add(ngram);
 			}
 		}
 		return ngrams;

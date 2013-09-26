@@ -5,6 +5,7 @@ import java.util.Properties;
 
 public class CorpProperties {
 	private String corpRelDirPath;
+	private String corpRelTestDirPath;
 	private String stanfordAnnotationDirPath;
 	private int stanfordAnnotationCacheSize;
 	private String stanfordCoreMapDirPath;
@@ -28,6 +29,7 @@ public class CorpProperties {
 			properties.load(reader);
 			
 			this.corpRelDirPath = properties.getProperty("corpRelDirPath");
+			this.corpRelTestDirPath = properties.getProperty("corpRelTestDirPath");
 			this.stanfordAnnotationDirPath = properties.getProperty("stanfordAnnotationDirPath");
 			this.stanfordAnnotationCacheSize = Integer.valueOf(properties.getProperty("stanfordAnnotationCacheSize"));
 			this.stanfordCoreMapDirPath = properties.getProperty("stanfordCoreMapDirPath");
@@ -52,6 +54,10 @@ public class CorpProperties {
 	
 	public String getCorpRelDirPath() {
 		return this.corpRelDirPath;
+	}
+	
+	public String getCorpRelTestDirPath() {
+		return this.corpRelTestDirPath;
 	}
 	
 	public String getStanfordAnnotationDirPath() {

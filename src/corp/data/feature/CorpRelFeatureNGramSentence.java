@@ -36,7 +36,9 @@ public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
 			List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(document.getSentenceAnnotation(tokenSpan.getSentenceIndex()));
 			for (int i = 0; i < tokens.size()-this.n+1; i++) {
-				ngrams.add(getCleanNGram(tokens, i));
+				String ngram = getCleanNGram(tokens, i);
+				if (ngram != null)
+					ngrams.add(ngram);
 			}
 		}
 		return ngrams;
