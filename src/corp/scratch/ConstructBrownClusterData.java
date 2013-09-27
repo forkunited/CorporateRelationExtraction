@@ -15,9 +15,18 @@ import corp.util.StringUtil;
 
 public class ConstructBrownClusterData {
 	public static void main(String[] args) {
-		String outputPath = "/home/wmcdowel/sloan/Data/Brown/Source/cleanAnnotatedBrownDocs";
-		
+
+	}
+	
+	protected void constructForAll() {
 		CorpProperties properties = new CorpProperties("corp.properties");
+		String outputPath = properties.getBrownClustererSourceDocument();
+		
+	}
+	
+	protected void constructForAnnotated() {
+		CorpProperties properties = new CorpProperties("corp.properties");
+		String outputPath = properties.getBrownClustererSourceDocument();
 		
 		AnnotationCache annotationCache = new AnnotationCache(
 				properties.getStanfordAnnotationDirPath(),
