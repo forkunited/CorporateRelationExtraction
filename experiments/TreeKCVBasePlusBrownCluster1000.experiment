@@ -2,7 +2,7 @@ maxThreads=4
 randomSeed=1
 crossValidationFolds=10
 treeAllowSubpaths=false
-maxDocuments=0
+maxDocuments=4
 
 treeModelPath=
 treeModel=CReg

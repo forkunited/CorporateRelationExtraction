@@ -25,7 +25,10 @@ public class BrownClusterer {
 		this.cmdPath = cmdPath;
 		this.output = output;
 		
-		this.sourceName = sourceDocument.getName().split(".")[0];
+		if (sourceDocument.getName().contains("."))
+			this.sourceName = sourceDocument.getName().split(".")[0];
+		else
+			this.sourceName = sourceDocument.getName();
 		this.clusterDocument = new File(this.sourceDocument.getParentFile().getAbsolutePath(), 
 										this.sourceName + "-c" + this.numClusters + "-p1.out/paths");
 		this.wordsToClusters = null;
