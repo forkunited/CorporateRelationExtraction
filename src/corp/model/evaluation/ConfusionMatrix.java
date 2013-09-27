@@ -105,8 +105,8 @@ public class ConfusionMatrix {
 				
 					rowTotal += value;
 					rowIncorrect += ((i == j) ? 0 : value);
-					colTotals[i] += value;
-					colIncorrects[i] += ((i == j) ? 0 : value);
+					colTotals[j] += value;
+					colIncorrects[j] += ((i == j) ? 0 : value);
 				} else
 					confusionMatrixStr.append("0.0\t");
 			}
