@@ -18,12 +18,6 @@ public class ConstructBrownClusterData {
 
 	}
 	
-	protected void constructForAll() {
-		CorpProperties properties = new CorpProperties("corp.properties");
-		String outputPath = properties.getBrownClustererSourceDocument();
-		
-	}
-	
 	protected void constructForAnnotated() {
 		CorpProperties properties = new CorpProperties("corp.properties");
 		String outputPath = properties.getBrownClustererSourceDocument();
@@ -64,4 +58,33 @@ public class ConstructBrownClusterData {
 			w.close();
         } catch (IOException e) { e.printStackTrace(); }
 	}
+	
+	protected void constructForAll() {
+		CorpProperties properties = new CorpProperties("corp.properties");
+		String outputPath = properties.getBrownClustererSourceDocument();
+		
+		
+		/////////////////
+		/*
+        try {
+    		BufferedWriter w = new BufferedWriter(new FileWriter(outputPath));
+        
+			List<CorpDocument> documents = documentSet.getDocuments();
+			for (CorpDocument document : documents) {
+				for (int i = 0; i < document.getSentenceCount(); i++) {
+					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(document.getSentenceAnnotation(i));
+					StringBuilder sentenceStr = new StringBuilder();
+					for (String tokenText : tokenTexts) {
+						String cleanTokenText = StringUtil.clean(tokenText);
+						if (cleanTokenText.length() != 0)
+							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
+					}
+					w.write(sentenceStr.toString().trim() + "\n");
+				}
+			}
+		
+			w.close();
+        } catch (IOException e) { e.printStackTrace(); }*/
+	}
+	
 }
