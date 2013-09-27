@@ -43,7 +43,6 @@ treeModelValidPath=OCorp-Suply
 treeModelValidPath=OCorp-Compete
 treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
-treeModelValidPath=OCorp-New
 
 treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=500_Brown)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=500_Brown)

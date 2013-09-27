@@ -22,7 +22,6 @@ treeModelValidPath=OCorp-Suply
 treeModelValidPath=OCorp-Compete
 treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
-treeModelValidPath=OCorp-New
 
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=1, clusterer=None)

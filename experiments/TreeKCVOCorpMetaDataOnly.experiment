@@ -22,7 +22,6 @@ treeModelValidPath=OCorp-Suply
 treeModelValidPath=OCorp-Compete
 treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
-treeModelValidPath=OCorp-New
 
 treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioned, minFeatureOccurrence=2, attributeTransformFn=None)
 treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioner, minFeatureOccurrence=2, attributeTransformFn=None)
