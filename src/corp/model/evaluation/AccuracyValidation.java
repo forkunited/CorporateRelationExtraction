@@ -43,6 +43,7 @@ public class AccuracyValidation {
 		this.output.debugWriteln("Computing model score (" + this.modelOutputPath + ")");
 		
 		double correct = 0;
+		double total = 0;
 		for (Pair<CorpRelDatum, CorpRelLabelPath> classifiedDatum : classifiedData) {
 			if (classifiedDatum.first().getLabelPath() == null)
 				continue;
@@ -50,12 +51,13 @@ public class AccuracyValidation {
 			if (actual == null)
 				continue;
 			correct += actual.equals(classifiedDatum.second()) ? 1.0 : 0;
+			total++;
 		}
 		
 		this.confusionMatrix = new ConfusionMatrix(this.model.getValidLabelPaths());
 		this.confusionMatrix.addData(classifiedData);
 		
-		return correct/classifiedData.size();
+		return correct/total;
 	}
 	
 	public ConfusionMatrix getConfusionMatrix() {
