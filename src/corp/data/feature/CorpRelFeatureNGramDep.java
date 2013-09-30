@@ -9,6 +9,7 @@ import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.BrownClusterer;
 import corp.util.StanfordUtil;
+import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -29,7 +30,7 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 			int minFeatureOccurrence,
 			CorpRelFeatureNGramDep.Mode mode,
 			boolean useRelationTypes) {
-		this(n, minFeatureOccurrence, mode, useRelationTypes, null);
+		this(n, minFeatureOccurrence, mode, useRelationTypes, StringUtil.getDefaultCleanFn(), null);
 	}
 	
 	public CorpRelFeatureNGramDep(
@@ -37,12 +38,14 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 			int minFeatureOccurrence,
 			CorpRelFeatureNGramDep.Mode mode,
 			boolean useRelationTypes,
+			StringUtil.StringTransform cleanFn,
 			BrownClusterer clusterer) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.mode = mode;
 		this.useRelationTypes = useRelationTypes;
 		this.namePrefix = "Dep_" + this.mode + ((this.useRelationTypes) ? "_Rel" : "");
+		this.cleanFn = cleanFn;
 		this.clusterer = clusterer;
 	}
 
@@ -96,6 +99,6 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureNGramDep(this.n, this.minFeatureOccurrence, this.mode, this.useRelationTypes, this.clusterer);
+		return new CorpRelFeatureNGramDep(this.n, this.minFeatureOccurrence, this.mode, this.useRelationTypes, this.cleanFn, this.clusterer);
 	}
 }

@@ -8,6 +8,7 @@ import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.BrownClusterer;
 import corp.util.StanfordUtil;
+import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
@@ -15,16 +16,18 @@ public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 	public CorpRelFeatureNGramSentence(
 			int n, 
 			int minFeatureOccurrence) {
-		this(n, minFeatureOccurrence, null);
+		this(n, minFeatureOccurrence, StringUtil.getDefaultCleanFn(), null);
 	}
 	
 	public CorpRelFeatureNGramSentence(
 			int n, 
 			int minFeatureOccurrence,
+			StringUtil.StringTransform cleanFn,
 			BrownClusterer clusterer) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
 		this.namePrefix = "Sentence";
+		this.cleanFn = cleanFn;
 		this.clusterer = clusterer;
 	}
 
@@ -47,6 +50,6 @@ public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureNGramSentence(this.n, this.minFeatureOccurrence, this.clusterer);
+		return new CorpRelFeatureNGramSentence(this.n, this.minFeatureOccurrence, this.cleanFn, this.clusterer);
 	}
 }

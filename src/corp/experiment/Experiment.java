@@ -75,18 +75,21 @@ public abstract class Experiment {
 		this.collectionFns = new HashMap<String, StringUtil.StringCollectionTransform>();
 		this.cleanFns = new HashMap<String, StringUtil.StringTransform>();
 		this.gazetteers = new HashMap<String, Gazetteer>();
-		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
+		
 		this.collectionFns.put("Prefixes", StringUtil.getPrefixesFn());
 		this.collectionFns.put("None", null);
 		
 		this.gazetteers.put("StopWord", new Gazetteer("StopWord", properties.getStopWordGazetteerPath()));
-		this.cleanFns.put("StopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWord")));
-		
+		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
 		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
 		this.gazetteers.put("CorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath()));
 		this.gazetteers.put("CorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath()));
 		this.gazetteers.put("StopWordCorpScrapedGazetteer", new Gazetteer("StopWordCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("StopWordCleanFn")));
 		this.gazetteers.put("NonCorpScrapedGazetteer", new Gazetteer("NonCorpScraped", this.properties.getNonCorpScrapedGazetteerPath()));
+		
+		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
+		this.cleanFns.put("StopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWord")));
+		this.cleanFns.put("NGramStopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWord")));
 		
 		this.output.debugWriteln("Loading Meta Data...");
 		
@@ -200,6 +203,7 @@ public abstract class Experiment {
 					Integer.valueOf(arguments.get("n")),
 					Integer.valueOf(arguments.get("minFeatureOccurrence")),
 					Integer.valueOf(arguments.get("contextWindowSize")),
+					this.cleanFns.get(arguments.get("cleanFn")),
 					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("NGramDep")) {
 			feature = new CorpRelFeatureNGramDep(
@@ -207,11 +211,13 @@ public abstract class Experiment {
 					Integer.valueOf(arguments.get("minFeatureOccurrence")),
 					CorpRelFeatureNGramDep.Mode.valueOf(arguments.get("mode")),
 					Boolean.valueOf(arguments.get("useRelationTypes")),
+					this.cleanFns.get(arguments.get("cleanFn")),
 					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("NGramSentence")) {
 			feature = new CorpRelFeatureNGramSentence(
 					Integer.valueOf(arguments.get("n")),
 					Integer.valueOf(arguments.get("minFeatureOccurrence")),
+					this.cleanFns.get(arguments.get("cleanFn")),
 					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("SelfEditDistance")) {
 			feature = new CorpRelFeatureSelfEditDistance(this.cleanFns.get(arguments.get("cleanFn")));

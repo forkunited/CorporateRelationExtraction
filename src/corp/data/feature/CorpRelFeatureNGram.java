@@ -19,6 +19,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	protected int minFeatureOccurrence;
 	protected int n;
 	protected String namePrefix;
+	protected StringUtil.StringTransform cleanFn;
 	protected BrownClusterer clusterer;
 	
 	private HashMap<String, Integer> vocabulary;
@@ -70,7 +71,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		List<String> ngram = StanfordUtil.getTokensNGramTexts(tokens, startIndex, this.n);
 		StringBuilder ngramGlue = new StringBuilder();
 		for (String gram : ngram) {
-			String cleanGram = StringUtil.clean(gram);
+			String cleanGram = this.cleanFn.transform(gram);
 			if (cleanGram.length() == 0)
 				continue;
 			if (this.clusterer != null) {

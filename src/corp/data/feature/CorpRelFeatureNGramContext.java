@@ -8,6 +8,7 @@ import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.BrownClusterer;
 import corp.util.StanfordUtil;
+import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
@@ -17,13 +18,14 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 			int n, 
 			int minFeatureOccurrence,
 			int contextWindowSize) {
-		this(n, minFeatureOccurrence, contextWindowSize, null);
+		this(n, minFeatureOccurrence, contextWindowSize, StringUtil.getDefaultCleanFn(), null);
 	}
 	
 	public CorpRelFeatureNGramContext(
 			int n, 
 			int minFeatureOccurrence,
 			int contextWindowSize,
+			StringUtil.StringTransform cleanFn,
 			BrownClusterer clusterer) {
 		this.n = n;
 		this.minFeatureOccurrence = minFeatureOccurrence;
@@ -31,6 +33,7 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 		
 		this.namePrefix = "Context" + contextWindowSize;
 		
+		this.cleanFn = cleanFn;
 		this.clusterer = clusterer;
 	}
 
@@ -55,6 +58,6 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 
 	@Override
 	public CorpRelFeature clone() {
-		return new CorpRelFeatureNGramContext(this.n, this.minFeatureOccurrence, this.contextWindowSize, this.clusterer);
+		return new CorpRelFeatureNGramContext(this.n, this.minFeatureOccurrence, this.contextWindowSize, this.cleanFn, this.clusterer);
 	}
 }

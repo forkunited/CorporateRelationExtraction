@@ -16,6 +16,7 @@ public class CorpProperties {
 	private String corpMetaDataGazetteerPath;
 	private String nonCorpScrapedGazetteerPath;
 	private String stopWordGazetteerPath;
+	private String ngramStopWordGazetteerPath;
 	private String corpMetaDataPath;
 	private String experimentInputPath;
 	private String experimentOutputPath;
@@ -40,6 +41,7 @@ public class CorpProperties {
 			this.corpMetaDataGazetteerPath = properties.getProperty("corpMetaDataGazetteerPath");
 			this.nonCorpScrapedGazetteerPath = properties.getProperty("nonCorpScrapedGazetteerPath");
 			this.stopWordGazetteerPath = properties.getProperty("stopWordGazetteerPath");
+			this.ngramStopWordGazetteerPath = properties.getProperty("ngramStopWordGazetteerPath");
 			this.corpMetaDataPath = properties.getProperty("corpMetaDataPath");
 			this.experimentInputPath = properties.getProperty("experimentInputPath");
 			this.experimentOutputPath = properties.getProperty("experimentOutputPath");
@@ -98,6 +100,10 @@ public class CorpProperties {
 	
 	public String getStopWordGazetteerPath() {
 		return this.stopWordGazetteerPath;
+	}
+	
+	public String getNGramStopWordGazetteerPath() {
+		return this.ngramStopWordGazetteerPath;
 	}
 	
 	public String getCorpMetaDataPath() {

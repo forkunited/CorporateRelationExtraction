@@ -11,9 +11,9 @@ treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
-treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=None)
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=None)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=NGramStopWordCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=NGramStopWordCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=NGramStopWordCleanFn, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)
@@ -60,9 +60,9 @@ treeModelValidPath=OCorp-Compete
 treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
 
-treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=None)
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=None)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=NGramStopWordCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=NGramStopWordCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=NGramStopWordCleanFn, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=StopWordCorpScrapedGazetteer, inputType=Mentioned)

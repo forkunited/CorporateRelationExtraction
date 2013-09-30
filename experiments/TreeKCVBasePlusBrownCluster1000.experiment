@@ -11,7 +11,7 @@ treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=1000_Brown)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=NGramStopWordCleanFn, clusterer=1000_Brown)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
@@ -44,9 +44,9 @@ treeModelValidPath=OCorp-Compete
 treeModelValidPath=OCorp-News
 treeModelValidPath=OCorp-Finance
 
-treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, clusterer=1000_Brown)
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=1000_Brown)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, clusterer=1000_Brown)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=NGramStopWordCleanFn, clusterer=1000_Brown)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=NGramStopWordCleanFn, clusterer=1000_Brown)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=NGramStopWordCleanFn, clusterer=1000_Brown)
 treeModelFeature=SelfEditDistance(cleanFn=DefaultCleanFn)
 treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=DefaultCleanFn)
 treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=DefaultCleanFn)

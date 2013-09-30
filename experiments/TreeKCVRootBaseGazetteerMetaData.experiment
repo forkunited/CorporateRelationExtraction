@@ -11,7 +11,7 @@ treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
-treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=NGramStopWordCleanFn, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpMetaDataGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
