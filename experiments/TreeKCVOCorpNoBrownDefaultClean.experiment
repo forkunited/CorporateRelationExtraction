@@ -1,6 +1,6 @@
 maxThreads=4
 randomSeed=1
-crossValidationFolds=10
+crossValidationFolds=2
 treeAllowSubpaths=false
 maxDocuments=0
 
@@ -32,7 +32,7 @@ treeModelFeature=NGramContext(n=2, minFeatureOccurrence=2, contextWindowSize=2, 
 treeModelFeature=NGramContext(n=3, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=3, minFeatureOccurrence=2, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=3, minFeatureOccurrence=2, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=None)
-treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultWordCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramDep(n=2, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramDep(n=3, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
