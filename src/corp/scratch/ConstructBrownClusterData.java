@@ -78,7 +78,7 @@ public class ConstructBrownClusterData {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				16,
-				0,
+				1,
 				-1,
 				new OutputWriter()
 		);
