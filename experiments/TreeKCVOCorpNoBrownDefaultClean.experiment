@@ -1,6 +1,6 @@
 maxThreads=4
 randomSeed=1
-crossValidationFolds=2
+crossValidationFolds=10
 treeAllowSubpaths=false
 maxDocuments=0
 
