@@ -92,7 +92,7 @@ public class ConstructBrownClusterData {
 				List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(annotation);
 				
 				for (int i = 0; i < sentenceAnnotations.size(); i++) {
-					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(document.getSentenceAnnotation(i));
+					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(sentenceAnnotations.get(i));
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
