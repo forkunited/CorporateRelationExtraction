@@ -75,7 +75,7 @@ public class CorpDocument {
 					curNerSpanStart = j;
 				} else if (!nerLabels.get(j).equals("ORGANIZATION") && curNerSpanStart >= 0) {
 					CorpDocumentTokenSpan tokenSpan = new CorpDocumentTokenSpan(this, i, curNerSpanStart, j);
-					String nerKey = StringUtil.clean(tokenSpan.toString()).replace(" ", "_");
+					String nerKey = StringUtil.clean(tokenSpan.toString(false)).replace(" ", "_");
 					if (!nerSpans.containsKey(nerKey))
 						nerSpans.put(nerKey, new ArrayList<CorpDocumentTokenSpan>());
 					nerSpans.get(nerKey).add(tokenSpan);
@@ -85,7 +85,7 @@ public class CorpDocument {
 			
 			if (curNerSpanStart >= 0) {
 				CorpDocumentTokenSpan tokenSpan = new CorpDocumentTokenSpan(this, i, curNerSpanStart, nerLabels.size());
-				String nerKey = StringUtil.clean(tokenSpan.toString()).replace(" ", "_");
+				String nerKey = StringUtil.clean(tokenSpan.toString(false)).replace(" ", "_");
 				if (!nerSpans.containsKey(nerKey))
 					nerSpans.put(nerKey, new ArrayList<CorpDocumentTokenSpan>());
 				nerSpans.get(nerKey).add(tokenSpan);

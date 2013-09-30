@@ -4,6 +4,7 @@ import java.util.List;
 
 import corp.util.StanfordUtil;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.util.CoreMap;
 
 /**
  * Represents a span of tokens in a CorpDocument.  
@@ -63,7 +64,17 @@ public class CorpDocumentTokenSpan {
 	
 	@Override
 	public String toString() {
-		List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(this.document.getSentenceAnnotation(this.sentenceIndex));
+		return toString(true);
+	}
+	
+	public String toString(boolean useSentenceAnnotation) {
+		CoreMap sentenceAnnotation = null;
+		if (useSentenceAnnotation)
+			sentenceAnnotation = this.document.getSentenceAnnotation(this.sentenceIndex);
+		else
+			sentenceAnnotation = StanfordUtil.getDocumentSentence(this.document.getAnnotation(), this.sentenceIndex);
+		
+		List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(sentenceAnnotation);
 		List<String> tokenSpanTokens = StanfordUtil.getTokensNGramTexts(tokens, this.tokenStartIndex, this.tokenEndIndex-this.tokenStartIndex);
 		StringBuilder str = new StringBuilder();
 		
