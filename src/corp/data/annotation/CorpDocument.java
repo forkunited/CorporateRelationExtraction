@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import corp.util.OutputWriter;
+import corp.util.StanfordUtil;
+import corp.util.StringUtil;
 
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
@@ -61,7 +63,44 @@ public class CorpDocument {
 		return this.annotationCache.getSentenceCount(this.annotationFileName);
 	}
 	
-	public boolean loadCorpRelsFromFile(String path, int sentenceIndex) {		
+	public boolean loadUnannotatedCorpRels() {
+		Annotation documentAnnotation = this.annotationCache.getDocumentAnnotation(this.annotationFileName);
+		List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(documentAnnotation);
+		HashMap<String, List<CorpDocumentTokenSpan>> nerSpans = new HashMap<String, List<CorpDocumentTokenSpan>>();
+		for (int i = 0; i < sentenceAnnotations.size(); i++) {
+			List<String> nerLabels = StanfordUtil.getSentenceNamedEntityTags(sentenceAnnotations.get(i));
+			int curNerSpanStart = -1;
+			for (int j = 0; j < nerLabels.size(); j++) {
+				if (nerLabels.get(j).equals("ORGANIZATION") && curNerSpanStart < 0) {
+					curNerSpanStart = j;
+				} else if (!nerLabels.get(j).equals("ORGANIZATION") && curNerSpanStart >= 0) {
+					CorpDocumentTokenSpan tokenSpan = new CorpDocumentTokenSpan(this, i, curNerSpanStart, j);
+					String nerKey = StringUtil.clean(tokenSpan.toString()).replace(" ", "_");
+					if (!nerSpans.containsKey(nerKey))
+						nerSpans.put(nerKey, new ArrayList<CorpDocumentTokenSpan>());
+					nerSpans.get(nerKey).add(tokenSpan);
+					curNerSpanStart = -1;
+				}
+			}
+			
+			if (curNerSpanStart >= 0) {
+				CorpDocumentTokenSpan tokenSpan = new CorpDocumentTokenSpan(this, i, curNerSpanStart, nerLabels.size());
+				String nerKey = StringUtil.clean(tokenSpan.toString()).replace(" ", "_");
+				if (!nerSpans.containsKey(nerKey))
+					nerSpans.put(nerKey, new ArrayList<CorpDocumentTokenSpan>());
+				nerSpans.get(nerKey).add(tokenSpan);
+			}
+		}
+		
+		for (List<CorpDocumentTokenSpan> tokenSpan : nerSpans.values()) {
+			CorpRelDatum datum = new CorpRelDatum("", tokenSpan); // FIXME: Get author corp name from meta data
+			this.corpRelDatums.add(datum);
+		}
+		
+		return true;
+	}
+	
+	public boolean loadAnnotatedCorpRelsFromFile(String path, int sentenceIndex) {		
 		String authorCorpName = null;
 		HashMap<String, List<CorpDocumentTokenSpan>> keyToTokenSpans = new HashMap<String, List<CorpDocumentTokenSpan>>();
 		HashMap<String, CorpRelLabel[]> keyToLabels = new HashMap<String, CorpRelLabel[]>();

@@ -116,6 +116,7 @@ public abstract class Experiment {
 				this.annotationCache,
 				this.maxThreads,
 				this.maxDocuments,
+				0,
 				this.output
 		);
 		

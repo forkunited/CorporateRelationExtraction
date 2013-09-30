@@ -46,6 +46,7 @@ public class Scratch {
 				annotationCache,
 				4,
 				args.length > 0 ? Integer.parseInt(args[0]) : 5,
+				0,
 				new OutputWriter()
 		);
 		

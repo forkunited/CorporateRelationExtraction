@@ -43,6 +43,7 @@ public class MiscellaneousStats {
 				annotationCache,
 				4,
 				0,
+				0,
 				new OutputWriter()
 		);
 		

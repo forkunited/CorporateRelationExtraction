@@ -12,10 +12,12 @@ import corp.util.CorpProperties;
 import corp.util.OutputWriter;
 import corp.util.StanfordUtil;
 import corp.util.StringUtil;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.util.CoreMap;
 
 public class ConstructBrownClusterData {
 	public static void main(String[] args) {
-
+		constructForAll();
 	}
 	
 	protected void constructForAnnotated() {
@@ -34,6 +36,7 @@ public class ConstructBrownClusterData {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				4,
+				0,
 				0,
 				new OutputWriter()
 		);
@@ -59,19 +62,36 @@ public class ConstructBrownClusterData {
         } catch (IOException e) { e.printStackTrace(); }
 	}
 	
-	protected void constructForAll() {
+	protected static void constructForAll() {
 		CorpProperties properties = new CorpProperties("corp.properties");
 		String outputPath = properties.getBrownClustererSourceDocument();
 		
-		
-		/////////////////
-		/*
+		AnnotationCache annotationCache = new AnnotationCache(
+				properties.getStanfordAnnotationDirPath(),
+				properties.getStanfordAnnotationCacheSize(),
+				properties.getStanfordCoreMapDirPath(),
+				properties.getStanfordCoreMapCacheSize(),
+				new OutputWriter()
+		);
+			
+		CorpDocumentSet documentSet = new CorpDocumentSet(
+				properties.getCorpRelDirPath(), 
+				annotationCache,
+				4,
+				0,
+				-1,
+				new OutputWriter()
+		);
+			
         try {
     		BufferedWriter w = new BufferedWriter(new FileWriter(outputPath));
         
 			List<CorpDocument> documents = documentSet.getDocuments();
 			for (CorpDocument document : documents) {
-				for (int i = 0; i < document.getSentenceCount(); i++) {
+				Annotation annotation = document.getAnnotation();
+				List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(annotation);
+				
+				for (int i = 0; i < sentenceAnnotations.size(); i++) {
 					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(document.getSentenceAnnotation(i));
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
@@ -84,7 +104,8 @@ public class ConstructBrownClusterData {
 			}
 		
 			w.close();
-        } catch (IOException e) { e.printStackTrace(); }*/
+        } catch (IOException e) { e.printStackTrace(); }
+
 	}
 	
 }

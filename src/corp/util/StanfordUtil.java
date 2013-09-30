@@ -67,11 +67,8 @@ public class StanfordUtil {
 	}
 	
 	public static List<String> getDocumentSentenceNamedEntityTags(Annotation documentAnnotation, int sentenceIndex) {
-		List<CoreLabel> tokens = StanfordUtil.getDocumentSentenceTokens(documentAnnotation, sentenceIndex);
-		List<String> tokenNamedEntityTags = new ArrayList<String>();
-		for (CoreLabel token : tokens)
-			tokenNamedEntityTags.add(StanfordUtil.getTokenNamedEntityTag(token));
-		return tokenNamedEntityTags;
+		return StanfordUtil.getSentenceNamedEntityTags(
+				StanfordUtil.getDocumentSentence(documentAnnotation, sentenceIndex));
 	}
 	
 	public static Tree getDocumentSentenceParseTree(Annotation documentAnnotation, int sentenceIndex) {
@@ -97,6 +94,14 @@ public class StanfordUtil {
 			tokenTexts.add(StanfordUtil.getTokenText(token));
 		}
 		return tokenTexts;
+	}
+	
+	public static List<String> getSentenceNamedEntityTags(CoreMap sentenceAnnotation) {
+		List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(sentenceAnnotation);
+		List<String> tokenNamedEntityTags = new ArrayList<String>();
+		for (CoreLabel token : tokens)
+			tokenNamedEntityTags.add(StanfordUtil.getTokenNamedEntityTag(token));
+		return tokenNamedEntityTags;
 	}
 	
 	public static List<String> getTokensNGramTexts(List<CoreLabel> tokens, int startIndex, int n) {

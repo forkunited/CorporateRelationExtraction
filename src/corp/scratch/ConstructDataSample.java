@@ -82,6 +82,7 @@ public class ConstructDataSample {
 				annotationCache,
 				4,
 				0,
+				0,
 				new OutputWriter()
 		);
 		

@@ -14,34 +14,102 @@ import corp.util.OutputWriter;
 
 public class CorpDocumentSet {
 	private String corpRelDirPath;
-	private ConcurrentHashMap<String, CorpDocument> documents; // Map Stanford annotation file names to documents
+	private ConcurrentHashMap<String, CorpDocument> annotatedDocuments; // Map Stanford annotation file names to documents
+	private ConcurrentHashMap<String, CorpDocument> unannotatedDocuments;
 	private AnnotationCache annotationCache;
 	private int maxThreads;
 	private OutputWriter output;
 	
 	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, OutputWriter output) {
-		this(corpRelDirPath, annotationCache, 1, 0, output);
+		this(corpRelDirPath, annotationCache, 1, 0, 0, output);
 	}
 	
 	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, OutputWriter output) {
-		this(corpRelDirPath, annotationCache, maxThreads, 0, output);
+		this(corpRelDirPath, annotationCache, maxThreads, 0, 0, output);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, OutputWriter output) {
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output) {
 		this.corpRelDirPath = corpRelDirPath;
 		this.annotationCache = annotationCache;
 		this.maxThreads = maxThreads;
-		this.documents = new ConcurrentHashMap<String, CorpDocument>();
+		this.annotatedDocuments = new ConcurrentHashMap<String, CorpDocument>();
+		this.unannotatedDocuments = new ConcurrentHashMap<String, CorpDocument>();
 		this.output = output;
 		
-		loadDocuments(maxCorpRelDocuments);
+		loadAnnotatedDocuments(maxCorpRelDocuments);
+		loadUnannotatedDocuments(maxUnannotatedDocuments);
 	}
 	
 	public List<CorpDocument> getDocuments() {
-		return new ArrayList<CorpDocument>(documents.values());
+		List<CorpDocument> documents = new ArrayList<CorpDocument>();
+		
+		documents.addAll(getAnnotatedDocuments());
+		documents.addAll(getUnannotatedDocuments());
+		
+		return documents;
 	}
 	
-	private void loadDocuments(int maxCorpRelDocuments) {
+	public List<CorpDocument> getAnnotatedDocuments() {
+		return new ArrayList<CorpDocument>(this.annotatedDocuments.values());
+	}
+	
+	public List<CorpDocument> getUnannotatedDocuments() {
+		return new ArrayList<CorpDocument>(this.unannotatedDocuments.values());
+	}
+	
+	private void loadUnannotatedDocuments(int maxUnannotatedDocuments) {
+		if (maxUnannotatedDocuments == 0)
+			return;
+		File annotationDir = new File(this.annotationCache.getDocAnnoDirPath());
+		try {
+			if (!annotationDir.exists() || !annotationDir.isDirectory())
+				throw new IllegalArgumentException("Invalid annotation document directory: " + annotationDir.getAbsolutePath());
+
+			ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
+			File[] annotationFiles = annotationDir.listFiles();
+			Arrays.sort(annotationFiles, new Comparator<File>() { // Ensure determinism
+			    public int compare(File o1, File o2) {
+			        return o1.getAbsolutePath().compareTo(o2.getAbsolutePath());
+			    }
+			});
+			
+			int numDocuments = 0;
+			for (File annotationFile : annotationFiles) {
+				
+				if (!this.annotatedDocuments.containsKey(annotationFile.getName()))
+					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile));
+				
+				numDocuments++;
+				if (maxUnannotatedDocuments > 0 && numDocuments >= maxUnannotatedDocuments)
+					break;
+			}
+			
+			threadPool.shutdown();
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+	
+	}
+	
+	private class UnannotatedDocumentLoadThread implements Runnable {
+		private File annotationFile;
+		
+		public UnannotatedDocumentLoadThread(File annotationFile) {
+			this.annotationFile = annotationFile;
+		}
+		
+		public void run() {
+			CorpDocument document = new CorpDocument(this.annotationFile.getName(), annotationCache, output);;
+			unannotatedDocuments.put(this.annotationFile.getName(), document);
+			synchronized (document) {
+				document.loadUnannotatedCorpRels();
+			}
+		}
+	}
+	
+	
+	private void loadAnnotatedDocuments(int maxCorpRelDocuments) {
 		File corpRelDir = new File(this.corpRelDirPath);
 		
 		try {
@@ -58,7 +126,7 @@ public class CorpDocumentSet {
 			
 			int numDocuments = 0;
 			for (File corpRelFile : corpRelFiles) {
-				threadPool.submit(new DocumentLoadThread(corpRelFile));
+				threadPool.submit(new AnnotatedDocumentLoadThread(corpRelFile));
 				
 				numDocuments++;
 				if (maxCorpRelDocuments != 0 && numDocuments >= maxCorpRelDocuments)
@@ -72,10 +140,10 @@ public class CorpDocumentSet {
 		}
 	}
 		
-	private class DocumentLoadThread implements Runnable {
+	private class AnnotatedDocumentLoadThread implements Runnable {
 		private File corpRelFile;
 		
-		public DocumentLoadThread(File corpRelFile) {
+		public AnnotatedDocumentLoadThread(File corpRelFile) {
 			this.corpRelFile = corpRelFile;
 		}
 		
@@ -94,20 +162,20 @@ public class CorpDocumentSet {
 				return;
 			}
 				
-			CorpDocument document = fetchDocumentOrAdd(annotationFileName);
+			CorpDocument document = fetchAnnotatedDocumentOrAdd(annotationFileName);
 			synchronized (document) {
-				document.loadCorpRelsFromFile(corpRelFilePath, sentenceIndex);
+				document.loadAnnotatedCorpRelsFromFile(corpRelFilePath, sentenceIndex);
 			}
 		}
 	}
 	
-	private synchronized CorpDocument fetchDocumentOrAdd(String annotationFileName) {
+	private synchronized CorpDocument fetchAnnotatedDocumentOrAdd(String annotationFileName) {
 		CorpDocument document = null;
-		if (this.documents.containsKey(annotationFileName)) {
-			document = this.documents.get(annotationFileName);
+		if (this.annotatedDocuments.containsKey(annotationFileName)) {
+			document = this.annotatedDocuments.get(annotationFileName);
 		} else {
 			document = new CorpDocument(annotationFileName, this.annotationCache, this.output);
-			this.documents.put(annotationFileName, document);
+			this.annotatedDocuments.put(annotationFileName, document);
 		}
 		
 		return document;
