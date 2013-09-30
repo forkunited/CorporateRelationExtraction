@@ -1,4 +1,4 @@
-maxThreads=4
+maxThreads=32
 randomSeed=1
 crossValidationFolds=10
 treeAllowSubpaths=false
