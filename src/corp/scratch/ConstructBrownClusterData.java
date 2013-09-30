@@ -77,7 +77,7 @@ public class ConstructBrownClusterData {
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
-				4,
+				16,
 				0,
 				-1,
 				new OutputWriter()
