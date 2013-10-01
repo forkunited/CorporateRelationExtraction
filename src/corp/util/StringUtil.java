@@ -135,14 +135,14 @@ public class StringUtil {
 						   .replaceAll("\\s+", " ");
 		
 		// Remove single character words
-		cleanStrBuilder = new StringBuilder();
+		/*cleanStrBuilder = new StringBuilder();
 		tokens = cleanStr.split(" ");
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].length() > 1)
 				cleanStrBuilder.append(tokens[i]).append(" ");
-		}
-		
-		return cleanStrBuilder.toString().trim();
+		}*/
+		//return cleanStrBuilder.toString().trim();
+		return cleanStr;
 	}
 	
 	public static Collection<String> prefixes(String str) {
