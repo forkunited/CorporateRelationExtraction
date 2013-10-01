@@ -140,8 +140,8 @@ public class StringUtil {
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].length() > 1)
 				cleanStrBuilder.append(tokens[i]).append(" ");
-		}*/
-		//return cleanStrBuilder.toString().trim();
+		}
+		return cleanStrBuilder.toString().trim();*/
 		return cleanStr;
 	}
 	
