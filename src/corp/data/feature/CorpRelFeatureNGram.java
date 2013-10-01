@@ -71,7 +71,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		List<String> ngram = StanfordUtil.getTokensNGramTexts(tokens, startIndex, this.n);
 		StringBuilder ngramGlue = new StringBuilder();
 		for (String gram : ngram) {
-			String cleanGram = this.cleanFn.transform(gram);
+			String cleanGram = gram.toLowerCase();//this.cleanFn.transform(gram);
 			if (cleanGram.length() == 0)
 				continue;
 			if (this.clusterer != null) {
