@@ -107,7 +107,7 @@ public class ConstructGazetteer {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				4,
-				0,
+				100,
 				0,
 				new OutputWriter()
 		);
