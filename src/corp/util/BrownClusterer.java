@@ -38,7 +38,7 @@ public class BrownClusterer {
 		return this.name;
 	}
 	
-	public String getCluster(String word) {
+	public synchronized String getCluster(String word) {
 		if (this.wordsToClusters == null)
 			if (!loadWordsToClusters())
 				return null;	
@@ -47,7 +47,7 @@ public class BrownClusterer {
 		return this.wordsToClusters.get(word);
 	}
 	
-	public Map<String, String> getClusterMap() {
+	public synchronized Map<String, String> getClusterMap() {
 		if (this.wordsToClusters == null)
 			if (!loadWordsToClusters())
 				return null;
