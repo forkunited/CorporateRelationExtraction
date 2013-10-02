@@ -134,11 +134,9 @@ public class ConstructGazetteer {
 				String key = keyFn.transform(entry.getValue().getName());
 				if (!entitySet.containsKey(key))
 					entitySet.put(key, new HashSet<String>());
-				String cleanName = cleanFn.transform(entry.getValue().getName());
 				String cleanTicker = cleanFn.transform(entry.getValue().getTicker()); 
-				entitySet.get(key).add(cleanName);
+				entitySet.get(key).add(entry.getValue().getName());
 				entitySet.get(key).add(cleanTicker);
-				addedNames.add(cleanName);
 				addedNames.add(cleanTicker);
 			}
 			
@@ -148,7 +146,7 @@ public class ConstructGazetteer {
 					String key = keyFn.transform(datum.getAuthorCorpName());
 					if (!entitySet.containsKey(key))
 						entitySet.put(key, new HashSet<String>());
-					entitySet.get(key).add(cleanAuthor);
+					entitySet.get(key).add(datum.getAuthorCorpName());
 				}
 				
 				List<CorpDocumentTokenSpan> otherOrgs = datum.getOtherOrgTokenSpans();
@@ -161,7 +159,7 @@ public class ConstructGazetteer {
 					if (!addedNames.contains(cleanOrg)) {
 						if (!entitySet.containsKey(key))
 							entitySet.put(key, new HashSet<String>());
-						entitySet.get(key).add(cleanOrg);
+						entitySet.get(key).add(otherOrg.toString());
 					}
 				}
 			}
