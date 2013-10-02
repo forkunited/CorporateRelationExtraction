@@ -142,7 +142,7 @@ public class StringUtil {
 				cleanStrBuilder.append(tokens[i]).append(" ");
 		}
 		return cleanStrBuilder.toString().trim();*/
-		return cleanStr;
+		return cleanStr.trim();
 	}
 	
 	public static Collection<String> prefixes(String str) {
