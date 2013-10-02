@@ -55,7 +55,7 @@ public class BrownClusterer {
 		return this.wordsToClusters;
 	}
 	
-	private boolean loadWordsToClusters() {
+	private synchronized boolean loadWordsToClusters() {
 		if (!this.clusterDocument.exists())
 			if (!runClustering())
 				return false;
