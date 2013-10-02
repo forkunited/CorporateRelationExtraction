@@ -59,7 +59,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		if (this.clusterer != null)
 			clustererName = this.clusterer.getName() + "_";
 		
-		String name = "NGram_" + clustererName + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_"; 
+		String name = "NGram_" + clustererName + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_" + this.cleanFn.toString() + "_"; 
 		for (Entry<String, Integer> v : this.vocabulary.entrySet())
 			names.set(v.getValue(), name + v.getKey());
 		existingNames.addAll(names);
