@@ -79,7 +79,7 @@ public abstract class Experiment {
 		this.collectionFns.put("Prefixes", StringUtil.getPrefixesFn());
 		this.collectionFns.put("None", null);
 		
-		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", properties.getStopWordGazetteerPath()));
+		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
 		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
 		
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());

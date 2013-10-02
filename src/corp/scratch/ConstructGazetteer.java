@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.CorpMetaData;
+import corp.util.CorpProperties;
 
 /**
  * Stubs for constructing clean Gazetteers from old messy Gazetteer files
@@ -74,6 +75,13 @@ public class ConstructGazetteer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void constructOrgEntitySet(String outputFile) {
+		// Load meta data
+		// Load noncorp gazetteer
+		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpMetaData metaData = new CorpMetaData("gazetteerSource", properties.getCorpMetaDataPath());
 		
 	}
 }
