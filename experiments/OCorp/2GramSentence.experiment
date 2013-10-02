@@ -25,4 +25,4 @@ treeModelValidPath=OCorp-Finance
 treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
-treeModelFeature=NGramSentence(n=2, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramSentence(n=2, minFeatureOccurrence=4, cleanFn=DefaultCleanFn, clusterer=None)

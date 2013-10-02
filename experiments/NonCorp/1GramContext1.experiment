@@ -6,23 +6,20 @@ maxDocuments=0
 
 treeModelPath=
 treeModel=Uniform
-treeModelValidPath=OCorp
+treeModelValidPath=NonCorp
 
-treeModelPath=OCorp
+treeModelPath=NonCorp
 treeModel=CReg
 
-treeModelValidPath=OCorp-Family
-treeModelValidPath=OCorp-Merger
-treeModelValidPath=OCorp-Legal
-treeModelValidPath=OCorp-Partner
-treeModelValidPath=OCorp-NewHire
-treeModelValidPath=OCorp-Cust
-treeModelValidPath=OCorp-Suply
-treeModelValidPath=OCorp-Compete
-treeModelValidPath=OCorp-News
-treeModelValidPath=OCorp-Finance
+treeModelValidPath=NonCorp-US
+treeModelValidPath=NonCorp-State
+treeModelValidPath=NonCorp-Suply
+treeModelValidPath=NonCorp-nonUS
+treeModelValidPath=NonCorp-Ind
+treeModelValidPath=NonCorp-Rating
+treeModelValidPath=NonCorp-University
 
 treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
-treeModelFeature=NGramDep(n=2, minFeatureOccurrence=4, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=None)
