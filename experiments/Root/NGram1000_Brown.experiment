@@ -11,6 +11,7 @@ treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=1000_Brown)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=1000_Brown)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=1000_Brown)
