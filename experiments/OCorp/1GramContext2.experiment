@@ -7,6 +7,7 @@ maxDocuments=0
 treeModelPath=
 treeModel=Uniform
 treeModelValidPath=OCorp
+
 treeModelPath=OCorp
 treeModel=CReg
 
@@ -24,3 +25,4 @@ treeModelValidPath=OCorp-Finance
 treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=4, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=None)
