@@ -9,7 +9,7 @@ public class CorpRelFeatureGazetteerInitialism  extends CorpRelFeatureGazetteer 
 	public CorpRelFeatureGazetteerInitialism(Gazetteer gazetteer, CorpRelFeatureGazetteer.InputType inputType, boolean allowPrefix) {
 		this.extremumType = CorpRelFeatureGazetteer.ExtremumType.Maximum;
 		this.inputType = inputType;
-		this.namePrefix = "Initialism";
+		this.namePrefix = "Initialism_AllowPref" + this.allowPrefix;
 		this.gazetteer = gazetteer;
 		this.allowPrefix = allowPrefix;
 	}

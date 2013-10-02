@@ -77,7 +77,7 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 		
 		String transformName = (this.attributeTransformFn == null) ? "" : this.attributeTransformFn.toString() + "_";
 		
-		String namePrefix = "MetaDataAttribute_" + this.gazetteer.getName() + "_" + this.metaData.getName() + "_" + transformName + this.attribute + "_" + this.inputType + "_";
+		String namePrefix = "MetaDataAttribute_" + this.gazetteer.getName() + "_" + this.metaData.getName() + "_" + transformName + this.attribute + "_" + this.inputType + "_MinF" + this.minFeatureOccurrence;
 		for (Entry<String, Integer> entry : this.attributeVocabulary.entrySet())
 			names.set(entry.getValue(), namePrefix + entry.getKey());
 		existingNames.addAll(names);

@@ -9,7 +9,7 @@ public class CorpRelFeatureGazetteerPrefixTokens  extends CorpRelFeatureGazettee
 	public CorpRelFeatureGazetteerPrefixTokens(Gazetteer gazetteer, CorpRelFeatureGazetteer.InputType inputType, int minTokens) {
 		this.extremumType = CorpRelFeatureGazetteer.ExtremumType.Maximum;
 		this.inputType = inputType;
-		this.namePrefix = "PrefixTokens";
+		this.namePrefix = "PrefixTokens_Min" + this.minTokens;
 		this.gazetteer = gazetteer;
 		this.minTokens = minTokens;
 	}
