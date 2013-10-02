@@ -121,6 +121,10 @@ public class StringUtil {
 	public static String clean(String str) {
 		StringBuilder cleanStrBuilder = new StringBuilder();
 		
+		str = str.trim();
+		if (str.equals("$") || str.equals("&") || str.equals("+") || str.equals("@"))
+			return str;
+		
 		// Remove words with slashes
 		String[] tokens = str.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
