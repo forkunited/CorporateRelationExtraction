@@ -7,9 +7,9 @@ public class CorpRelFeatureSelfInitialism extends CorpRelFeatureSelf {
 	
 	public CorpRelFeatureSelfInitialism(boolean allowPrefix) {
 		super();
+		this.allowPrefix = allowPrefix;
 		this.namePrefix = "Initialism_AllowPref" + allowPrefix;
 		this.extremumType = CorpRelFeatureSelf.ExtremumType.Maximum;
-		this.allowPrefix = allowPrefix;
 	}
 	
 	public CorpRelFeatureSelfInitialism(boolean allowPrefix, StringUtil.StringTransform cleanFn) {

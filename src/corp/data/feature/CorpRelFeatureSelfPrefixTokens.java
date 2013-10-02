@@ -7,8 +7,8 @@ public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 	
 	public CorpRelFeatureSelfPrefixTokens(int minTokens) {
 		super();
-		this.namePrefix = "PrefixTokens_Min" + this.minTokens;
 		this.minTokens = minTokens;
+		this.namePrefix = "PrefixTokens_Min" + this.minTokens;
 		this.extremumType = CorpRelFeatureSelf.ExtremumType.Maximum;
 	}
 	
