@@ -1,0 +1,29 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=0
+
+treeModelPath=
+treeModel=Uniform
+treeModelValidPath=OCorp
+treeModelPath=OCorp
+treeModel=CReg
+
+treeModelValidPath=OCorp-Family
+treeModelValidPath=OCorp-Merger
+treeModelValidPath=OCorp-Legal
+treeModelValidPath=OCorp-Partner
+treeModelValidPath=OCorp-NewHire
+treeModelValidPath=OCorp-Cust
+treeModelValidPath=OCorp-Suply
+treeModelValidPath=OCorp-Compete
+treeModelValidPath=OCorp-News
+treeModelValidPath=OCorp-Finance
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=2000_Brown)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=2000_Brown)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=2000_Brown)
