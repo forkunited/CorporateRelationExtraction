@@ -1,0 +1,142 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=0
+
+treeModelPath=
+treeModel=CReg
+treeModelValidPath=SelfRef
+treeModelValidPath=OCorp
+treeModelValidPath=NonCorp
+treeModelValidPath=Generic
+treeModelValidPath=Error
+
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerContains(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerEditDistance(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned)
+treeModelFeature=GazetteerInitialism(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=true)
+treeModelFeature=GazetteerInitialism(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerInitialism(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, allowPrefix=false)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, minTokens=1)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=CorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=GazetteerPrefixTokens(gazetteer=NonCorpScrapedGazetteer, inputType=Mentioned, minTokens=2)
+treeModelFeature=SelfEditDistance(cleanFn=DefaultCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=DefaultCleanFn)
+treeModelFeature=SelfShareGazetteerId(gazetteer=CorpMetaDataGazetteer, cleanFn=DefaultCleanFn)
+
+treeModelFeature=SelfEditDistance(cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=StopWordCleanFn)
+
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=4, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=4, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=2, minFeatureOccurrence=4, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=None)
+
+
+treeModelPath=OCorp
+treeModel=CReg
+
+treeModelValidPath=OCorp-Family
+treeModelValidPath=OCorp-Merger
+treeModelValidPath=OCorp-Legal
+treeModelValidPath=OCorp-Partner
+treeModelValidPath=OCorp-NewHire
+treeModelValidPath=OCorp-Cust
+treeModelValidPath=OCorp-Suply
+treeModelValidPath=OCorp-Compete
+treeModelValidPath=OCorp-News
+treeModelValidPath=OCorp-Finance
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+
+treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioned, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
+treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioner, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
+treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Both, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
+
+treeModelFeature=NGramSentence(n=2, minFeatureOccurrence=4, cleanFn=DefaultCleanFn, clusterer=None)
+
+
+treeModelPath=NonCorp
+treeModel=CReg
+
+treeModelValidPath=NonCorp-US
+treeModelValidPath=NonCorp-State
+treeModelValidPath=NonCorp-Suply
+treeModelValidPath=NonCorp-nonUS
+treeModelValidPath=NonCorp-Ind
+treeModelValidPath=NonCorp-Rating
+treeModelValidPath=NonCorp-University
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+
+treeModelFeature=NGramContext(n=2, minFeatureOccurrence=2, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=2, minFeatureOccurrence=2, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=None)
+
+
+
+treeModelPath=OCorp-Family
+treeModel=CReg
+
+treeModelValidPath=OCorp-Family-Parent
+treeModelValidPath=OCorp-Family-Sub
+treeModelValidPath=OCorp-Family-Division
+treeModelValidPath=OCorp-Family-Sister
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+
+
+treeModelPath=OCorp-Merger
+treeModel=CReg
+
+treeModelValidPath=OCorp-Merger-Aqu
+treeModelValidPath=OCorp-Merger-Target
+treeModelValidPath=OCorp-Merger-Merge
+treeModelValidPath=OCorp-Merger-Other
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+
+
+treeModelPath=OCorp-Legal
+treeModel=CReg
+
+treeModelValidPath=OCorp-Legal-Lawsuit
+treeModelValidPath=OCorp-Legal-Alliance
+treeModelValidPath=OCorp-Legal-Agreement
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+
+
+
+treeModelPath=OCorp-Suply
+treeModel=CReg
+
+treeModelValidPath=OCorp-Suply-Sup
+treeModelValidPath=OCorp-Suply-LegalS
+treeModelValidPath=OCorp-Suply-IB
+treeModelValidPath=OCorp-Suply-Cons
+treeModelValidPath=OCorp-Suply-Audit
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
