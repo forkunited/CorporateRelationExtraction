@@ -62,7 +62,7 @@ public abstract class Experiment {
 		finish();	
 	}
 	
-	protected void initialize(String name) {		
+	protected void initialize(String name) {
 		this.output = new OutputWriter(
 			new File(this.properties.getExperimentOutputPath(), name + ".debug.out"),
 			new File(this.properties.getExperimentOutputPath(), name + ".results.out"),
