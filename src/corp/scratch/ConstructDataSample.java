@@ -81,7 +81,7 @@ public class ConstructDataSample {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				4,
-				0,
+				-1,
 				0,
 				new OutputWriter()
 		);

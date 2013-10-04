@@ -110,6 +110,9 @@ public class CorpDocumentSet {
 	
 	
 	private void loadAnnotatedDocuments(int maxCorpRelDocuments) {
+		if (maxCorpRelDocuments == 0)
+			return;
+		
 		File corpRelDir = new File(this.corpRelDirPath);
 		
 		try {
@@ -129,7 +132,7 @@ public class CorpDocumentSet {
 				threadPool.submit(new AnnotatedDocumentLoadThread(corpRelFile));
 				
 				numDocuments++;
-				if (maxCorpRelDocuments != 0 && numDocuments >= maxCorpRelDocuments)
+				if (maxCorpRelDocuments > 0 && numDocuments >= maxCorpRelDocuments)
 					break;
 			}
 			

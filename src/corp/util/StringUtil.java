@@ -128,7 +128,7 @@ public class StringUtil {
 		// Remove words with slashes
 		String[] tokens = str.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
-			if (!tokens[i].contains("/") && !tokens[i].contains("\\"))
+			if (!tokens[i].contains("/") && !tokens[i].contains("\\") && !tokens[i].startsWith("-"))
 				cleanStrBuilder.append(tokens[i]).append(" ");
 		}
 		

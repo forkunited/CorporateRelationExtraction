@@ -119,7 +119,16 @@ public class ConstructGazetteer {
 		StringUtil.StringTransform keyFn = new StringUtil.StringTransform() {
 			@Override
 			public String transform(String str) {
-				return cleanFn.transform(str).replace(" ", "_");
+				str = cleanFn.transform(str);
+				String[] strParts = str.split(" ");
+				StringBuilder transformedStr = new StringBuilder();
+				for (String strPart : strParts) {
+					if (strPart.length() > 1)
+						transformedStr.append(strPart).append("_");
+				}
+				transformedStr.delete(transformedStr.length() - 1, transformedStr.length());
+				
+				return transformedStr.toString();
 			}
 		};
 				

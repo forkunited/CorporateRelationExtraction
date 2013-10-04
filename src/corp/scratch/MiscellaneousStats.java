@@ -42,7 +42,7 @@ public class MiscellaneousStats {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				4,
-				0,
+				-1,
 				0,
 				new OutputWriter()
 		);
