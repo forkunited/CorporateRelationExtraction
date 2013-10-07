@@ -60,8 +60,12 @@ public class CorpKeyFnPerformance {
 		double fp = 0.0;
 		double fn = 0.0;
 		for (CorpRelFeaturizedDatum datum : data) {
+			CorpRelLabelPath path = datum.getLabelPath().getLongestValidPrefix(validPaths);
+			if (path == null)
+				continue;
+			
 			boolean corpKeyFnSelf = datum.getFeatureValues().get(0).equals(1.0);
-			boolean labeledSelf = validPaths.get(0).equals(datum.getLabelPath().getLongestValidPrefix(validPaths));
+			boolean labeledSelf = validPaths.get(0).equals(path);
 			if (corpKeyFnSelf == labeledSelf)
 				tp += 1.0;
 			else if (corpKeyFnSelf) {
