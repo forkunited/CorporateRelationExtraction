@@ -30,8 +30,7 @@ public class Gazetteer {
 			while ((line = br.readLine()) != null) {
 				String[] lineValues = line.trim().split("\\t");
 				if (lineValues.length < 2) {
-					br.close();
-					throw new IllegalArgumentException();
+					continue;
 				}
 				
 				String id = lineValues[0];

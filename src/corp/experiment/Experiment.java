@@ -24,6 +24,7 @@ import corp.data.feature.CorpRelFeatureNGramContext;
 import corp.data.feature.CorpRelFeatureNGramDep;
 import corp.data.feature.CorpRelFeatureNGramSentence;
 import corp.data.feature.CorpRelFeatureSelfEditDistance;
+import corp.data.feature.CorpRelFeatureSelfEquality;
 import corp.data.feature.CorpRelFeatureSelfInitialism;
 import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeatureSelfShareGazetteerId;
@@ -81,20 +82,29 @@ public abstract class Experiment {
 		
 		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
 		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
-		
+		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTickerGazetteer", this.properties.getBloombergCorpTickerGazetteerPath()));
+			
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
 		this.cleanFns.put("StopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
 		this.cleanFns.put("NGramStopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
-
+		this.cleanFns.put("CorpKeyFn", StringUtil.getCorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn")));
+		
 		this.gazetteers.put("CorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath()));
 		this.gazetteers.put("CorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath()));
+		this.gazetteers.put("BloombergMetaDataGazetteer", new Gazetteer("BloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath()));
 		this.gazetteers.put("StopWordCorpScrapedGazetteer", new Gazetteer("StopWordCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("StopWordCleanFn")));
+		
+		this.gazetteers.put("CorpKeyCorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
+		this.gazetteers.put("CorpKeyCorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
+		this.gazetteers.put("CorpKeyBloombergMetaDataGazetteer", new Gazetteer("BloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
+		
 		this.gazetteers.put("NonCorpScrapedGazetteer", new Gazetteer("NonCorpScraped", this.properties.getNonCorpScrapedGazetteerPath()));
 				
 		this.output.debugWriteln("Loading Meta Data...");
 		
 		this.metaData = new HashMap<String, CorpMetaData>();
 		this.metaData.put("CorpMetaData", new CorpMetaData("Corp", this.properties.getCorpMetaDataPath()));
+		this.metaData.put("BloombergMetaData", new CorpMetaData("Bloomberg", this.properties.getBloombergMetaDataPath()));
 		
 		this.output.debugWriteln("Loading clusterers...");
 		this.clusterers = new HashMap<String, BrownClusterer>();
@@ -222,6 +232,8 @@ public abstract class Experiment {
 					getClusterer(arguments.get("clusterer")));
 		} else if (featureName.equals("SelfEditDistance")) {
 			feature = new CorpRelFeatureSelfEditDistance(this.cleanFns.get(arguments.get("cleanFn")));
+		} else if (featureName.equals("SelfEquality")) {
+			feature = new CorpRelFeatureSelfEquality(this.cleanFns.get(arguments.get("cleanFn")));
 		} else if (featureName.equals("SelfInitialism")) {
 			feature = new CorpRelFeatureSelfInitialism(
 					Boolean.valueOf(arguments.get("allowPrefix")),

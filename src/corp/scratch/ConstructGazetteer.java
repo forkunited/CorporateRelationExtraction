@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ import corp.util.StringUtil;
  */
 public class ConstructGazetteer {
 	public static void main(String[] args) {
-		constructOrgEntitySet("/home/wmcdowel/sloan/Data/Gazetteer/OrgEntity.gazetteer");
+		//constructOrgEntitySet("/home/wmcdowel/sloan/Data/Gazetteer/OrgEntity.gazetteer");
 		/*constructFromOldGazetteer("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/Legacy/ncorplist",
 								 "C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/NonCorpScraped.gazetteer");
 		constructFromOldGazetteer("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/Legacy/corp",
@@ -40,6 +41,9 @@ public class ConstructGazetteer {
 		constructFromMetaData("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/MetaData/Corp.metadata",
 				  			  "C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/CorpMetaData.gazetteer");
 		*/
+		//constructFromMetaData("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/MetaData/Bloomberg.metadata",
+		//					  "C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/BloombergMetaData.gazetteer");
+		constructTickerGazetteer("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/BloombergCorpTicker.gazetteer");
 	}
 	
 	public static void constructFromOldGazetteer(String inputFile, String outputFile) {
@@ -81,8 +85,17 @@ public class ConstructGazetteer {
 			CorpMetaData metaData = new CorpMetaData("gazetteerSource", inputFile);
 			Map<String, CorpMetaData.Attributes> attributes = metaData.getAttributes();
 			for (Entry<String, CorpMetaData.Attributes> entry : attributes.entrySet()) {
-				bw.write(entry.getKey() + "\t" + entry.getValue().getName() + "\t" + entry.getValue().getTicker() + "\n");
-				System.out.print(entry.getKey() + "\t" + entry.getValue().getName() + "\t" + entry.getValue().getTicker() + "\n");
+				bw.write(entry.getKey() + "\t" + entry.getValue().getNames().get(0) + "\t");
+				System.out.print(entry.getKey() + "\t" + entry.getValue().getNames().get(0) + "\t"); 
+				HashSet<String> tickers = new HashSet<String>();
+				tickers.addAll(entry.getValue().getTickers());
+				
+				for (String ticker : tickers) {
+					bw.write(ticker + "\t");
+					System.out.print(ticker + "\t");
+				}
+				bw.write("\n");
+				System.out.print("\n");
 			}
 			
 			bw.close();
@@ -138,7 +151,7 @@ public class ConstructGazetteer {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
 			
-			Map<String, CorpMetaData.Attributes> attributes = metaData.getAttributes();
+			/*Map<String, CorpMetaData.Attributes> attributes = metaData.getAttributes();
 			for (Entry<String, CorpMetaData.Attributes> entry : attributes.entrySet()) {
 				String key = keyFn.transform(entry.getValue().getName());
 				if (!entitySet.containsKey(key))
@@ -147,7 +160,7 @@ public class ConstructGazetteer {
 				entitySet.get(key).add(entry.getValue().getName());
 				entitySet.get(key).add(cleanTicker);
 				addedNames.add(cleanTicker);
-			}
+			}*/
 			
 			for (CorpRelDatum datum : data) {
 				String cleanAuthor = cleanFn.transform(datum.getAuthorCorpName());
@@ -189,5 +202,66 @@ public class ConstructGazetteer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void constructTickerGazetteer(String outputFile) {
+		CorpProperties properties = new CorpProperties("corp.properties");
+		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
+		StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(stopWordGazetteer);
+		StringUtil.StringTransform corpKeyFn = StringUtil.getCorpKeyFn(null, stopWordCleanFn);
+		CorpMetaData corpMetaData = new CorpMetaData("Corp", properties.getCorpMetaDataPath());
+		CorpMetaData bloombergMetaData = new CorpMetaData("Bloomberg", properties.getBloombergMetaDataPath());
+		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+			Map<String, HashSet<String>> corpKeysToTickers = new HashMap<String, HashSet<String>>();
+			
+			Map<String, CorpMetaData.Attributes> corpAttributes = corpMetaData.getAttributes();
+			for (Entry<String, CorpMetaData.Attributes> entry : corpAttributes.entrySet()) {
+				String corpKey = corpKeyFn.transform(entry.getValue().getNames().get(0));
+				if (corpKey.length() == 0)
+					continue;
+				
+				if (!corpKeysToTickers.containsKey(corpKey))
+					corpKeysToTickers.put(corpKey, new HashSet<String>());
+				List<String> tickers = entry.getValue().getTickers();
+				for (String ticker : tickers) { 
+					corpKeysToTickers.get(corpKey).add(ticker);
+				}
+			}
+			
+			Map<String, CorpMetaData.Attributes> bloombergAttributes = bloombergMetaData.getAttributes();
+			for (Entry<String, CorpMetaData.Attributes> entry : bloombergAttributes.entrySet()) {
+				String corpKey = corpKeyFn.transform(entry.getValue().getNames().get(0));
+				if (corpKey.length() == 0)
+					continue;
+				
+				if (!corpKeysToTickers.containsKey(corpKey))
+					corpKeysToTickers.put(corpKey, new HashSet<String>());
+				List<String> tickers = entry.getValue().getTickers();
+				for (String ticker : tickers) { 
+					corpKeysToTickers.get(corpKey).add(ticker);
+				}
+			}
+		
+			for (Entry<String, HashSet<String>> entry : corpKeysToTickers.entrySet()) {
+				if (entry.getValue().size() == 0)
+					continue;
+				
+				bw.write(entry.getKey() + "\t");
+				System.out.print(entry.getKey() + "\t"); 
+				for (String ticker : entry.getValue()) {
+					bw.write(ticker + "\t");
+					System.out.print(ticker + "\t");
+				}
+				bw.write("\n");
+				System.out.print("\n");
+			}
+			
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

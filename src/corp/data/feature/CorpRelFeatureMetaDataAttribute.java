@@ -1,6 +1,7 @@
 package corp.data.feature;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -149,11 +150,18 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 			return attributeValues;
 		
 		for (String id : ids) {
-			String attributeValue = this.metaData.getAttributeById(id, this.attribute);
-			if (this.attributeTransformFn == null)
-				attributeValues.add(attributeValue);
-			else 
-				attributeValues.addAll(this.attributeTransformFn.transform(attributeValue));
+			List<String> attributeValue = this.metaData.getAttributeById(id, this.attribute);
+			if (this.attributeTransformFn == null) {
+				for (String value : attributeValue) {
+					attributeValues.add(StringUtil.clean(value));
+				}
+			} else { 
+				for (String value : attributeValue) {
+					Collection<String> transformedValues = this.attributeTransformFn.transform(value);
+					for (String transformedValue : transformedValues)
+						attributeValues.add(StringUtil.clean(transformedValue));
+				}
+			}
 		}
 		
 		return attributeValues;

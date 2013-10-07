@@ -45,6 +45,7 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		super(sourceDocuments);
 		this.features = features;
 		this.maxThreads = maxThreads;
+		this.featurizedDatums = new HashMap<CorpRelDatum, CorpRelFeaturizedDatum>();
 		this.output = output;
 	}
 	

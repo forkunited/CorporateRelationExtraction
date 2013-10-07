@@ -45,7 +45,46 @@ public class StringUtil {
 			
 			public String transform(String str) {
 				str = StringUtil.clean(str);
-				return stopWords.removeTerms(str);
+				String stoppedStr = stopWords.removeTerms(str);
+				if (stoppedStr.length() > 0)
+					return stoppedStr;
+				else 
+					return str;
+			}
+		};
+	}
+	
+	public static StringUtil.StringTransform getCorpKeyFn(final Gazetteer keyMap, final StringUtil.StringTransform cleanFn) {
+		final String keyMapName = (keyMap == null) ? "" : keyMap.getName();
+		final String cleanFnName = cleanFn.toString();
+		final String transformName = "CorpKey_" + keyMapName + "_" + cleanFnName;
+		
+		return new StringUtil.StringTransform() {
+			public String toString() {
+				return transformName;
+			}
+			
+			public String transform(String str) {
+				if (keyMap != null && keyMap.contains(str)) {
+					List<String> keys = keyMap.getIds(str);
+					if (keys.size() == 1)
+						return keys.get(0);
+				}
+				
+				str = cleanFn.transform(str);
+				String[] strParts = str.split(" ");
+				StringBuilder transformedStr = new StringBuilder();
+				for (String strPart : strParts) {
+					if (strPart.length() > 1)
+						transformedStr.append(strPart).append("_");
+				}
+				
+				if (transformedStr.length() > 0) {
+					transformedStr.delete(transformedStr.length() - 1, transformedStr.length());
+					return transformedStr.toString();
+				} else {
+					return str;
+				}
 			}
 		};
 	}
@@ -128,7 +167,7 @@ public class StringUtil {
 		// Remove words with slashes
 		String[] tokens = str.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
-			if (!tokens[i].contains("/") && !tokens[i].contains("\\") && !tokens[i].startsWith("-"))
+			if (!tokens[i].startsWith("/") && !tokens[i].startsWith("\\") && !tokens[i].startsWith("-"))
 				cleanStrBuilder.append(tokens[i]).append(" ");
 		}
 		

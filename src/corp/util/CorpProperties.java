@@ -14,10 +14,13 @@ public class CorpProperties {
 	private String cregCommandPath;
 	private String corpScrapedGazetteerPath;
 	private String corpMetaDataGazetteerPath;
+	private String bloombergMetaDataGazetteerPath;
 	private String nonCorpScrapedGazetteerPath;
 	private String stopWordGazetteerPath;
 	private String ngramStopWordGazetteerPath;
+	private String bloombergCorpTickerGazetteerPath;
 	private String corpMetaDataPath;
+	private String bloombergMetaDataPath;
 	private String experimentInputPath;
 	private String experimentOutputPath;
 	private String brownClustererCommandPath;
@@ -39,10 +42,13 @@ public class CorpProperties {
 			this.cregCommandPath = properties.getProperty("cregCommandPath");
 			this.corpScrapedGazetteerPath = properties.getProperty("corpScrapedGazetteerPath");
 			this.corpMetaDataGazetteerPath = properties.getProperty("corpMetaDataGazetteerPath");
+			this.bloombergMetaDataGazetteerPath = properties.getProperty("bloombergMetaDataGazetteerPath");
 			this.nonCorpScrapedGazetteerPath = properties.getProperty("nonCorpScrapedGazetteerPath");
 			this.stopWordGazetteerPath = properties.getProperty("stopWordGazetteerPath");
 			this.ngramStopWordGazetteerPath = properties.getProperty("ngramStopWordGazetteerPath");
+			this.bloombergCorpTickerGazetteerPath = properties.getProperty("bloombergCorpTickerGazetteerPath");
 			this.corpMetaDataPath = properties.getProperty("corpMetaDataPath");
+			this.bloombergMetaDataPath = properties.getProperty("bloombergMetaDataPath");
 			this.experimentInputPath = properties.getProperty("experimentInputPath");
 			this.experimentOutputPath = properties.getProperty("experimentOutputPath");
 			this.brownClustererCommandPath = properties.getProperty("brownClustererCommandPath");
@@ -94,6 +100,10 @@ public class CorpProperties {
 		return this.corpMetaDataGazetteerPath;
 	}
 	
+	public String getBloombergMetaDataGazetteerPath() {
+		return this.bloombergMetaDataGazetteerPath;
+	}
+	
 	public String getNonCorpScrapedGazetteerPath() {
 		return this.nonCorpScrapedGazetteerPath;
 	}
@@ -106,8 +116,16 @@ public class CorpProperties {
 		return this.ngramStopWordGazetteerPath;
 	}
 	
+	public String getBloombergCorpTickerGazetteerPath() {
+		return this.bloombergCorpTickerGazetteerPath;
+	}
+	
 	public String getCorpMetaDataPath() {
 		return this.corpMetaDataPath;
+	}
+	
+	public String getBloombergMetaDataPath() {
+		return this.bloombergMetaDataPath;
 	}
 
 	public String getExperimentOutputPath() {
