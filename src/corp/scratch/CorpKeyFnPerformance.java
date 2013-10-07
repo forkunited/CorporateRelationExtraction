@@ -36,7 +36,7 @@ public class CorpKeyFnPerformance {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				4,
-				3,
+				-1,
 				0,
 				new OutputWriter()
 		);
