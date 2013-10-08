@@ -61,6 +61,7 @@ public class CorpDocumentSet {
 		if (maxUnannotatedDocuments == 0)
 			return;
 		File annotationDir = new File(this.annotationCache.getDocAnnoDirPath());
+		this.output.debugWriteln("Loading unannotated documents from " + this.annotationCache.getDocAnnoDirPath() + "...");
 		try {
 			if (!annotationDir.exists() || !annotationDir.isDirectory())
 				throw new IllegalArgumentException("Invalid annotation document directory: " + annotationDir.getAbsolutePath());
@@ -75,6 +76,7 @@ public class CorpDocumentSet {
 			
 			int numDocuments = 0;
 			for (File annotationFile : annotationFiles) {
+				this.output.debugWriteln("Loading annotation file " + annotationFile.getAbsoluteFile() + "...");
 				
 				if (!this.annotatedDocuments.containsKey(annotationFile.getName()))
 					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile));
