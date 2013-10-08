@@ -3,6 +3,7 @@ package corp.data.annotation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,8 +68,28 @@ public class CorpDocumentSet {
 				throw new IllegalArgumentException("Invalid annotation document directory: " + annotationDir.getAbsolutePath());
 
 			ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
-			File[] annotationFiles = annotationDir.listFiles();
-			Arrays.sort(annotationFiles, new Comparator<File>() { // Ensure determinism
+			File[] annotationDirFiles = annotationDir.listFiles();
+			List<File> annotationFiles = new ArrayList<File>();
+			for (File annotationDirFile : annotationDirFiles) {
+				if (annotationDirFile.isDirectory()) {
+					File[] monthDirFiles = annotationDirFile.listFiles();
+					for (File monthDirFile : monthDirFiles) {
+						if (!monthDirFile.isDirectory())
+							continue;
+						File[] annotations = monthDirFile.listFiles();
+						for (File annotation : annotations) {
+							if (annotation.isDirectory())
+								continue;
+							if (annotation.getName().contains("-8-K-") && annotation.getName().contains("toked.nlp.obj"))
+								annotationFiles.add(annotation);
+						}
+					}
+				} else if (annotationDirFile.getName().contains("-8-K-") && annotationDirFile.getName().contains("toked.nlp.obj")) {
+					annotationFiles.add(annotationDirFile);
+				}
+			}
+			
+			Collections.sort(annotationFiles, new Comparator<File>() { // Ensure determinism
 			    public int compare(File o1, File o2) {
 			        return o1.getAbsolutePath().compareTo(o2.getAbsolutePath());
 			    }
@@ -76,7 +97,7 @@ public class CorpDocumentSet {
 			
 			int numDocuments = 0;
 			for (File annotationFile : annotationFiles) {
-				this.output.debugWriteln("Loading annotation file " + annotationFile.getAbsoluteFile() + "...");
+				this.output.debugWriteln("Loading (unannotated) annotation file " + annotationFile.getAbsoluteFile() + "...");
 				
 				if (!this.annotatedDocuments.containsKey(annotationFile.getName()))
 					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile));
