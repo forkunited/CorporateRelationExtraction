@@ -51,12 +51,18 @@ public class ConstructBrownClusterData {
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
+						if (cleanTokenText.matches("[0-9]*"))
+							sentenceStr.append("[NUMBER]");
 						if (cleanTokenText.length() != 0 && cleanTokenText.matches("[a-zA-Z]*"))
 							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
 					String outSentence = sentenceStr.toString().trim();
-					if (outSentence.length() > 0)
+					if (outSentence.length() > 0) {
+						System.out.println("Output sentence: " + outSentence);
 						w.write(outSentence + "\n");
+					} else {
+						System.out.println("Skipped empty sentence.");
+					}
 				}
 			}
 		
@@ -67,6 +73,8 @@ public class ConstructBrownClusterData {
 	protected static void constructForAll() {
 		CorpProperties properties = new CorpProperties("corp.properties");
 		String outputPath = properties.getBrownClustererSourceDocument();
+		
+		System.out.println("Loading documents...");
 		
 		AnnotationCache annotationCache = new AnnotationCache(
 				properties.getStanfordAnnotationDirPath(),
@@ -91,19 +99,25 @@ public class ConstructBrownClusterData {
 			List<CorpDocument> documents = documentSet.getDocuments();
 			for (CorpDocument document : documents) {
 				Annotation annotation = document.getAnnotation();
+				System.out.println("Running over document: " + document.getAnnotationPath());
 				List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(annotation);
-				
 				for (int i = 0; i < sentenceAnnotations.size(); i++) {
 					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(sentenceAnnotations.get(i));
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
+						if (cleanTokenText.matches("[0-9]*"))
+							sentenceStr.append("[NUMBER]");
 						if (cleanTokenText.length() != 0 && cleanTokenText.matches("[a-zA-Z]*"))
 							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
 					String outSentence = sentenceStr.toString().trim();
-					if (outSentence.length() > 0)
+					if (outSentence.length() > 0) {
+						System.out.println("Output sentence: " + outSentence);
 						w.write(outSentence + "\n");
+					} else {
+						System.out.println("Skipped empty sentence.");
+					}
 				}
 			}
 		
