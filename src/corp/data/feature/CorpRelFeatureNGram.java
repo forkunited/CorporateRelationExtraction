@@ -78,9 +78,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 				String cluster = this.clusterer.getCluster(cleanGram);
 				if (cluster != null) {
 					ngramGlue = ngramGlue.append(cluster).append("_");
-				} else {
-					ngramGlue = ngramGlue.append(Stemmer.stem(cleanGram)).append("_");
-				}
+				} 
 			} else { 
 				ngramGlue = ngramGlue.append(Stemmer.stem(cleanGram)).append("_");
 			}
