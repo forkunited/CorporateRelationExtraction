@@ -99,6 +99,8 @@ public class AnnotationCache {
 				this.docAnnoCache.put(documentName, docAnno);
 			}
 			
+			this.output.debugWriteln("Loaded document annotation for " + documentName);
+			
 			return docAnno;
 		}
 	}
@@ -174,8 +176,10 @@ public class AnnotationCache {
         Annotation anno = this.getDocumentAnnotation(documentName);
         List<CoreMap> sentences = StanfordUtil.getDocumentSentences(anno);
         for (int i = 0; i < sentences.size(); i++) {
-        	if (!StanfordUtil.serializeCoreMap(getSentencePath(documentName, i), sentences.get(i)))
+        	if (!StanfordUtil.serializeCoreMap(getSentencePath(documentName, i), sentences.get(i))) {
+        		this.output.debugWriteln("Failed to serialized sentence " + documentName + " " + i);
         		return false;
+        	}
         }
 		
 		int sentenceCount = sentences.size();
@@ -183,7 +187,13 @@ public class AnnotationCache {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(getDocumentSentenceMetaDataPath(documentName)));
     		bw.write(String.valueOf(sentenceCount));
             bw.close();
-        } catch (IOException e) { e.printStackTrace(); return false; }
+        } catch (IOException e) { 
+        	this.output.debugWriteln("Failed to output document meta data " + documentName);
+        	e.printStackTrace(); 
+        	return false; 
+        }
+		
+		this.output.debugWriteln("Finished outputting sentence annotation documents for " + documentName + ".");
         return true;
 	}
 	
