@@ -42,6 +42,10 @@ public class BrownClusterer {
 		if (this.wordsToClusters == null)
 			if (!loadWordsToClusters())
 				return null;	
+		
+		if (word.matches("[0-9]+"))
+			word = "[NUMBER]";
+		
 		if (!this.wordsToClusters.containsKey(word))
 			return null;
 		return this.wordsToClusters.get(word);

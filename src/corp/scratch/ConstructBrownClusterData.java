@@ -51,8 +51,8 @@ public class ConstructBrownClusterData {
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
-						if (cleanTokenText.matches("[0-9]*"))
-							sentenceStr.append("[NUMBER]");
+						if (cleanTokenText.matches("[0-9]+"))
+							sentenceStr.append("[NUMBER]").append(" ");
 						if (cleanTokenText.length() != 0 && cleanTokenText.matches("[a-zA-Z]*"))
 							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
@@ -107,8 +107,8 @@ public class ConstructBrownClusterData {
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
-						if (cleanTokenText.matches("[0-9]*"))
-							sentenceStr.append("[NUMBER]");
+						if (cleanTokenText.matches("[0-9]+"))
+							sentenceStr.append("[NUMBER]").append(" ");
 						if (cleanTokenText.length() != 0 && cleanTokenText.matches("[a-zA-Z]*"))
 							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
