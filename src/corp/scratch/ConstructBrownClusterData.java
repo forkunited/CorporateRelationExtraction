@@ -51,10 +51,12 @@ public class ConstructBrownClusterData {
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
-						if (cleanTokenText.length() != 0)
+						if (cleanTokenText.length() != 0 && cleanTokenText.matches("[a-zA-Z]*"))
 							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
-					w.write(sentenceStr.toString().trim() + "\n");
+					String outSentence = sentenceStr.toString().trim();
+					if (outSentence.length() > 0)
+						w.write(outSentence + "\n");
 				}
 			}
 		
@@ -77,7 +79,7 @@ public class ConstructBrownClusterData {
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
-				16,
+				32,
 				0,
 				-1,
 				new OutputWriter()
@@ -96,10 +98,12 @@ public class ConstructBrownClusterData {
 					StringBuilder sentenceStr = new StringBuilder();
 					for (String tokenText : tokenTexts) {
 						String cleanTokenText = StringUtil.clean(tokenText);
-						if (cleanTokenText.length() != 0)
+						if (cleanTokenText.length() != 0 && cleanTokenText.matches("[a-zA-Z]*"))
 							sentenceStr = sentenceStr.append(cleanTokenText).append(" ");
 					}
-					w.write(sentenceStr.toString().trim() + "\n");
+					String outSentence = sentenceStr.toString().trim();
+					if (outSentence.length() > 0)
+						w.write(outSentence + "\n");
 				}
 			}
 		
