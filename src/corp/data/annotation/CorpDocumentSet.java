@@ -19,6 +19,7 @@ public class CorpDocumentSet {
 	private ConcurrentHashMap<String, CorpDocument> unannotatedDocuments;
 	private AnnotationCache annotationCache;
 	private int maxThreads;
+	private boolean loadUnnanotatedRelations;
 	private OutputWriter output;
 	
 	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, OutputWriter output) {
@@ -30,12 +31,17 @@ public class CorpDocumentSet {
 	}
 	
 	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output) {
+		this(corpRelDirPath, annotationCache, maxThreads, maxCorpRelDocuments, maxUnannotatedDocuments, output, true);
+	}
+	
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output, boolean loadUnannotatedRelations) {
 		this.corpRelDirPath = corpRelDirPath;
 		this.annotationCache = annotationCache;
 		this.maxThreads = maxThreads;
 		this.annotatedDocuments = new ConcurrentHashMap<String, CorpDocument>();
 		this.unannotatedDocuments = new ConcurrentHashMap<String, CorpDocument>();
 		this.output = output;
+		this.loadUnnanotatedRelations = loadUnannotatedRelations;
 		
 		loadAnnotatedDocuments(maxCorpRelDocuments);
 		loadUnannotatedDocuments(maxUnannotatedDocuments);
@@ -100,7 +106,7 @@ public class CorpDocumentSet {
 				this.output.debugWriteln("Loading (unannotated) annotation file " + annotationFile.getAbsoluteFile() + "...");
 				
 				if (!this.annotatedDocuments.containsKey(annotationFile.getName()))
-					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile));
+					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile, this.loadUnnanotatedRelations));
 				
 				numDocuments++;
 				if (maxUnannotatedDocuments > 0 && numDocuments >= maxUnannotatedDocuments)
@@ -117,16 +123,20 @@ public class CorpDocumentSet {
 	
 	private class UnannotatedDocumentLoadThread implements Runnable {
 		private File annotationFile;
+		private boolean loadUnannotatedRelations;
 		
-		public UnannotatedDocumentLoadThread(File annotationFile) {
+		public UnannotatedDocumentLoadThread(File annotationFile, boolean loadUnannotatedRelations) {
 			this.annotationFile = annotationFile;
+			this.loadUnannotatedRelations = loadUnannotatedRelations;
 		}
 		
 		public void run() {
 			CorpDocument document = new CorpDocument(this.annotationFile.getName(), annotationCache, output);;
 			unannotatedDocuments.put(this.annotationFile.getName(), document);
-			synchronized (document) {
-				document.loadUnannotatedCorpRels();
+			if (this.loadUnannotatedRelations) {
+				synchronized (document) {
+					document.loadUnannotatedCorpRels();
+				}
 			}
 		}
 	}

@@ -90,7 +90,8 @@ public class ConstructBrownClusterData {
 				32,
 				0,
 				-1,
-				new OutputWriter()
+				new OutputWriter(),
+				false
 		);
 			
         try {
