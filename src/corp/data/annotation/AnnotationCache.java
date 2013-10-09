@@ -92,13 +92,15 @@ public class AnnotationCache {
 				}
 			}
 			
-			Annotation docAnno = null;
-			while (docAnno == null) {
-				docAnno = StanfordUtil.deserializeAnnotation(getDocumentPath(documentName));
-				if (docAnno == null)
-					this.output.debugWriteln("Failed to deserialize annotation for " + documentName + " retrying...");
-			} while (docAnno == null);
-				
+			synchronized (this) {
+				Annotation docAnno = null;
+				while (docAnno == null) {
+					docAnno = StanfordUtil.deserializeAnnotation(getDocumentPath(documentName));
+					if (docAnno == null)
+						this.output.debugWriteln("Failed to deserialize annotation for " + documentName + " retrying...");
+				}
+			}
+			
 			this.output.debugWriteln("Finished deserializing annotation for " + documentName);
 			
 			synchronized (this.locks) {
