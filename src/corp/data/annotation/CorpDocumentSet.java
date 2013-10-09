@@ -184,23 +184,27 @@ public class CorpDocumentSet {
 		}
 		
 		public void run() {
-			String corpRelFileName = this.corpRelFile.getName();
-			String corpRelFilePath = this.corpRelFile.getAbsolutePath();
-			int sentenceIndex = sentenceIndexFromCorpRelFileName(corpRelFileName);
-			if (sentenceIndex < 0) {
-				output.debugWriteln("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
-				return;
-			}
-			
-			String annotationFileName = annotationFileNameFromCorpRelFileName(corpRelFileName);
-			if (annotationFileName == null) {
-				output.debugWriteln("Skipped file: " + corpRelFileName + " (couldn't get annotation file name)");
-				return;
-			}
+			try {
+				String corpRelFileName = this.corpRelFile.getName();
+				String corpRelFilePath = this.corpRelFile.getAbsolutePath();
+				int sentenceIndex = sentenceIndexFromCorpRelFileName(corpRelFileName);
+				if (sentenceIndex < 0) {
+					output.debugWriteln("Skipped file: " + corpRelFileName + " (couldn't get sentence index)");
+					return;
+				}
 				
-			CorpDocument document = fetchAnnotatedDocumentOrAdd(annotationFileName);
-			synchronized (document) {
-				document.loadAnnotatedCorpRelsFromFile(corpRelFilePath, sentenceIndex);
+				String annotationFileName = annotationFileNameFromCorpRelFileName(corpRelFileName);
+				if (annotationFileName == null) {
+					output.debugWriteln("Skipped file: " + corpRelFileName + " (couldn't get annotation file name)");
+					return;
+				}
+					
+				CorpDocument document = fetchAnnotatedDocumentOrAdd(annotationFileName);
+				synchronized (document) {
+					document.loadAnnotatedCorpRelsFromFile(corpRelFilePath, sentenceIndex);
+				}
+			} catch (Exception e) {
+				output.debugWriteln(corpRelFile + " load annotation thread failed: " + e.getMessage());
 			}
 		}
 	}
