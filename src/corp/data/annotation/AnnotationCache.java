@@ -94,6 +94,7 @@ public class AnnotationCache {
 			
 			Annotation docAnno = null;
 			synchronized (this) {
+				this.output.debugWriteln("Deserializing document annotation for " + documentName);
 				while (docAnno == null) {
 					docAnno = StanfordUtil.deserializeAnnotation(getDocumentPath(documentName));
 					if (docAnno == null)
