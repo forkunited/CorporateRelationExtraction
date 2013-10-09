@@ -114,7 +114,7 @@ public class CorpDocumentSet {
 			}
 			
 			threadPool.shutdown();
-			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
@@ -170,7 +170,7 @@ public class CorpDocumentSet {
 			}
 			
 			threadPool.shutdown();
-			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
