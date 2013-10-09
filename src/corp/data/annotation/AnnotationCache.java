@@ -92,8 +92,8 @@ public class AnnotationCache {
 				}
 			}
 			
+			Annotation docAnno = null;
 			synchronized (this) {
-				Annotation docAnno = null;
 				while (docAnno == null) {
 					docAnno = StanfordUtil.deserializeAnnotation(getDocumentPath(documentName));
 					if (docAnno == null)
