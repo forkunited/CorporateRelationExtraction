@@ -152,7 +152,7 @@ public class CorpDocumentSet {
 			if (!corpRelDir.exists() || !corpRelDir.isDirectory())
 				throw new IllegalArgumentException("Invalid corporate relation document directory: " + corpRelDir.getAbsolutePath());
 
-			//ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
+			ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 			File[] corpRelFiles = corpRelDir.listFiles();
 			Arrays.sort(corpRelFiles, new Comparator<File>() { // Ensure determinism
 			    public int compare(File o1, File o2) {
@@ -162,18 +162,17 @@ public class CorpDocumentSet {
 			
 			int numDocuments = 0;
 			for (File corpRelFile : corpRelFiles) {
-				
-				AnnotatedDocumentLoadThread loadThread = new AnnotatedDocumentLoadThread(corpRelFile);
-				loadThread.run();
-				//threadPool.submit(new AnnotatedDocumentLoadThread(corpRelFile));
+				//AnnotatedDocumentLoadThread loadThread = new AnnotatedDocumentLoadThread(corpRelFile);
+				//loadThread.run();
+				threadPool.submit(new AnnotatedDocumentLoadThread(corpRelFile));
 				
 				numDocuments++;
 				if (maxCorpRelDocuments > 0 && numDocuments >= maxCorpRelDocuments)
 					break;
 			}
 			
-			//threadPool.shutdown();
-			//threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+			threadPool.shutdown();
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
