@@ -145,11 +145,16 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		
 		@Override
 		public void run() {
-			List<Double> featureValues = new ArrayList<Double>();
-			for (CorpRelFeature feature : features) {
-				featureValues = feature.computeVector(datum, featureValues);
+			try {
+				List<Double> featureValues = new ArrayList<Double>();
+				for (CorpRelFeature feature : features) {
+					featureValues = feature.computeVector(datum, featureValues);
+				}
+				this.featurizedDatums[this.index] = new CorpRelFeaturizedDatum(this.dataSet, this.datum, featureValues);
+			} catch (OutOfMemoryError e) {
+				output.debugWriteln("ERROR: Out of memory while featurizing data!");
+				System.exit(0);
 			}
-			this.featurizedDatums[this.index] = new CorpRelFeaturizedDatum(this.dataSet, this.datum, featureValues);
 		}
 	}
 	

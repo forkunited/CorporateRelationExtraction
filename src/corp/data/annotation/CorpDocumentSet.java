@@ -165,8 +165,8 @@ public class CorpDocumentSet {
 				//AnnotatedDocumentLoadThread loadThread = new AnnotatedDocumentLoadThread(corpRelFile);
 				//loadThread.run();
 				threadPool.submit(new AnnotatedDocumentLoadThread(corpRelFile));
-				
 				numDocuments++;
+				
 				if (maxCorpRelDocuments > 0 && numDocuments >= maxCorpRelDocuments)
 					break;
 			}
