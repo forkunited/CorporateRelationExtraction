@@ -32,12 +32,18 @@ public class ModelCReg extends Model {
 	private String cmdPath;
 	private String modelPath;
 	private OutputWriter output;
+	private double l1;
 	
 	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output) {
+		this(cmdPath, validPaths, output, 1.0);
+	}
+	
+	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output, double l1) {
 		this.cmdPath = cmdPath;
 		this.modelPath = null;
 		this.validPaths = validPaths;
 		this.output = output;
+		this.l1 = l1;
 	}
 	
 	@Override
@@ -83,7 +89,7 @@ public class ModelCReg extends Model {
 		
 		this.output.debugWriteln("CReg training model for " + outputPath);
 		
-		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 1.0 " + " --z " + outputPath;
+		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 " + this.l1 + " --z " + outputPath;
 		trainCmd = trainCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(trainCmd))
 			return false;
