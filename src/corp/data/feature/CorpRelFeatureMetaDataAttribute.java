@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.CorpMetaData;
@@ -57,6 +58,11 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 		this.attributeTransformFn = null;
 	}
 	
+	private String getNamePrefix() {
+		String transformName = (this.attributeTransformFn == null) ? "" : this.attributeTransformFn.toString() + "_";
+		return "MetaDataAttribute_" + this.gazetteer.getName() + "_" + this.metaData.getName() + "_" + transformName + this.attribute + "_" + this.inputType + "_MinF" + this.minFeatureOccurrence + "_";
+	}
+	
 	@Override
 	public void init(List<CorpRelDatum> data) {
 		CounterTable attValues = new CounterTable();
@@ -73,12 +79,21 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	}
 	
 	@Override
+	public Map<String, Double> computeMapNoInit(CorpRelDatum datum) {
+		String namePrefix = getNamePrefix();
+		HashSet<String> attValues = getDatumAttributeValues(datum);
+		Map<String, Double> map = new HashMap<String, Double>(attValues.size());
+		for (String attValue : attValues) {
+			map.put(namePrefix + attValue, 1.0);
+		}
+		return map;
+	}
+	
+	@Override
 	public List<String> getNames(List<String> existingNames) {
 		List<String> names = new ArrayList<String>(Collections.nCopies(this.attributeVocabulary.size(), (String)null));
 		
-		String transformName = (this.attributeTransformFn == null) ? "" : this.attributeTransformFn.toString() + "_";
-		
-		String namePrefix = "MetaDataAttribute_" + this.gazetteer.getName() + "_" + this.metaData.getName() + "_" + transformName + this.attribute + "_" + this.inputType + "_MinF" + this.minFeatureOccurrence;
+		String namePrefix = getNamePrefix();
 		for (Entry<String, Integer> entry : this.attributeVocabulary.entrySet())
 			names.set(entry.getValue(), namePrefix + entry.getKey());
 		existingNames.addAll(names);

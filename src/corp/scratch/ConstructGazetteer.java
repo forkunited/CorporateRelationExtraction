@@ -122,7 +122,8 @@ public class ConstructGazetteer {
 				4,
 				100,
 				0,
-				new OutputWriter()
+				new OutputWriter(),
+				metaData
 		);
 		
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());

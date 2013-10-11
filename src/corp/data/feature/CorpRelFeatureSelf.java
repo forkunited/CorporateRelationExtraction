@@ -1,6 +1,8 @@
 package corp.data.feature;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
@@ -25,6 +27,18 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public Map<String, Double> computeMapNoInit(CorpRelDatum datum) {
+		List<String> names = getNames();
+		List<Double> values = computeVector(datum);
+		Map<String, Double> map = new HashMap<String, Double>();
+		for (int i = 0; i < names.size(); i++) {
+			map.put(names.get(i), values.get(i));
+		}
+		return map;
+	}
+	
 
 	@Override
 	public List<String> getNames(List<String> existingNames) {

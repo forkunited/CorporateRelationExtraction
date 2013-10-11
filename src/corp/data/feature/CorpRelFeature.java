@@ -2,6 +2,7 @@ package corp.data.feature;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import corp.data.annotation.CorpRelDatum;
 
@@ -11,6 +12,7 @@ public abstract class CorpRelFeature {
 	}
 	
 	public abstract void init(List<CorpRelDatum> data);
+	public abstract Map<String, Double> computeMapNoInit(CorpRelDatum datum);
 	public abstract List<String> getNames(List<String> existingNames);
 	public abstract List<Double> computeVector(CorpRelDatum datum, List<Double> existingVector);
 	public abstract CorpRelFeature clone();

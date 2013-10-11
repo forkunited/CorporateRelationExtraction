@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import corp.data.CorpMetaData;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
@@ -44,7 +45,8 @@ public class MiscellaneousStats {
 				4,
 				-1,
 				0,
-				new OutputWriter()
+				new OutputWriter(),
+				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");

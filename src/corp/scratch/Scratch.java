@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import corp.data.CorpMetaData;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDatum;
@@ -47,7 +48,8 @@ public class Scratch {
 				4,
 				args.length > 0 ? Integer.parseInt(args[0]) : 5,
 				0,
-				new OutputWriter()
+				new OutputWriter(),
+				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 		
 		System.out.println("Loaded " + documentSet.getDocuments().size() + " documents.");

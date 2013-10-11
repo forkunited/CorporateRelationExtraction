@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
@@ -24,6 +25,14 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	
 	private HashMap<String, Integer> vocabulary;
 
+	private String getNamePrefix() {
+		String clustererName = "";
+		if (this.clusterer != null)
+			clustererName = this.clusterer.getName() + "_";
+		
+		return "NGram_" + clustererName + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_" + this.cleanFn.toString() + "_"; 
+	}
+	
 	@Override
 	public void init(List<CorpRelDatum> data) {
 		CounterTable counter = new CounterTable();
@@ -36,6 +45,17 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		
 		counter.removeCountsLessThan(this.minFeatureOccurrence);
 		this.vocabulary = counter.buildIndex();
+	}
+	
+	@Override
+	public Map<String, Double> computeMapNoInit(CorpRelDatum datum) {
+		String namePrefix = getNamePrefix();
+		HashSet<String> attValues = getNGramsForDatum(datum);
+		Map<String, Double> map = new HashMap<String, Double>(attValues.size());
+		for (String attValue : attValues) {
+			map.put(namePrefix + attValue, 1.0);
+		}
+		return map;
 	}
 
 	@Override
@@ -55,13 +75,9 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	public List<String> getNames(List<String> existingNames) {
 		List<String> names = new ArrayList<String>(Collections.nCopies(this.vocabulary.size(), (String)null));
 		
-		String clustererName = "";
-		if (this.clusterer != null)
-			clustererName = this.clusterer.getName() + "_";
-		
-		String name = "NGram_" + clustererName + this.namePrefix + "_N" + this.n + "_MinF" + this.minFeatureOccurrence + "_" + this.cleanFn.toString() + "_"; 
+		String namePrefix = getNamePrefix();
 		for (Entry<String, Integer> v : this.vocabulary.entrySet())
-			names.set(v.getValue(), name + v.getKey());
+			names.set(v.getValue(), namePrefix + v.getKey());
 		existingNames.addAll(names);
 		
 		return existingNames;

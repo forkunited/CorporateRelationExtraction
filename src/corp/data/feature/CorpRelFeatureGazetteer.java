@@ -1,6 +1,8 @@
 package corp.data.feature;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import corp.data.Gazetteer;
 import corp.data.annotation.CorpDocumentTokenSpan;
@@ -28,6 +30,17 @@ public abstract class CorpRelFeatureGazetteer extends CorpRelFeature {
 		
 	}
 
+	@Override
+	public Map<String, Double> computeMapNoInit(CorpRelDatum datum) {
+		List<String> names = getNames();
+		List<Double> values = computeVector(datum);
+		Map<String, Double> map = new HashMap<String, Double>();
+		for (int i = 0; i < names.size(); i++) {
+			map.put(names.get(i), values.get(i));
+		}
+		return map;
+	}
+	
 	@Override
 	public List<String> getNames(List<String> existingNames) {
 		existingNames.add("GazetteExtremum_" + this.inputType + "_" + this.namePrefix + "_" + this.gazetteer.getName());

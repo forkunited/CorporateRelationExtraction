@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.util.OutputWriter;
@@ -63,7 +64,12 @@ public class CorpDocument {
 		return this.annotationCache.getSentenceCount(this.annotationFileName);
 	}
 	
-	public boolean loadUnannotatedCorpRels() {
+	public boolean loadUnannotatedCorpRels(Map<String, String> corpCikNameMap) {
+		String cik = getAuthorCikFromFileName();
+		if (!corpCikNameMap.containsKey(cik))
+			return false;
+		String authorName = corpCikNameMap.get(cik);
+		
 		Annotation documentAnnotation = this.annotationCache.getDocumentAnnotation(this.annotationFileName);
 		List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(documentAnnotation);
 		HashMap<String, List<CorpDocumentTokenSpan>> nerSpans = new HashMap<String, List<CorpDocumentTokenSpan>>();
@@ -93,7 +99,7 @@ public class CorpDocument {
 		}
 		
 		for (List<CorpDocumentTokenSpan> tokenSpan : nerSpans.values()) {
-			CorpRelDatum datum = new CorpRelDatum("", tokenSpan); // FIXME: Get author corp name from meta data
+			CorpRelDatum datum = new CorpRelDatum(authorName, tokenSpan);
 			this.corpRelDatums.add(datum);
 		}
 		
@@ -227,5 +233,9 @@ public class CorpDocument {
 	@Override
 	public int hashCode() {
 		return this.annotationFileName.hashCode();
+	}
+	
+	private String getAuthorCikFromFileName() {
+		return this.annotationFileName.substring(0, this.annotationFileName.indexOf("-8-K-"));
 	}
 }

@@ -25,6 +25,8 @@ public class CorpProperties {
 	private String experimentOutputPath;
 	private String brownClustererCommandPath;
 	private String brownClustererSourceDocument;
+	private String latentFactionsCommandPath;
+	private String latentFactionsSourceDirPath;
 	
 	public CorpProperties(String propertiesPath) {
 		try {
@@ -53,6 +55,8 @@ public class CorpProperties {
 			this.experimentOutputPath = properties.getProperty("experimentOutputPath");
 			this.brownClustererCommandPath = properties.getProperty("brownClustererCommandPath");
 			this.brownClustererSourceDocument = properties.getProperty("brownClustererSourceDocument");
+			this.latentFactionsCommandPath = properties.getProperty("latentFactionsCommandPath");
+			this.latentFactionsSourceDirPath = properties.getProperty("latentFactionsSourceDirPath");
 			
 			reader.close();
 		} catch (Exception e) {
@@ -142,5 +146,13 @@ public class CorpProperties {
 	
 	public String getBrownClustererSourceDocument() {
 		return this.brownClustererSourceDocument;
+	}
+	
+	public String getLatentFactionsCommandPath() {
+		return this.latentFactionsCommandPath;
+	}
+	
+	public String getLatentFactionsSourceDirectory() {
+		return this.latentFactionsSourceDirPath;
 	}
 }

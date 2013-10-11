@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class CorpMetaData {
 	public enum Attribute {
@@ -205,5 +206,21 @@ public class CorpMetaData {
 			return null;
 		else
 			return attributes.getAttribute(attribute);
+	}
+	
+	public Map<String, String> getAttributeMap(CorpMetaData.Attribute keyAtt, CorpMetaData.Attribute valueAtt) {
+		Map<String, String> attributeMap = new HashMap<String, String>();
+		
+		for (Entry<String, CorpMetaData.Attributes> entry : this.idsToAttributes.entrySet()) {
+			List<String> keyAttValues = entry.getValue().getAttribute(keyAtt);
+			List<String> valueAttValues = entry.getValue().getAttribute(valueAtt);
+			for (String keyAttValue : keyAttValues) {
+				for (String valueAttValue : valueAttValues) {
+					attributeMap.put(keyAttValue, valueAttValue);
+				}
+			}
+		}
+		
+		return attributeMap;
 	}
 }

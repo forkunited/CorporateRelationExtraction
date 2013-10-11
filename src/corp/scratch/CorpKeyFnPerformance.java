@@ -3,6 +3,7 @@ package corp.scratch;
 import java.util.ArrayList;
 import java.util.List;
 
+import corp.data.CorpMetaData;
 import corp.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
@@ -38,7 +39,8 @@ public class CorpKeyFnPerformance {
 				4,
 				-1,
 				0,
-				new OutputWriter()
+				new OutputWriter(),
+				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 		
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());

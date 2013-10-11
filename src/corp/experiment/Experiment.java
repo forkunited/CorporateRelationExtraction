@@ -126,7 +126,8 @@ public abstract class Experiment {
 				this.maxThreads,
 				this.maxDocuments,
 				0,
-				this.output
+				this.output,
+				this.metaData.get("CorpMetaData")
 		);
 		
 		this.output.debugWriteln("Loaded " + documentSet.getDocuments().size() + " documents.");

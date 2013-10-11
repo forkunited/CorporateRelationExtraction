@@ -6,11 +6,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import corp.data.CorpMetaData;
 import corp.util.OutputWriter;
 
 public class CorpDocumentSet {
@@ -22,19 +24,19 @@ public class CorpDocumentSet {
 	private boolean loadUnnanotatedRelations;
 	private OutputWriter output;
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, OutputWriter output) {
-		this(corpRelDirPath, annotationCache, 1, 0, 0, output);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, OutputWriter output, CorpMetaData metaData) {
+		this(corpRelDirPath, annotationCache, 1, 0, 0, output, metaData);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, OutputWriter output) {
-		this(corpRelDirPath, annotationCache, maxThreads, 0, 0, output);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, OutputWriter output, CorpMetaData metaData) {
+		this(corpRelDirPath, annotationCache, maxThreads, 0, 0, output, metaData);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output) {
-		this(corpRelDirPath, annotationCache, maxThreads, maxCorpRelDocuments, maxUnannotatedDocuments, output, true);
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output, CorpMetaData metaData) {
+		this(corpRelDirPath, annotationCache, maxThreads, maxCorpRelDocuments, maxUnannotatedDocuments, output, true, metaData);
 	}
 	
-	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output, boolean loadUnannotatedRelations) {
+	public CorpDocumentSet(String corpRelDirPath, AnnotationCache annotationCache, int maxThreads, int maxCorpRelDocuments, int maxUnannotatedDocuments, OutputWriter output, boolean loadUnannotatedRelations, CorpMetaData metaData) {
 		this.corpRelDirPath = corpRelDirPath;
 		this.annotationCache = annotationCache;
 		this.maxThreads = maxThreads;
@@ -44,7 +46,7 @@ public class CorpDocumentSet {
 		this.loadUnnanotatedRelations = loadUnannotatedRelations;
 		
 		loadAnnotatedDocuments(maxCorpRelDocuments);
-		loadUnannotatedDocuments(maxUnannotatedDocuments);
+		loadUnannotatedDocuments(maxUnannotatedDocuments, metaData);
 	}
 	
 	public List<CorpDocument> getDocuments() {
@@ -64,7 +66,7 @@ public class CorpDocumentSet {
 		return new ArrayList<CorpDocument>(this.unannotatedDocuments.values());
 	}
 	
-	private void loadUnannotatedDocuments(int maxUnannotatedDocuments) {
+	private void loadUnannotatedDocuments(int maxUnannotatedDocuments, CorpMetaData metaData) {
 		if (maxUnannotatedDocuments == 0)
 			return;
 		File annotationDir = new File(this.annotationCache.getDocAnnoDirPath());
@@ -101,12 +103,14 @@ public class CorpDocumentSet {
 			    }
 			});
 			
+			Map<String, String> cikMap = metaData.getAttributeMap(CorpMetaData.Attribute.CIK, CorpMetaData.Attribute.NAME);
+			
 			int numDocuments = 0;
 			for (File annotationFile : annotationFiles) {
 				this.output.debugWriteln("Loading (unannotated) annotation file " + annotationFile.getAbsoluteFile() + "...");
 				
 				if (!this.annotatedDocuments.containsKey(annotationFile.getName()))
-					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile, this.loadUnnanotatedRelations));
+					threadPool.submit(new UnannotatedDocumentLoadThread(annotationFile, this.loadUnnanotatedRelations, cikMap));
 				
 				numDocuments++;
 				if (maxUnannotatedDocuments > 0 && numDocuments >= maxUnannotatedDocuments)
@@ -124,10 +128,12 @@ public class CorpDocumentSet {
 	private class UnannotatedDocumentLoadThread implements Runnable {
 		private File annotationFile;
 		private boolean loadUnannotatedRelations;
+		private Map<String, String> cikMap;
 		
-		public UnannotatedDocumentLoadThread(File annotationFile, boolean loadUnannotatedRelations) {
+		public UnannotatedDocumentLoadThread(File annotationFile, boolean loadUnannotatedRelations, Map<String, String> cikMap) {
 			this.annotationFile = annotationFile;
 			this.loadUnannotatedRelations = loadUnannotatedRelations;
+			this.cikMap = cikMap;
 		}
 		
 		public void run() {
@@ -135,7 +141,7 @@ public class CorpDocumentSet {
 			unannotatedDocuments.put(this.annotationFile.getName(), document);
 			if (this.loadUnannotatedRelations) {
 				synchronized (document) {
-					document.loadUnannotatedCorpRels();
+					document.loadUnannotatedCorpRels(this.cikMap);
 				}
 			}
 		}

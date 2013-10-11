@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import corp.data.CorpMetaData;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentSet;
@@ -38,7 +39,8 @@ public class ConstructBrownClusterData {
 				4,
 				-1,
 				0,
-				new OutputWriter()
+				new OutputWriter(),
+				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 			
         try {
@@ -91,7 +93,8 @@ public class ConstructBrownClusterData {
 				0,
 				-1,
 				new OutputWriter(),
-				false
+				false,
+				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 			
         try {

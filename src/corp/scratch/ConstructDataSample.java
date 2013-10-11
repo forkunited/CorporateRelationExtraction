@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import corp.data.CorpMetaData;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDatum;
@@ -83,7 +84,8 @@ public class ConstructDataSample {
 				4,
 				-1,
 				0,
-				new OutputWriter()
+				new OutputWriter(),
+				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 		
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());
