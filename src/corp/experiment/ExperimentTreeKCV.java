@@ -2,7 +2,11 @@ package corp.experiment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeature;
 import corp.model.Model;
@@ -16,6 +20,7 @@ public class ExperimentTreeKCV extends Experiment {
 	private int crossValidationFolds;
 	private boolean treeAllowSubpaths;
 	private ModelTree modelTree;
+	private Map<String, List<Double>> gridSearchParameters;
 	
 	public ExperimentTreeKCV() {
 		
@@ -66,14 +71,36 @@ public class ExperimentTreeKCV extends Experiment {
 			} else if (assignment.first().equals("treeModelPath")) {
 				modelPath = CorpRelLabelPath.fromString(assignment.second());
 			} else if (assignment.first().equals("treeModel")) {
-				if (assignment.second().equals("CReg"))
+				if (assignment.second().startsWith("CReg"))
 					model = new ModelCReg(this.properties.getCregCommandPath(), modelValidPaths, this.output);
 				else
 					model = new ModelUniform(modelValidPaths, this.output);
+				
+				int parametersStart = assignment.second().indexOf("(");
+				int parametersEnd = assignment.second().indexOf(")", parametersStart);
+				if (parametersEnd > parametersStart) {
+					String parametersStr = assignment.second().substring(parametersStart+1, parametersEnd);
+					Map<String, String> parameters = parseArguments(parametersStr);
+					for (Entry<String, String> entry : parameters.entrySet())
+						model.setHyperParameter(entry.getKey(), Double.valueOf(entry.getValue()));
+				}
 			} else if (assignment.first().equals("treeModelValidPath")) {
 				modelValidPaths.add(CorpRelLabelPath.fromString(assignment.second()));
 			} else if (assignment.first().equals("treeModelFeature")) {
 				modelFeatures.add(parseFeature(assignment.second()));
+			} else if (assignment.first().equals("treeModelParameterSearch")) {
+				if (this.gridSearchParameters == null)
+					this.gridSearchParameters = new HashMap<String, List<Double>>();
+				int parametersStart = assignment.second().indexOf("(");
+				int parametersEnd = assignment.second().indexOf(")", parametersStart);
+				String parametersStr = assignment.second().substring(parametersStart+1, parametersEnd);
+				Map<String, String> parameters = parseArguments(parametersStr);
+				for (Entry<String, String> entry : parameters.entrySet()) {
+					String parameter = modelPath.toString() + "_" + entry.getKey();
+					if (!this.gridSearchParameters.containsKey(parameter))
+						this.gridSearchParameters.put(parameter, new ArrayList<Double>());
+					this.gridSearchParameters.get(parameter).add(Double.valueOf(entry.getValue()));
+				}
 			}
 		}
 		
@@ -92,7 +119,8 @@ public class ExperimentTreeKCV extends Experiment {
 				this.crossValidationFolds,
 				new File(this.properties.getCregDataDirPath(), name + "." + this.crossValidationFolds + "FoldCV").getAbsolutePath(),
 				this.rand,
-				this.output
+				this.output,
+				this.gridSearchParameters
 		);
 		
 		validation.run(this.maxThreads);

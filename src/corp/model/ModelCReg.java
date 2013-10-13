@@ -32,7 +32,6 @@ public class ModelCReg extends Model {
 	private String cmdPath;
 	private String modelPath;
 	private OutputWriter output;
-	private double l1;
 	
 	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output) {
 		this(cmdPath, validPaths, output, 1.0);
@@ -43,7 +42,8 @@ public class ModelCReg extends Model {
 		this.modelPath = null;
 		this.validPaths = validPaths;
 		this.output = output;
-		this.l1 = l1;
+		this.hyperParameters = new HashMap<String, Double>();
+		setHyperParameter("l1", l1);
 	}
 	
 	@Override
@@ -89,7 +89,7 @@ public class ModelCReg extends Model {
 		
 		this.output.debugWriteln("CReg training model for " + outputPath);
 		
-		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 " + this.l1 + " --z " + outputPath;
+		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 " + getHyperParameter("l1") + " --z " + outputPath;
 		trainCmd = trainCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(trainCmd))
 			return false;
@@ -242,7 +242,7 @@ public class ModelCReg extends Model {
 	
 	@Override
 	public Model clone() {
-		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output);
+		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output, getHyperParameter("l1"));
 		cloneModel.modelPath = this.modelPath;
 		return cloneModel;
 	}

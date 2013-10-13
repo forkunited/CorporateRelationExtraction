@@ -18,6 +18,7 @@ public class ModelUniform extends Model {
 	public ModelUniform(List<CorpRelLabelPath> validPaths, OutputWriter output) {
 		this.validPaths = validPaths;
 		this.output = output;
+		this.hyperParameters = new HashMap<String, Double>();
 	}
 	
 	@Override

@@ -38,6 +38,7 @@ public class ModelTree extends Model {
 		this.models = new HashMap<CorpRelLabelPath, Model>();
 		this.extraFeatures = new HashMap<CorpRelLabelPath, List<CorpRelFeature>>();
 		this.output = output;
+		this.hyperParameters = new HashMap<String, Double>();
 	}
 	
 	public boolean addModel(CorpRelLabelPath path, Model model, List<CorpRelFeature> extraFeatures) {
@@ -190,5 +191,29 @@ public class ModelTree extends Model {
 		}
 		
 		return retStr.toString();
+	}
+	
+	@Override
+	public void setHyperParameter(String parameter, double value) {
+		if (!parameter.contains("_"))
+			this.hyperParameters.put(parameter, value);
+		else {
+			String[] parameterParts = parameter.split("_");
+			CorpRelLabelPath modelPath = CorpRelLabelPath.fromString(parameterParts[0]);
+			String modelParameter = parameterParts[1];
+			this.models.get(modelPath).setHyperParameter(modelParameter, value);
+		}
+	}
+	
+	@Override
+	public double getHyperParameter(String parameter) {
+		if (!parameter.contains("_"))
+			return this.hyperParameters.get(parameter);
+		else {
+			String[] parameterParts = parameter.split("_");
+			CorpRelLabelPath modelPath = CorpRelLabelPath.fromString(parameterParts[0]);
+			String modelParameter = parameterParts[1];
+			return this.models.get(modelPath).getHyperParameter(modelParameter);
+		}
 	}
 }

@@ -2,6 +2,7 @@ package corp.model.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -23,13 +24,24 @@ public class KFoldCrossValidation {
 	private List<CorpRelFeature> originalFeatures;
 	private Random rand;
 	private OutputWriter output;
+	private Map<String, List<Double>> possibleParameterValues;
+	
+	public KFoldCrossValidation(Model model, 
+			CorpRelFeaturizedDataSet data,
+			int k,
+			String outputPath,
+			Random rand,
+			OutputWriter output) {
+		this(model, data, k, outputPath, rand, output, null);
+	}
 	
 	public KFoldCrossValidation(Model model, 
 								CorpRelFeaturizedDataSet data,
 								int k,
 								String outputPath,
 								Random rand,
-								OutputWriter output) {
+								OutputWriter output,
+								Map<String, List<Double>> possibleParameterValues) {
 		this.model = model;
 		this.folds = new CorpRelFeaturizedDataSet[k];
 		this.outputPath = outputPath;
@@ -91,11 +103,14 @@ public class KFoldCrossValidation {
 			output.debugWriteln("Initializing CV data sets for fold " + this.foldIndex);
 			CorpRelFeaturizedDataSet testData = new CorpRelFeaturizedDataSet(this.maxThreads, output);
 			CorpRelFeaturizedDataSet trainData = new CorpRelFeaturizedDataSet(this.maxThreads, output);
+			CorpRelFeaturizedDataSet devData = new CorpRelFeaturizedDataSet(this.maxThreads, output);
 			for (int j = 0; j < folds.length; j++) {
-				if (foldIndex != j) {
-					trainData.addData(folds[j].getData());
-				} else {
+				if (j == foldIndex) {
 					testData.addData(folds[j].getData());
+				} else if (possibleParameterValues != null && j == ((foldIndex + 1) % folds.length)) {
+					devData.addData(folds[j].getData());
+				} else {
+					trainData.addData(folds[j].getData());	
 				}
 			}
 			
@@ -110,9 +125,25 @@ public class KFoldCrossValidation {
 				testData.addFeature(foldFeature);
 			}
 			
+			Model foldModel = model.clone();
+			
+			if (possibleParameterValues != null) {
+				HyperParameterGridSearch gridSearch = new HyperParameterGridSearch(foldModel,
+										 trainData, 
+										 devData,
+										 outputPath + "." + foldIndex,
+										 possibleParameterValues,
+										 output); 
+				output.resultsWriteln("Grid search on fold " + foldIndex + ": ");
+				output.resultsWriteln(gridSearch.toString());
+				
+				HyperParameterGridSearch.GridPosition bestParameters = gridSearch.getBestPosition();
+				foldModel.setHyperParameters(bestParameters.getCoordinates());
+			}
+			
 			output.debugWriteln("Training model for CV fold " + foldIndex);
 			
-			Model foldModel = model.clone();
+
 			AccuracyValidation accuracy = new AccuracyValidation(foldModel, trainData, testData, outputPath + "." + foldIndex, output);
 			double computedAccuracy = accuracy.run();
 			if (computedAccuracy < 0) {

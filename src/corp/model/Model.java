@@ -14,6 +14,7 @@ import edu.stanford.nlp.util.Pair;
 public abstract class Model {
 	protected List<CorpRelLabelPath> validPaths;
 	protected List<CorpRelFeature> features;
+	protected Map<String, Double> hyperParameters;
 	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
 		return this.validPaths;
@@ -37,6 +38,20 @@ public abstract class Model {
 		}
 	
 		return classifiedData;
+	}
+	
+	public void setHyperParameters(Map<String, Double> values) {
+		for (Entry<String, Double> entry : values.entrySet()) {
+			setHyperParameter(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	public void setHyperParameter(String parameter, double value) {
+		this.hyperParameters.put(parameter, value);
+	}
+	
+	public double getHyperParameter(String parameter) {
+		return this.hyperParameters.get(parameter);
 	}
 	
 	public abstract boolean deserialize(String modelPath);
