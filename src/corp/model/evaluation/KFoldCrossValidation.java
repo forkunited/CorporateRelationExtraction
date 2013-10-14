@@ -48,6 +48,7 @@ public class KFoldCrossValidation {
 		this.originalFeatures = data.getFeatures();
 		this.rand = rand;
 		this.output = output;
+		this.possibleParameterValues = possibleParameterValues;
 		
 		List<CorpRelDatum> datums = randomPermutation(data.getData());
 		for (int i = 0; i < k; i++) {
@@ -138,7 +139,8 @@ public class KFoldCrossValidation {
 				output.resultsWriteln(gridSearch.toString());
 				
 				HyperParameterGridSearch.GridPosition bestParameters = gridSearch.getBestPosition();
-				foldModel.setHyperParameters(bestParameters.getCoordinates());
+				if (bestParameters != null)
+					foldModel.setHyperParameters(bestParameters.getCoordinates());
 			}
 			
 			output.debugWriteln("Training model for CV fold " + foldIndex);
