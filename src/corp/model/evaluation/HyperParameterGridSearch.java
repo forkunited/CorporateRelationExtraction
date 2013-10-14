@@ -49,19 +49,19 @@ public class HyperParameterGridSearch {
 			return str.toString();
 		}
 		
-		public String toValueString() {
+		public String toValueString(String separator) {
 			StringBuilder str = new StringBuilder();
 			for (Entry<String, Double> entry : this.coordinates.entrySet()) {
-				str.append(entry.getValue()).append("_");
+				str.append(entry.getValue()).append(separator);
 			}
 			str.delete(str.length() - 1, str.length());
 			return str.toString();
 		}
 		
-		public String toKeyString() {
+		public String toKeyString(String separator) {
 			StringBuilder str = new StringBuilder();
 			for (Entry<String, Double> entry : this.coordinates.entrySet()) {
-				str.append(entry.getKey()).append("_");
+				str.append(entry.getKey()).append(separator);
 			}
 			str.delete(str.length() - 1, str.length());
 			return str.toString();
@@ -95,9 +95,9 @@ public class HyperParameterGridSearch {
 		List<Pair<GridPosition, Double>> gridEvaluation = getGridEvaluation();
 		StringBuilder gridEvaluationStr = new StringBuilder();
 		
-		gridEvaluationStr = gridEvaluationStr.append(gridEvaluation.get(0).first().toKeyString().replace("_", "\t")).append("\t").append("Evaluation");
+		gridEvaluationStr = gridEvaluationStr.append(gridEvaluation.get(0).first().toKeyString("\t")).append("\t").append("Evaluation");
 		for (Pair<GridPosition, Double> positionEvaluation : gridEvaluation) {
-			gridEvaluationStr = gridEvaluationStr.append(positionEvaluation.first().toValueString().replace("_", "\t"))
+			gridEvaluationStr = gridEvaluationStr.append(positionEvaluation.first().toValueString("\t"))
 							 					 .append("\t")
 							 					 .append(positionEvaluation.second())
 							 					 .append("\n");
@@ -164,7 +164,7 @@ public class HyperParameterGridSearch {
 			positionModel.setHyperParameter(entry.getKey(), entry.getValue());	
 		}
 		
-		AccuracyValidation accuracy = new AccuracyValidation(positionModel, this.trainData, this.testData, this.outputPath + "." + position.toValueString(), this.output);
+		AccuracyValidation accuracy = new AccuracyValidation(positionModel, this.trainData, this.testData, this.outputPath + "." + position.toValueString("_"), this.output);
 		double computedAccuracy = accuracy.run();
 		if (computedAccuracy < 0) {
 			this.output.debugWriteln("Error: Grid search evaluation failed at position " + position.toString());
