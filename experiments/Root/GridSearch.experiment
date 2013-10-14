@@ -8,9 +8,9 @@ treeModelPath=
 treeModel=CReg
 treeModelParameterSearch=(l1=4)
 treeModelParameterSearch=(l1=8)
+treeModelParameterSearch=(l1=12)
+treeModelParameterSearch=(l1=16)
 treeModelParameterSearch=(l1=32)
-treeModelParameterSearch=(l1=64)
-treeModelParameterSearch=(l1=128)
 treeModelValidPath=SelfRef
 treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
