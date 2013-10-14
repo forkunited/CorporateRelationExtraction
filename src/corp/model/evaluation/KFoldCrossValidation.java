@@ -135,10 +135,10 @@ public class KFoldCrossValidation {
 										 outputPath + "." + foldIndex,
 										 possibleParameterValues,
 										 output); 
+				HyperParameterGridSearch.GridPosition bestParameters = gridSearch.getBestPosition();
 				output.resultsWriteln("Grid search on fold " + foldIndex + ": ");
 				output.resultsWriteln(gridSearch.toString());
 				
-				HyperParameterGridSearch.GridPosition bestParameters = gridSearch.getBestPosition();
 				if (bestParameters != null)
 					foldModel.setHyperParameters(bestParameters.getCoordinates());
 			}

@@ -23,6 +23,7 @@ import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 
 public class LatentFactions {
+	private File inputDir;
 	private File settingsFile;
 	private File wordDistributionsFile;
 	private File factionDistributionsFile;
@@ -53,8 +54,8 @@ public class LatentFactions {
 		this.authorKeyFn = authorKeyFn;
 		this.output = output;
 		
+		this.inputDir = new File(sourceDir.getAbsolutePath(), "Input/" + this.name + "/");
 		this.settingsFile = new File(sourceDir.getAbsolutePath(), "Input/" + this.name + "/" + this.name + ".settings");
-	
 		this.authorsFile = new File(sourceDir.getAbsolutePath(), "Input/" + this.name + "/" + this.name + "_authors.txt");
 		this.vocabularyFile = new File(sourceDir.getAbsolutePath(), "Input/" + this.name + "/" + this.name + "_vocabulary.txt");
 		this.citationsFile = new File(sourceDir.getAbsolutePath(), "Input/" + this.name + "/" + this.name + "_citations.txt");
@@ -229,6 +230,8 @@ public class LatentFactions {
 		this.output.debugWriteln("Outputting input data for latent factions " + this.name + "...");
 		
 		if (!this.tempOutputDir.exists() && !this.tempOutputDir.mkdirs())
+			return false;
+		if (!this.inputDir.exists() && !this.inputDir.mkdirs())
 			return false;
 		
 		ConcurrentHashMap<String, Integer> vocabulary = new ConcurrentHashMap<String, Integer>();
