@@ -454,6 +454,7 @@ public class LatentFactions {
         try {
     		BufferedWriter w = new BufferedWriter(new FileWriter(this.settingsFile));
     		
+    		w.write("output = " + this.tempOutputDir.getAbsolutePath() + "\n");
     		w.write("authors-db = " + this.authorsFile.getAbsolutePath() + "\n");
     		w.write("vocabulary = " + this.vocabularyFile.getAbsolutePath() + "\n");
     		w.write("citations-db = " + this.citationsFile.getAbsolutePath() + "\n");
