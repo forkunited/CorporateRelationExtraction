@@ -29,6 +29,10 @@ treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultClean
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
 
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=500_Brown)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=500_Brown)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=500_Brown)
+
 treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioned, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
 treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioner, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
 treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Both, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
