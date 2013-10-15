@@ -17,10 +17,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import corp.data.annotation.CorpDocument;
+import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeature;
-import corp.data.feature.CorpRelFeaturizedDataSet;
 
 public class LatentFactions {
 	private File inputDir;
@@ -40,7 +41,8 @@ public class LatentFactions {
 	private int numFactions;
 	private int iterations;
 	private OutputWriter output;
-	private CorpRelFeaturizedDataSet data;
+	private CorpDocumentSet documents;
+	private List<CorpRelFeature> features;
 	
 	private Map<String, double[]> factionDistributions;
 	private Map<String, Double>[][] wordDistributions;
@@ -66,8 +68,9 @@ public class LatentFactions {
 		this.tempOutputDir = new File(sourceDir, "OutputTemp/" + this.name + "/");
 	}
 	
-	public boolean setData(CorpRelFeaturizedDataSet data) {
-		this.data = data;
+	public boolean setData(CorpDocumentSet documents, List<CorpRelFeature> features) {
+		this.documents = documents;
+		this.features = features;
 		return true;
 	}
 	
@@ -272,11 +275,14 @@ public class LatentFactions {
 	private boolean extractCorpData(ConcurrentHashMap<String, Integer> vocabulary, 
 									ConcurrentHashMap<String, Map<String, Map<String, Integer>>> citations,
 									ConcurrentHashMap<String, Integer> authors) {
-		List<CorpRelDatum> data = this.data.getData();
 		AtomicInteger maxAuthorId = new AtomicInteger(0);
 		ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
-		for (int i = 0; i < data.size(); i++) {
-			threadPool.submit(new ExtractCorpDataThread(vocabulary, citations, authors, data.get(i), maxAuthorId));
+		List<CorpDocument> docs = this.documents.getDocuments();
+		for (CorpDocument doc : docs) {
+			List<CorpRelDatum> data = doc.loadUnannotatedCorpRels(false);
+			for (int i = 0; i < data.size(); i++) {
+				threadPool.submit(new ExtractCorpDataThread(vocabulary, citations, authors, data.get(i), maxAuthorId));
+			}
 		}
 		
 		try {
@@ -318,7 +324,6 @@ public class LatentFactions {
 				}
 			}
 			
-			List<CorpRelFeature> features = data.getFeatures();
 			for (CorpRelFeature feature : features) {
 				Map<String, Double> featureValues = feature.computeMapNoInit(this.datum);
 				for (Entry<String, Double> featureValue : featureValues.entrySet()) {

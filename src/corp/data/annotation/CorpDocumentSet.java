@@ -137,11 +137,11 @@ public class CorpDocumentSet {
 		}
 		
 		public void run() {
-			CorpDocument document = new CorpDocument(this.annotationFile.getName(), annotationCache, output);;
+			CorpDocument document = new CorpDocument(this.annotationFile.getName(), annotationCache, output, this.cikMap);
 			unannotatedDocuments.put(this.annotationFile.getName(), document);
 			if (this.loadUnannotatedRelations) {
 				synchronized (document) {
-					document.loadUnannotatedCorpRels(this.cikMap);
+					document.loadUnannotatedCorpRels();
 				}
 			}
 		}

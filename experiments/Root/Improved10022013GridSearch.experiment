@@ -6,16 +6,17 @@ maxDocuments=-1
 
 treeModelPath=
 treeModel=CReg
-treeModelParameterSearch=(l1=2)
-treeModelParameterSearch=(l1=3)
-treeModelParameterSearch=(l1=4)
-treeModelParameterSearch=(l1=6)
-treeModelParameterSearch=(l1=8)
 treeModelValidPath=SelfRef
 treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
+treeModelParameterSearch=(l1=1)
+treeModelParameterSearch=(l1=4)
+treeModelParameterSearch=(l1=8)
+treeModelParameterSearch=(l1=16)
+treeModelParameterSearch=(l1=32)
+treeModelParameterSearch=(l1=64)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
 treeModelFeature=GazetteerContains(gazetteer=CorpScrapedGazetteer, inputType=Mentioned)
@@ -36,3 +37,15 @@ treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=DefaultCleanFn)
 treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=DefaultCleanFn)
 treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=DefaultCleanFn)
 treeModelFeature=SelfShareGazetteerId(gazetteer=CorpMetaDataGazetteer, cleanFn=DefaultCleanFn)
+
+treeModelFeature=SelfEditDistance(cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=true, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfInitialism(allowPrefix=false, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=1, cleanFn=StopWordCleanFn)
+treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=StopWordCleanFn)
+
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=4, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=4, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=2, minFeatureOccurrence=4, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=None)
+
+

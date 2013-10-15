@@ -10,7 +10,6 @@ import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeatureNGramSentence;
-import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
 import corp.util.LatentFactions;
 import corp.util.OutputWriter;
@@ -48,8 +47,6 @@ public class RunLatentFactions {
 		AnnotationCache annotationCache = new AnnotationCache(
 				properties.getStanfordAnnotationDirPath(),
 				properties.getStanfordAnnotationCacheSize(),
-				properties.getStanfordCoreMapDirPath(),
-				properties.getStanfordCoreMapCacheSize(),
 				new OutputWriter()
 		);
 			
@@ -60,16 +57,14 @@ public class RunLatentFactions {
 				0,
 				maxDocuments,
 				new OutputWriter(),
-				true,
+				false,
 				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 		
 		List<CorpRelFeature> features = new ArrayList<CorpRelFeature>();
 		features.add(new CorpRelFeatureNGramSentence(1, 0));
 		
-		CorpRelFeaturizedDataSet data = new CorpRelFeaturizedDataSet(documentSet, features, maxThreads, output);
-		
-		latentFactions.setData(data);
+		latentFactions.setData(documentSet, features);
 		
 		output.debugWriteln(String.valueOf(latentFactions.load()));
 	}

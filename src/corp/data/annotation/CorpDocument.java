@@ -25,13 +25,22 @@ public class CorpDocument {
 	private List<CorpRelDatum> corpRelDatums;
 	private int year;
 	private OutputWriter output;
+	private Map<String, String> corpCikNameMap;
 
 	public CorpDocument(String annotationFileName,
+			AnnotationCache annotationCache,
+			OutputWriter output) {	
+		this(annotationFileName, annotationCache, output, null);
+	}
+	
+	public CorpDocument(String annotationFileName,
 						AnnotationCache annotationCache,
-						OutputWriter output) {	
+						OutputWriter output,
+						Map<String, String> corpCikNameMap) {	
 		this.annotationFileName = annotationFileName;
 		this.annotationCache = annotationCache;
 		this.corpRelDatums = new ArrayList<CorpRelDatum>();
+		this.corpCikNameMap = corpCikNameMap;
 		
 		/* FIXME: Do this slightly differently... */
 		int dateStartIndex = this.annotationFileName.indexOf("-8-K-") + 5;
@@ -64,11 +73,15 @@ public class CorpDocument {
 		return this.annotationCache.getSentenceCount(this.annotationFileName);
 	}
 	
-	public boolean loadUnannotatedCorpRels(Map<String, String> corpCikNameMap) {
+	public List<CorpRelDatum> loadUnannotatedCorpRels() {
+		return loadUnannotatedCorpRels(true);
+	}
+	
+	public List<CorpRelDatum> loadUnannotatedCorpRels(boolean cache) {
 		String cik = getAuthorCikFromFileName();
-		if (!corpCikNameMap.containsKey(cik))
-			return false;
-		String authorName = corpCikNameMap.get(cik);
+		if (!this.corpCikNameMap.containsKey(cik))
+			return null;
+		String authorName = this.corpCikNameMap.get(cik);
 		
 		Annotation documentAnnotation = this.annotationCache.getDocumentAnnotation(this.annotationFileName);
 		List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(documentAnnotation);
@@ -98,12 +111,16 @@ public class CorpDocument {
 			}
 		}
 		
+		List<CorpRelDatum> datums = new ArrayList<CorpRelDatum>();
 		for (List<CorpDocumentTokenSpan> tokenSpan : nerSpans.values()) {
 			CorpRelDatum datum = new CorpRelDatum(authorName, tokenSpan);
-			this.corpRelDatums.add(datum);
+			datums.add(datum);
 		}
 		
-		return true;
+		if (cache)
+			this.corpRelDatums.addAll(datums);
+		
+		return datums;
 	}
 	
 	public boolean loadAnnotatedCorpRelsFromFile(String path, int sentenceIndex) {		

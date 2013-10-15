@@ -28,6 +28,29 @@ public class AnnotationCache {
 	private ConcurrentHashMap<String, Object> locks;
 	private OutputWriter output;
 	
+	public AnnotationCache(String docAnnoDirPath, final int docAnnoCacheSize, OutputWriter output) {
+		this.docAnnoDirPath = docAnnoDirPath;
+		this.output = output;
+		
+		this.docAnnoCache = Collections.synchronizedMap(new LinkedHashMap<String, Annotation>(docAnnoCacheSize+1, .75F, true) {
+			private static final long serialVersionUID = 1L;
+
+			// This method is called just after a new entry has been added
+		    public boolean removeEldestEntry(Map.Entry<String, Annotation> eldest) {
+		        return size() > docAnnoCacheSize;
+		    }
+		});
+		
+		this.sentenceAnnoCache = null;
+		this.sentenceAnnoDirPath = null;
+		
+		this.locks = new ConcurrentHashMap<String, Object>();
+		
+		File docAnnoDir = new File(this.docAnnoDirPath);
+		if (!docAnnoDir.exists() || !docAnnoDir.isDirectory())
+			throw new IllegalArgumentException("Invalid Stanford Document Annotation Directory: " + docAnnoDir.getAbsolutePath());
+	}
+	
 	public AnnotationCache(String docAnnoDirPath, final int docAnnoCacheSize, String sentenceAnnoDirPath, final int sentenceAnnoCacheSize, OutputWriter output) {
 		this.docAnnoDirPath = docAnnoDirPath;
 		this.sentenceAnnoDirPath = sentenceAnnoDirPath;
@@ -92,11 +115,12 @@ public class AnnotationCache {
 				}
 			}
 			
+			String documentPath = getDocumentPath(documentName);
 			Annotation docAnno = null;
 			synchronized (this) {
 				this.output.debugWriteln("Deserializing document annotation for " + documentName);
 				while (docAnno == null) {
-					docAnno = StanfordUtil.deserializeAnnotation(getDocumentPath(documentName));
+					docAnno = StanfordUtil.deserializeAnnotation(documentPath);
 					if (docAnno == null)
 						this.output.debugWriteln("Failed to deserialize annotation for " + documentName + " retrying...");
 				}
@@ -115,6 +139,11 @@ public class AnnotationCache {
 	}
 	
 	public CoreMap getSentenceAnnotation(String documentName, int sentenceIndex) {
+		if (this.sentenceAnnoCache == null) {
+			Annotation documentAnnotation = getDocumentAnnotation(documentName);
+			return StanfordUtil.getDocumentSentences(documentAnnotation).get(sentenceIndex);
+		}
+		
 		String sentenceName = getSentenceName(documentName, sentenceIndex);
 		Object sentenceLock = getLock(sentenceName);
 		
@@ -145,6 +174,11 @@ public class AnnotationCache {
 	}
 	
 	public int getSentenceCount(String documentName) {
+		if (this.docSentenceCountCache == null) {
+			Annotation documentAnnotation = getDocumentAnnotation(documentName);
+			return StanfordUtil.getDocumentSentences(documentAnnotation).size();
+		}
+		
 		synchronized (getLock(documentName)) {
 			synchronized (this.locks) {
 				if (this.docSentenceCountCache.containsKey(documentName))
@@ -215,17 +249,18 @@ public class AnnotationCache {
 		return this.locks.get(name);
 	}
 	
-	
 	private String getDocumentPath(String documentName) {
 		File annotationFile = new File(this.docAnnoDirPath, documentName);
 		if (annotationFile.exists())
 			return annotationFile.getAbsolutePath();
 		else {
-			int dateStartIndex = documentName.indexOf("-8-K-") + 5;
-			String year = documentName.substring(dateStartIndex, dateStartIndex+4);
-			String month = documentName.substring(dateStartIndex+4, dateStartIndex+6);
+			String year = getYear(documentName);
+			String month = getMonth(documentName);
 			annotationFile = new File(this.docAnnoDirPath, year + "/" + month + "/" + documentName);
-			return annotationFile.getAbsolutePath();
+			if (annotationFile.exists())
+				return annotationFile.getAbsolutePath();
+			else
+				return null;
 		}
 	}
 	
@@ -239,5 +274,15 @@ public class AnnotationCache {
 	
 	private String getSentenceName(String documentName, int sentenceIndex) {
 		return documentName + "." + sentenceIndex;
+	}
+	
+	private String getYear(String documentName) {
+		int dateStartIndex = documentName.indexOf("-8-K-") + 5;
+		return documentName.substring(dateStartIndex, dateStartIndex+4);
+	}
+	
+	private String getMonth(String documentName) {
+		int dateStartIndex = documentName.indexOf("-8-K-") + 5;
+		return documentName.substring(dateStartIndex+4, dateStartIndex+6);
 	}
 }
