@@ -95,8 +95,10 @@ public class ExperimentTreeKCV extends Experiment {
 				int parametersEnd = assignment.second().indexOf(")", parametersStart);
 				String parametersStr = assignment.second().substring(parametersStart+1, parametersEnd);
 				Map<String, String> parameters = parseArguments(parametersStr);
+				String parameter = null;
 				for (Entry<String, String> entry : parameters.entrySet()) {
-					String parameter = modelPath.toString() + "_" + entry.getKey();
+					if (entry.getKey().length() != 0)
+						parameter = modelPath.toString() + "_" + entry.getKey();
 					if (!this.gridSearchParameters.containsKey(parameter))
 						this.gridSearchParameters.put(parameter, new ArrayList<Double>());
 					this.gridSearchParameters.get(parameter).add(Double.valueOf(entry.getValue()));

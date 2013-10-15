@@ -41,6 +41,12 @@ public class ModelTree extends Model {
 		this.hyperParameters = new HashMap<String, Double>();
 	}
 	
+	@Override
+	public void warmRestartOn() {
+		for (Entry<CorpRelLabelPath, Model> modelEntry : this.models.entrySet())
+			modelEntry.getValue().warmRestartOn();
+	}
+	
 	public boolean addModel(CorpRelLabelPath path, Model model, List<CorpRelFeature> extraFeatures) {
 		if (!this.validPaths.contains(path))
 			return false;
@@ -177,6 +183,8 @@ public class ModelTree extends Model {
 		for (CorpRelLabelPath validPath : this.validPaths) {
 			cloneModel.validPaths.add(validPath);
 		}
+		
+		cloneModel.warmRestart = this.warmRestart;
 		
 		return cloneModel;
 	}

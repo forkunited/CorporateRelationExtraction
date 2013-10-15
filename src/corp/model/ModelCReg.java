@@ -2,6 +2,7 @@ package corp.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,16 +35,18 @@ public class ModelCReg extends Model {
 	private OutputWriter output;
 	
 	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(cmdPath, validPaths, output, 1.0);
+		this(cmdPath, validPaths, output, 1.0, 1e-10);
 	}
 	
-	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output, double l1) {
+	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output, double l1, double l2) {
+		this.warmRestart = false;
 		this.cmdPath = cmdPath;
 		this.modelPath = null;
 		this.validPaths = validPaths;
 		this.output = output;
 		this.hyperParameters = new HashMap<String, Double>();
 		setHyperParameter("l1", l1);
+		setHyperParameter("l2", l2);
 	}
 	
 	@Override
@@ -89,7 +92,15 @@ public class ModelCReg extends Model {
 		
 		this.output.debugWriteln("CReg training model for " + outputPath);
 		
-		String trainCmd = this.cmdPath + " -x " + trainXPath + " -y " + trainYPath + " --l1 " + getHyperParameter("l1") + " --z " + outputPath;
+		File outputFile = new File(outputPath);
+		
+		String trainCmd = this.cmdPath + 
+						" -x " + trainXPath + 
+						" -y " + trainYPath + 
+						" --l1 " + getHyperParameter("l1") + 
+						" --l2 " + getHyperParameter("l2") + 
+						((this.warmRestart && outputFile.exists()) ? " --weights " + outputPath : "") +
+						" --z " + outputPath;
 		trainCmd = trainCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(trainCmd))
 			return false;
@@ -242,8 +253,9 @@ public class ModelCReg extends Model {
 	
 	@Override
 	public Model clone() {
-		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output, getHyperParameter("l1"));
+		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output, getHyperParameter("l1"), getHyperParameter("l2"));
 		cloneModel.modelPath = this.modelPath;
+		cloneModel.warmRestart = this.warmRestart;
 		return cloneModel;
 	}
 	

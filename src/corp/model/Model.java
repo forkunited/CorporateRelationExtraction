@@ -15,6 +15,11 @@ public abstract class Model {
 	protected List<CorpRelLabelPath> validPaths;
 	protected List<CorpRelFeature> features;
 	protected Map<String, Double> hyperParameters;
+	protected boolean warmRestart;
+	
+	public void warmRestartOn() {
+		this.warmRestart = true;
+	}
 	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
 		return this.validPaths;

@@ -268,7 +268,7 @@ public abstract class Experiment {
 	
 	protected Pair<String, String> parseAssignment(String assignmentStr) {
 		int equalsIndex = assignmentStr.indexOf("=");
-		if (!(equalsIndex >= 1 && equalsIndex < assignmentStr.length()))
+		if (!(equalsIndex >= 0 && equalsIndex < assignmentStr.length()))
 			return null;
 		
 		String first = assignmentStr.substring(0, equalsIndex).trim();
@@ -278,7 +278,7 @@ public abstract class Experiment {
 		else
 			second = assignmentStr.substring(equalsIndex + 1).trim();
 		
-		if (!first.matches("[A-Za-z0-9]+"))
+		if (!first.matches("[A-Za-z0-9]*"))
 			return null;
 		
 		return new Pair<String, String>(first, second);

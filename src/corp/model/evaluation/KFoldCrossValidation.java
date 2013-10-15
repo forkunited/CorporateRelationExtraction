@@ -84,19 +84,18 @@ public class KFoldCrossValidation {
 			return -1.0;
 		}
 		
-		this.output.resultsWriteln("Fold\tAccuracy");
+		this.output.resultsWriteln("Fold\tAccuracy\t" + validationResults[0].getBestParameters().toKeyString("\t"));
 		for (int i = 0; i < validationResults.length; i++) {
-			this.output.resultsWriteln(i + "\t" + validationResults[i].getAccuracy());
+			this.output.resultsWriteln(i + "\t" + validationResults[i].getAccuracy() + "\t" + validationResults[i].getBestParameters().toValueString("\t"));
 			avgAccuracy += validationResults[i].getAccuracy();
 			aggregateConfusions.add(validationResults[i].getConfusionMatrix());
 		}
-		
-		
 		avgAccuracy /= this.folds.length;
 		this.output.resultsWriteln("Average Accuracy:\t" + avgAccuracy);
-		this.output.resultsWriteln("Average Confusion Matrix:\n " + aggregateConfusions.toString(1.0/this.folds.length));
-		this.output.resultsWriteln("\nGrid search results:");
 		
+		this.output.resultsWriteln("\nAverage Confusion Matrix:\n " + aggregateConfusions.toString(1.0/this.folds.length));
+		
+		this.output.resultsWriteln("\nGrid search results:");
 		this.output.resultsWrite(validationResults[0].getGridEvaluation().get(0).first().toKeyString("\t") + "\t");
 		for (int i = 0; i < this.folds.length; i++)
 			this.output.resultsWrite("Fold " + i + "\t");
@@ -128,12 +127,14 @@ public class KFoldCrossValidation {
 		private double accuracy;
 		private ConfusionMatrix confusionMatrix;
 		private List<Pair<HyperParameterGridSearch.GridPosition, Double>> gridEvaluation;
+		private HyperParameterGridSearch.GridPosition bestParameters;
 		
-		public ValidationResult(int foldIndex, double accuracy, ConfusionMatrix confusionMatrix, List<Pair<HyperParameterGridSearch.GridPosition, Double>> gridEvaluation) {
+		public ValidationResult(int foldIndex, double accuracy, ConfusionMatrix confusionMatrix, List<Pair<HyperParameterGridSearch.GridPosition, Double>> gridEvaluation, HyperParameterGridSearch.GridPosition bestParameters) {
 			this.foldIndex = foldIndex;
 			this.accuracy = accuracy;
 			this.confusionMatrix = confusionMatrix;
 			this.gridEvaluation = gridEvaluation;
+			this.bestParameters = bestParameters;
 		}
 		
 		public int getFoldIndex() {
@@ -150,6 +151,10 @@ public class KFoldCrossValidation {
 		
 		public List<Pair<HyperParameterGridSearch.GridPosition, Double>> getGridEvaluation() {
 			return this.gridEvaluation;
+		}
+		
+		public HyperParameterGridSearch.GridPosition getBestParameters() {
+			return this.bestParameters;
 		}
 	}
 	
@@ -190,6 +195,7 @@ public class KFoldCrossValidation {
 			
 			Model foldModel = model.clone();
 			List<Pair<HyperParameterGridSearch.GridPosition, Double>> gridEvaluation = null;
+			HyperParameterGridSearch.GridPosition bestParameters = null;
 			if (possibleParameterValues != null) {
 				HyperParameterGridSearch gridSearch = new HyperParameterGridSearch(foldModel,
 										 trainData, 
@@ -197,7 +203,7 @@ public class KFoldCrossValidation {
 										 outputPath + "." + foldIndex,
 										 possibleParameterValues,
 										 output); 
-				HyperParameterGridSearch.GridPosition bestParameters = gridSearch.getBestPosition();
+				bestParameters = gridSearch.getBestPosition();
 				gridEvaluation = gridSearch.getGridEvaluation();
 				
 				output.debugWriteln("Grid search on fold " + foldIndex + ": \n" + gridSearch.toString());
@@ -213,7 +219,7 @@ public class KFoldCrossValidation {
 			double computedAccuracy = accuracy.run();
 			if (computedAccuracy < 0) {
 				output.debugWriteln("Error: Validation failed on fold " + foldIndex);
-				return new ValidationResult(foldIndex, -1, null, null);
+				return new ValidationResult(foldIndex, -1, null, null, null);
 			} else {
 				ConfusionMatrix confusions = accuracy.getConfusionMatrix();
 				output.debugWriteln("Accuracy on fold " + foldIndex + ": " + computedAccuracy);
@@ -222,7 +228,7 @@ public class KFoldCrossValidation {
 				output.modelWriteln("--------------- Fold: " + foldIndex + " ---------------");
 				output.modelWriteln(foldModel.toString());
 				
-				return new ValidationResult(foldIndex, computedAccuracy, accuracy.getConfusionMatrix(), gridEvaluation);
+				return new ValidationResult(foldIndex, computedAccuracy, accuracy.getConfusionMatrix(), gridEvaluation, bestParameters);
 			}
 		}
 	}

@@ -164,7 +164,9 @@ public class HyperParameterGridSearch {
 			positionModel.setHyperParameter(entry.getKey(), entry.getValue());	
 		}
 		
-		AccuracyValidation accuracy = new AccuracyValidation(positionModel, this.trainData, this.testData, this.outputPath + "." + position.toValueString("_"), this.output);
+		positionModel.warmRestartOn();
+		
+		AccuracyValidation accuracy = new AccuracyValidation(positionModel, this.trainData, this.testData, this.outputPath, this.output);
 		double computedAccuracy = accuracy.run();
 		if (computedAccuracy < 0) {
 			this.output.debugWriteln("Error: Grid search evaluation failed at position " + position.toString());
