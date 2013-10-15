@@ -2,7 +2,7 @@ maxThreads=4
 randomSeed=1
 crossValidationFolds=10
 treeAllowSubpaths=false
-maxDocuments=8
+maxDocuments=-1
 
 treeModelPath=
 treeModel=Uniform
