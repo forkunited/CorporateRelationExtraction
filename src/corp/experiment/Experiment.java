@@ -266,6 +266,14 @@ public abstract class Experiment {
 		return arguments;
 	}
 	
+	protected List<String> parseList(String listStr) {
+		String[] valueStrs = listStr.split(",");
+		List<String> values = new ArrayList<String>();
+		for (int i = 0; i < valueStrs.length; i++)
+			values.add(valueStrs[i].trim());
+		return values;
+	}
+	
 	protected Pair<String, String> parseAssignment(String assignmentStr) {
 		int equalsIndex = assignmentStr.indexOf("=");
 		if (!(equalsIndex >= 0 && equalsIndex < assignmentStr.length()))

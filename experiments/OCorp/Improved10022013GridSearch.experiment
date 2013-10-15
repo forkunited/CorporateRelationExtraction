@@ -9,8 +9,8 @@ treeModel=Uniform
 treeModelValidPath=OCorp
 treeModelPath=OCorp
 treeModel=CReg
-treeModelParameterSearch=(l1=2,=3,=4,=6)
-treeModelParameterSearch=(l2=0,=.1,=1,=10)
+treeModelParameterSearch=l1=2,3,4,6
+treeModelParameterSearch=l2=0,.1,1,10
 
 treeModelValidPath=OCorp-Family
 treeModelValidPath=OCorp-Merger

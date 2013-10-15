@@ -2,7 +2,7 @@ maxThreads=4
 randomSeed=1
 crossValidationFolds=10
 treeAllowSubpaths=false
-maxDocuments=-1
+maxDocuments=8
 
 treeModelPath=
 treeModel=Uniform
@@ -10,8 +10,8 @@ treeModelValidPath=NonCorp
 treeModelPath=NonCorp
 treeModel=CReg
 
-treeModelParameterSearch=(l1=2,=3,=4,=6)
-treeModelParameterSearch=(l2=0,=.1,=1,=10)
+treeModelParameterSearch=l1=2,3,4,6
+treeModelParameterSearch=l2=0,.1,1,10
 
 treeModelValidPath=NonCorp-US
 treeModelValidPath=NonCorp-State

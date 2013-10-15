@@ -91,18 +91,14 @@ public class ExperimentTreeKCV extends Experiment {
 			} else if (assignment.first().equals("treeModelParameterSearch")) {
 				if (this.gridSearchParameters == null)
 					this.gridSearchParameters = new HashMap<String, List<Double>>();
-				int parametersStart = assignment.second().indexOf("(");
-				int parametersEnd = assignment.second().indexOf(")", parametersStart);
-				String parametersStr = assignment.second().substring(parametersStart+1, parametersEnd);
-				Map<String, String> parameters = parseArguments(parametersStr);
-				String parameter = null;
-				for (Entry<String, String> entry : parameters.entrySet()) {
-					if (entry.getKey().length() != 0)
-						parameter = modelPath.toString() + "_" + entry.getKey();
-					if (!this.gridSearchParameters.containsKey(parameter))
-						this.gridSearchParameters.put(parameter, new ArrayList<Double>());
-					this.gridSearchParameters.get(parameter).add(Double.valueOf(entry.getValue()));
-				}
+				
+				Pair<String, String> parameterValues = parseAssignment(assignment.second());
+				String parameter = modelPath.toString() + "_" + parameterValues.first();
+				List<String> values = parseList(parameterValues.second());
+				if (!this.gridSearchParameters.containsKey(parameter))
+					this.gridSearchParameters.put(parameter, new ArrayList<Double>());
+				for (String value : values)
+					this.gridSearchParameters.get(parameter).add(Double.valueOf(value));
 			}
 		}
 		
