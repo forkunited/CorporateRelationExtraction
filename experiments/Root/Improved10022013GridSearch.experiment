@@ -12,8 +12,8 @@ treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
 
-treeModelParameterSearch=l1=1,2,4,8,16
-treeModelParameterSearch=l2=0,.1,1,10
+treeModelParameterSearch=l1=1,2,4,8
+treeModelParameterSearch=l2=1,2,3,4
 
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)
