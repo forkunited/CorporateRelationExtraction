@@ -3,10 +3,12 @@ package corp.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -442,15 +444,31 @@ public class LatentFactions {
 		String factionSourceFileName = iterationStr + "_gamma.txt";
 		String wordSourceFileName = iterationStr + "_sage.txt";
 		
-		try {
-			Files.copy(new File(this.tempOutputDir.getAbsolutePath(), factionSourceFileName).toPath(), 
-					 	this.factionDistributionsFile.toPath());
-			Files.copy(new File(this.tempOutputDir.getAbsolutePath(), wordSourceFileName).toPath(), 
-				 	this.wordDistributionsFile.toPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+	    try {
+	    	FileInputStream inputFactionStream = new FileInputStream(new File(this.tempOutputDir.getAbsolutePath(), factionSourceFileName));
+	    	FileChannel inputFactionChannel = inputFactionStream.getChannel();
+	    	FileOutputStream outputFactionStream = new FileOutputStream(this.factionDistributionsFile);
+	    	FileChannel outputFactionChannel = outputFactionStream.getChannel();
+	        outputFactionChannel.transferFrom(inputFactionChannel, 0, inputFactionChannel.size());
+	        inputFactionStream.close();
+	        inputFactionChannel.close();
+	        outputFactionStream.close();
+	        outputFactionChannel.close();
+	        
+	        FileInputStream inputWordStream = new FileInputStream(new File(this.tempOutputDir.getAbsolutePath(), wordSourceFileName));
+	        FileChannel inputWordChannel = inputWordStream.getChannel();
+	        FileOutputStream outputWordStream = new FileOutputStream(this.wordDistributionsFile);
+	        FileChannel outputWordChannel = outputWordStream.getChannel();
+	        outputWordChannel.transferFrom(inputWordChannel, 0, inputWordChannel.size());
+	        inputWordStream.close();
+	        outputWordStream.close();
+	        inputWordChannel.close();
+	        outputWordChannel.close();
+	    } catch(Exception e) {
+	    	e.printStackTrace();
+	    	return false;
+	    }
+	    
 		return true;
 	}
 	
