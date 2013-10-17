@@ -497,9 +497,9 @@ public class LatentFactions {
 	        w.write("gibbs-burnin = " + String.valueOf(this.iterations/4) + "\n");
 	        w.write("annealing = 1:1.2 300:1\n");
 	        w.write("reset-samples = false\n");
-	        w.write("likelihood-threads = 4\n");
-			w.write("e-step-threads = 4\n");
-			w.write("m-step-threads = 4\n");
+	        w.write("likelihood-threads = " + this.maxThreads + "\n");
+			w.write("e-step-threads = " + this.maxThreads + "\n");
+			w.write("m-step-threads = " + this.maxThreads + "\n");
             
     		w.close();
             return true;

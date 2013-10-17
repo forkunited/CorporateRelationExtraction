@@ -10,7 +10,7 @@ treeModelValidPath=OCorp
 treeModelPath=OCorp
 treeModel=CReg
 treeModelParameterSearch=l1=0,.25,.5,1,4
-treeModelParameterSearch=l2=0,1,2,3
+treeModelParameterSearch=l2=1,2,3,4
 
 treeModelValidPath=OCorp-Family
 treeModelValidPath=OCorp-Merger
