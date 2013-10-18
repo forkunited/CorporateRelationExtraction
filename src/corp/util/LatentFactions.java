@@ -282,6 +282,8 @@ public class LatentFactions {
 		List<CorpDocument> docs = this.documents.getDocuments();
 		for (CorpDocument doc : docs) {
 			List<CorpRelDatum> data = doc.loadUnannotatedCorpRels(false);
+			if (data == null)
+				continue;
 			for (int i = 0; i < data.size(); i++) {
 				threadPool.submit(new ExtractCorpDataThread(vocabulary, citations, authors, data.get(i), maxAuthorId));
 			}
