@@ -318,7 +318,6 @@ public class LatentFactions {
 		}
 		
 		public void run() {
-			
 			String author = authorKeyFn.transform(this.datum.getAuthorCorpName());
 			synchronized (this.authors) {
 				if (!this.authors.containsKey(author)) {
@@ -362,6 +361,8 @@ public class LatentFactions {
 						}
 					}
 				}
+				
+				output.debugWriteln("Loaded datum into latent factions (" + this.maxAuthorId.get() + " authors loaded so far)");
 			}
 		}
 	}

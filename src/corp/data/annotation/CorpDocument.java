@@ -83,6 +83,8 @@ public class CorpDocument {
 			return null;
 		String authorName = this.corpCikNameMap.get(cik);
 		
+		this.output.debugWriteln("Loading unannotated relations for document " + this.annotationFileName + "...");
+		
 		Annotation documentAnnotation = this.annotationCache.getDocumentAnnotation(this.annotationFileName);
 		List<CoreMap> sentenceAnnotations = StanfordUtil.getDocumentSentences(documentAnnotation);
 		HashMap<String, List<CorpDocumentTokenSpan>> nerSpans = new HashMap<String, List<CorpDocumentTokenSpan>>();
@@ -119,6 +121,8 @@ public class CorpDocument {
 		
 		if (cache)
 			this.corpRelDatums.addAll(datums);
+		
+		this.output.debugWriteln("Finished loading unannotated relations for document " + this.annotationFileName + ".");
 		
 		return datums;
 	}
