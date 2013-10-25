@@ -1,0 +1,27 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=-1
+
+treeModelPath=
+treeModel=Uniform
+treeModelValidPath=OCorp
+
+treeModelPath=OCorp
+treeModel=Uniform
+treeModelValidPath=OCorp-Family
+
+treeModelPath=OCorp-Family
+treeModel=CReg
+treeModelParameterSearch=l1=0,.25,.5,1,4
+treeModelParameterSearch=l2=0,1,2,3
+
+treeModelValidPath=OCorp-Family-Parent
+treeModelValidPath=OCorp-Family-Sub
+treeModelValidPath=OCorp-Family-Division
+treeModelValidPath=OCorp-Family-Sister
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramDep(n=1, minFeatureOccurrence=2, mode=ParentsAndChildren, useRelationTypes=true, cleanFn=DefaultCleanFn, clusterer=None)

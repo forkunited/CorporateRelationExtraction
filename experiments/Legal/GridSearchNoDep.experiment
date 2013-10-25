@@ -1,0 +1,25 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=-1
+
+treeModelPath=
+treeModel=Uniform
+treeModelValidPath=OCorp
+
+treeModelPath=OCorp
+treeModel=Uniform
+treeModelValidPath=OCorp-Legal
+
+treeModelPath=OCorp-Legal
+treeModel=CReg
+treeModelParameterSearch=l1=0,.25,.5,1,4
+treeModelParameterSearch=l2=0,1,2,3
+
+treeModelValidPath=OCorp-Legal-Lawsuit
+treeModelValidPath=OCorp-Legal-Alliance
+treeModelValidPath=OCorp-Legal-Agreement
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
