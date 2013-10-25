@@ -1,0 +1,26 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=-1
+
+treeModelPath=
+treeModel=Uniform
+treeModelValidPath=OCorp
+
+treeModelPath=OCorp
+treeModel=Uniform
+treeModelValidPath=OCorp-Merger
+
+treeModelPath=OCorp-Merger
+treeModel=CReg
+treeModelParameterSearch=l1=0,.25,.5,1,4
+treeModelParameterSearch=l2=0,1,2,3
+
+treeModelValidPath=OCorp-Merger-Aqu
+treeModelValidPath=OCorp-Merger-Target
+treeModelValidPath=OCorp-Merger-Merge
+treeModelValidPath=OCorp-Merger-Other
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
