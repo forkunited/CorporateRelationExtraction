@@ -45,12 +45,12 @@ public class ModelTree extends Model {
 	public ModelTree(boolean allowSubpaths, OutputWriter output) {
 		this.validPaths = new ArrayList<CorpRelLabelPath>();
 		this.validPaths.add(new CorpRelLabelPath());
-		
-		setHyperParameter("allowSubpaths", (allowSubpaths) ? 1 : 0);
+		this.hyperParameters = new HashMap<String, Double>();
 		this.models = new HashMap<CorpRelLabelPath, Model>();
 		this.extraFeatures = new HashMap<CorpRelLabelPath, List<CorpRelFeature>>();
 		this.output = output;
-		this.hyperParameters = new HashMap<String, Double>();
+		
+		setHyperParameter("allowSubpaths", (allowSubpaths) ? 1 : 0);
 	}
 	
 	public boolean addModel(CorpRelLabelPath path, Model model, List<CorpRelFeature> extraFeatures) {
