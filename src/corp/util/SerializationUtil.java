@@ -52,7 +52,8 @@ public class SerializationUtil {
 		for (Entry<String, T> argument : arguments.entrySet()) {
 			str.append(argument.getKey() + "=" + argument.getValue() + ",");
 		}
-		str = str.delete(str.length()-1, str.length());
+		if (arguments.size() > 0)
+			str = str.delete(str.length()-1, str.length());
 		
 		return str.toString();
 	}
@@ -63,7 +64,8 @@ public class SerializationUtil {
 		for (T item : list) {
 			str.append(item).append(",");
 		}
-		str.delete(str.length() - 1, str.length());
+		if (list.size() > 0)
+			str.delete(str.length() - 1, str.length());
 		
 		return str.toString();
 	}
