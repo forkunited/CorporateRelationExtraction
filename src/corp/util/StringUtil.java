@@ -26,7 +26,7 @@ public class StringUtil {
 	public static StringUtil.StringTransform getDefaultCleanFn() {
 		return new StringUtil.StringTransform() {
 			public String toString() {
-				return "DefaultClean";
+				return "DefaultCleanFn";
 			}
 			
 			public String transform(String str) {
@@ -40,7 +40,7 @@ public class StringUtil {
 		
 		return new StringUtil.StringTransform() {
 			public String toString() {
-				return "StopWordsClean_" + stopWordsName;
+				return "StopWordsCleanFn_" + stopWordsName;
 			}
 			
 			public String transform(String str) {
@@ -57,7 +57,7 @@ public class StringUtil {
 	public static StringUtil.StringTransform getCorpKeyFn(final Gazetteer keyMap, final StringUtil.StringTransform cleanFn) {
 		final String keyMapName = (keyMap == null) ? "" : keyMap.getName();
 		final String cleanFnName = cleanFn.toString();
-		final String transformName = "CorpKey_" + keyMapName + "_" + cleanFnName;
+		final String transformName = "CorpKeyFn_" + keyMapName + "_" + cleanFnName;
 		
 		return new StringUtil.StringTransform() {
 			public String toString() {

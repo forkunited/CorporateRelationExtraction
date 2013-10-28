@@ -33,21 +33,21 @@ public class CorpDataTools {
 		
 		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
 		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
-		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTickerGazetteer", this.properties.getBloombergCorpTickerGazetteerPath()));
+		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTicker", this.properties.getBloombergCorpTickerGazetteerPath()));
 			
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
-		this.cleanFns.put("StopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
-		this.cleanFns.put("NGramStopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
-		this.cleanFns.put("CorpKeyFn", StringUtil.getCorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn")));
+		this.cleanFns.put("StopWordCleanFn_StopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
+		this.cleanFns.put("StopWordCleanFn_NGramStopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
+		this.cleanFns.put("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord", StringUtil.getCorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn_StopWord")));
 		
 		this.gazetteers.put("CorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath()));
 		this.gazetteers.put("CorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath()));
 		this.gazetteers.put("BloombergMetaDataGazetteer", new Gazetteer("BloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath()));
-		this.gazetteers.put("StopWordCorpScrapedGazetteer", new Gazetteer("StopWordCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("StopWordCleanFn")));
+		this.gazetteers.put("StopWordCorpScrapedGazetteer", new Gazetteer("StopWordCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("StopWordCleanFn_StopWord")));
 		
-		this.gazetteers.put("CorpKeyCorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
-		this.gazetteers.put("CorpKeyCorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
-		this.gazetteers.put("CorpKeyBloombergMetaDataGazetteer", new Gazetteer("BloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
+		this.gazetteers.put("CorpKeyCorpScrapedGazetteer", new Gazetteer("CorpKeyCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord")));
+		this.gazetteers.put("CorpKeyCorpMetaDataGazetteer", new Gazetteer("CorpKeyCorpMetaData", this.properties.getCorpMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord")));
+		this.gazetteers.put("CorpKeyBloombergMetaDataGazetteer", new Gazetteer("CorpKeyBloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord")));
 		
 		this.gazetteers.put("NonCorpScrapedGazetteer", new Gazetteer("NonCorpScraped", this.properties.getNonCorpScrapedGazetteerPath()));
 				
