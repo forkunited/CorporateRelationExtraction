@@ -1,7 +1,7 @@
 maxThreads=4
 randomSeed=1
 treeAllowSubpaths=false
-maxDocuments=10
+maxDocuments=-1
 
 treeModelPath=
 treeModel=CReg(l1=0.0,l2=1.0)
