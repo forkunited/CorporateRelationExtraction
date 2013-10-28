@@ -59,7 +59,7 @@ public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 		String str = "NGramSentence(n=" + this.n + ", " +
 									"minFeatureOccurrence=" + this.minFeatureOccurrence + ", " +
 									"cleanFn=" + this.cleanFn.toString() + ", " +
-									"clusterer=" + this.clusterer.getName() + ")";
+									"clusterer=" + ((this.clusterer != null) ? this.clusterer.getName() : "None") + ")";
 	
 		if (withInit) {
 			str += "\t" + SerializationUtil.serializeArguments(this.vocabulary);

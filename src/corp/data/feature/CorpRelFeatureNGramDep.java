@@ -110,7 +110,7 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 						"mode=" + this.mode + ", " +
 						"useRelationTypes=" + this.useRelationTypes + ", " +
 						"cleanFn=" + this.cleanFn.toString() + ", " +
-						"clusterer=" + this.clusterer.getName() + ")";
+						"clusterer=" + ((this.clusterer != null) ? this.clusterer.getName() : "None") + ")";
 	
 		if (withInit) {
 			str += "\t" + SerializationUtil.serializeArguments(this.vocabulary);
