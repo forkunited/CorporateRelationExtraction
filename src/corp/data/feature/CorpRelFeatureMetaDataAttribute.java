@@ -14,6 +14,7 @@ import corp.data.Gazetteer;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.CounterTable;
+import corp.util.SerializationUtil;
 import corp.util.StringUtil;
 
 public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
@@ -76,6 +77,14 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 		
 		attValues.removeCountsLessThan(this.minFeatureOccurrence);
 		this.attributeVocabulary = attValues.buildIndex();
+	}
+	
+	@Override
+	public void init(String initStr) {
+		this.attributeVocabulary = new HashMap<String, Integer>();
+		Map<String, String> strVocabulary = SerializationUtil.deserializeArguments(initStr);
+		for (Entry<String, String> entry : strVocabulary.entrySet())
+			this.attributeVocabulary.put(entry.getKey(), Integer.parseInt(entry.getValue()));
 	}
 	
 	@Override
@@ -180,5 +189,22 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 		}
 		
 		return attributeValues;
+	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		String str = "MetaDataAttribute(gazetteer=" + this.gazetteer.getName() + "Gazetteer, " +
+								 "metaData=" + this.metaData.getName() + "MetaData, " +
+								 "attribute=" + this.attribute + ", " +
+								 "inputType=" + this.inputType + ", " +
+								 "minFeatureOccurrence=" + this.minFeatureOccurrence + ", " +
+								 "attributeTransformFn=" + this.attributeTransformFn.toString() +
+								 ")";
+		
+		if (withInit) {
+			str += "\t" + SerializationUtil.serializeArguments(this.attributeVocabulary);
+		}
+		
+		return str;
 	}
 }

@@ -37,4 +37,9 @@ public class CorpRelFeatureSelfShareGazetteerId extends CorpRelFeatureSelf {
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureSelfShareGazetteerId(this.gazetteer, this.cleanFn);
 	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "SelfShareGazetteerId(gazetteer=" + this.gazetteer.getName() + "Gazetteer, cleanFn=" + this.cleanFn.toString() + ")";
+	}
 }

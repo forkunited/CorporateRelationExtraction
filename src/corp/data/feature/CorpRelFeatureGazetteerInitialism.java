@@ -30,4 +30,9 @@ public class CorpRelFeatureGazetteerInitialism  extends CorpRelFeatureGazetteer 
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureGazetteerInitialism(this.gazetteer, this.inputType, this.allowPrefix);
 	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "GazetteerInitialism(gazetteer=" + this.gazetteer.getName() + "Gazetteer, inputType=" + this.inputType + ", allowPrefix=" + this.allowPrefix + ")";
+	}
 }

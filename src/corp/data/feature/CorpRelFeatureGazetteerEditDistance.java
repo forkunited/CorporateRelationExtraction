@@ -24,4 +24,9 @@ public class CorpRelFeatureGazetteerEditDistance extends CorpRelFeatureGazetteer
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureGazetteerEditDistance(this.gazetteer, this.inputType);
 	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "GazetteerEditDistance(gazetteer=" + this.gazetteer.getName() + "Gazetteer, inputType=" + this.inputType + ")";
+	}
 }

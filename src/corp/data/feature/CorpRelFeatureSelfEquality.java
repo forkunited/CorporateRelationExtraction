@@ -22,4 +22,9 @@ public class CorpRelFeatureSelfEquality extends CorpRelFeatureSelf {
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureSelfEditDistance(this.cleanFn);
 	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "SelfEquality(cleanFn=" + this.cleanFn.toString() + ")";
+	}
 }

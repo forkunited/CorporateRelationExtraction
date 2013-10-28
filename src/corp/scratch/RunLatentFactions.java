@@ -53,7 +53,7 @@ public class RunLatentFactions {
 		CorpDocumentSet documentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
-				32,
+				maxThreads,
 				0,
 				maxDocuments,
 				new OutputWriter(),

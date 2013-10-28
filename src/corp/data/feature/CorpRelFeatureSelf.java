@@ -25,6 +25,10 @@ public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 	@Override
 	public void init(List<CorpRelDatum> data) {
 		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public void init(String initStr) {
 		
 	}
 	

@@ -25,5 +25,9 @@ public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureSelfPrefixTokens(this.minTokens, this.cleanFn);
 	}
-
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "SelfPrefixTokens(cleanFn=" + this.cleanFn.toString() + ", minTokens=" + this.minTokens + ")";
+	}
 }

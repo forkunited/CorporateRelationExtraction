@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
@@ -37,7 +39,7 @@ public class ModelUniform extends Model {
 	}
 	
 	@Override
-	public boolean deserialize(String modelPath) {
+	public boolean deserialize(String modelPath, CorpDataTools dataTools) {
 		return false;
 	}
 

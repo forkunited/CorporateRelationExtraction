@@ -1,11 +1,19 @@
 package corp.model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeature;
@@ -25,33 +33,31 @@ import edu.stanford.nlp.util.Pair;
 public class ModelTree extends Model {
 	// This represents a tree as a set of paths mapped to models...
 	// It's not the most space-efficient representation... but the tree is small... it will work for now.
-	private Map<CorpRelLabelPath, Model> models = new HashMap<CorpRelLabelPath, Model>();
-	private boolean allowSubpaths;
+	private Map<CorpRelLabelPath, Model> models;
 	private Map<CorpRelLabelPath, List<CorpRelFeature>> extraFeatures;
 	private OutputWriter output;
+	
+	public ModelTree(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
+		this(false, output);
+		deserialize(existingModelPath, dataTools);
+	}
 	
 	public ModelTree(boolean allowSubpaths, OutputWriter output) {
 		this.validPaths = new ArrayList<CorpRelLabelPath>();
 		this.validPaths.add(new CorpRelLabelPath());
 		
-		this.allowSubpaths = allowSubpaths;
+		setHyperParameter("allowSubpaths", (allowSubpaths) ? 1 : 0);
 		this.models = new HashMap<CorpRelLabelPath, Model>();
 		this.extraFeatures = new HashMap<CorpRelLabelPath, List<CorpRelFeature>>();
 		this.output = output;
 		this.hyperParameters = new HashMap<String, Double>();
 	}
 	
-	@Override
-	public void warmRestartOn() {
-		for (Entry<CorpRelLabelPath, Model> modelEntry : this.models.entrySet())
-			modelEntry.getValue().warmRestartOn();
-	}
-	
 	public boolean addModel(CorpRelLabelPath path, Model model, List<CorpRelFeature> extraFeatures) {
 		if (!this.validPaths.contains(path))
 			return false;
 		
-		if (!this.allowSubpaths)
+		if (this.getHyperParameter("allowSubpaths") == 0)
 			this.validPaths.remove(path);
 		
 		
@@ -72,9 +78,8 @@ public class ModelTree extends Model {
 
 	@Override
 	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
-		// TODO Output serialized model for deserialization later
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
-			List<CorpRelDatum> pathData = data.getDataUnderPath(entry.getKey(), this.allowSubpaths);
+			List<CorpRelDatum> pathData = data.getDataUnderPath(entry.getKey(), this.getHyperParameter("allowSubpaths") > 0);
 			CorpRelFeaturizedDataSet pathDataSet = new CorpRelFeaturizedDataSet(data.getMaxThreads(), this.output);
 			pathDataSet.addData(pathData);
 			for (int i = 0; i < data.getFeatureCount(); i++)
@@ -84,12 +89,35 @@ public class ModelTree extends Model {
 				pathDataSet.addFeature(this.extraFeatures.get(entry.getKey()).get(i));
 			}
 			
-			if (!entry.getValue().train(pathDataSet, outputPath + "." + entry.getKey().toString() + "Path"))
+			if (!entry.getValue().train(pathDataSet, getOutputPathForModel(outputPath, entry.getKey())))
 				return false;
 		}
 		
+		this.modelPath = outputPath;
+		if (!serializeParameters())
+			return false;
+		
+		if (!serializeFeatures())
+			return false;
+		
 		return true;
 	}
+	
+	private boolean serializeFeatures() {
+		if (this.modelPath == null)
+			return false;
+		
+        try {
+    		BufferedWriter w = new BufferedWriter(new FileWriter(this.modelPath + ".f"));  		
+    		for (Entry<CorpRelLabelPath, List<CorpRelFeature>> entry : this.extraFeatures.entrySet()) {
+    			for (CorpRelFeature feature : entry.getValue())
+    				w.write(entry.getKey().toString() + "\t" + feature.toString(true) + "\n");
+    		}
+            w.close();
+            return true;
+        } catch (IOException e) { e.printStackTrace(); return false; }
+	}
+	
 	
 	@Override
 	public List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data) {
@@ -124,7 +152,7 @@ public class ModelTree extends Model {
 		Map<CorpRelLabelPath, Double> partialPosterior = new HashMap<CorpRelLabelPath, Double>();
 		for (CorpRelLabelPath validPath : this.validPaths) {
 			Double pValue = posteriorForDatumHelper(index, modelPosteriors, partialPosterior, validPath);
-			if (this.allowSubpaths && modelPosteriors.containsKey(validPath)) {
+			if (this.getHyperParameter("allowSubpaths") > 0 && modelPosteriors.containsKey(validPath)) {
 				CorpRelLabelPath prefixPath = validPath.getPrefix(validPath.size() - 1);
 				pValue *= modelPosteriors.get(prefixPath).get(index).second().get(validPath);
 			}
@@ -162,15 +190,64 @@ public class ModelTree extends Model {
 	}
 	
 	@Override
-	public boolean deserialize(String modelPath) {
-		// TODO Implement this after fixing train to output the model
-		throw new UnsupportedOperationException();
+	public boolean deserialize(String modelPath, CorpDataTools dataTools) {
+		File modelPathFile = new File(modelPath);
+		File modelDir = modelPathFile.getParentFile();
+		final String modelPathFileNamePrefix = modelPathFile.getName();
+		
+		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
+		    public boolean accept(File dir, String name) {
+		        return name.startsWith(modelPathFileNamePrefix) && name.endsWith("Path");
+		    }
+		});
+	
+		this.models = new HashMap<CorpRelLabelPath, Model>();
+		for (File modelFile : modelFiles) {
+			int lastDotIndex = modelFile.getName().lastIndexOf(".");
+			int pathIndex = modelFile.getName().lastIndexOf("Path");
+			String modelLabelPathStr = modelFile.getName().substring(lastDotIndex + 1, pathIndex);
+			CorpRelLabelPath modelLabelPath = CorpRelLabelPath.fromString(modelLabelPathStr);
+			this.models.put(modelLabelPath, new ModelCReg(modelFile.getAbsolutePath(), this.output, dataTools)); // FIXME: Currently assumes all models are CReg... 
+		}
+		
+		this.modelPath = modelPath;
+		if (!deserializeParameters())
+			return false;
+		
+		if (!deserializeFeatures(dataTools))
+			return false;
+		
+		return true;
 	}
 
+	protected boolean deserializeFeatures(CorpDataTools dataTools) {
+		if (this.modelPath == null)
+			return false;
+		
+		this.extraFeatures = new HashMap<CorpRelLabelPath, List<CorpRelFeature>>();
+        try {
+    		BufferedReader r = new BufferedReader(new FileReader(this.modelPath + ".f"));  		
+    		String line = null;
+    		while ((line = r.readLine()) != null) {
+    			String[] lineParts = line.split("\t");
+    			if (lineParts.length < 2) {
+    				r.close();
+    				return false;
+    			}
+    			
+    			CorpRelLabelPath path = CorpRelLabelPath.fromString(lineParts[0]);
+    			if (!this.extraFeatures.containsKey(path))
+    				this.extraFeatures.put(path, new ArrayList<CorpRelFeature>());
+    			this.extraFeatures.get(path).add(CorpRelFeature.fromString(lineParts[1], dataTools));
+    		}
+    		r.close();
+            return true;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+	}
 	
 	@Override
 	public Model clone() {
-		ModelTree cloneModel = new ModelTree(this.allowSubpaths, this.output);
+		ModelTree cloneModel = new ModelTree(this.getHyperParameter("allowSubpaths") > 0, this.output);
 		for (Entry<CorpRelLabelPath, Model> entry : this.models.entrySet()) {
 			cloneModel.models.put(entry.getKey(), entry.getValue().clone());
 			cloneModel.extraFeatures.put(entry.getKey(), new ArrayList<CorpRelFeature>());
@@ -184,7 +261,9 @@ public class ModelTree extends Model {
 			cloneModel.validPaths.add(validPath);
 		}
 		
-		cloneModel.warmRestart = this.warmRestart;
+		for (Entry<String, Double> hyperParameter: this.hyperParameters.entrySet()) {
+			cloneModel.setHyperParameter(hyperParameter.getKey(), hyperParameter.getValue());
+		}
 		
 		return cloneModel;
 	}
@@ -203,7 +282,11 @@ public class ModelTree extends Model {
 	
 	@Override
 	public void setHyperParameter(String parameter, double value) {
-		if (!parameter.contains("_"))
+		if (parameter.equals("warmRestart")) {
+			for (Entry<CorpRelLabelPath, Model> model : this.models.entrySet()) {
+				model.getValue().setHyperParameter("warmRestart", value);
+			}
+		} else if (!parameter.contains("_"))
 			this.hyperParameters.put(parameter, value);
 		else {
 			String[] parameterParts = parameter.split("_");
@@ -223,5 +306,9 @@ public class ModelTree extends Model {
 			String modelParameter = parameterParts[1];
 			return this.models.get(modelPath).getHyperParameter(modelParameter);
 		}
+	}
+	
+	private String getOutputPathForModel(String outputPathPrefix, CorpRelLabelPath modelPath) {
+		return outputPathPrefix + "." + modelPath.toString() + "Path";
 	}
 }

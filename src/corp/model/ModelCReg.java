@@ -10,13 +10,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import corp.util.CommandRunner;
+import corp.util.CorpProperties;
 import corp.util.OutputWriter;
+import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
@@ -31,15 +34,25 @@ import edu.stanford.nlp.util.Pair;
  */
 public class ModelCReg extends Model {
 	private String cmdPath;
-	private String modelPath;
 	private OutputWriter output;
+	
+	public ModelCReg(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
+		this((new CorpProperties()).getCregCommandPath(), new ArrayList<CorpRelLabelPath>(), output, 1.0, 1e-10);
+		this.modelPath = existingModelPath;
+		this.deserialize(existingModelPath, dataTools);
+	}
+	
+	public ModelCReg(String cmdPath, String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
+		this(cmdPath, new ArrayList<CorpRelLabelPath>(), output, 1.0, 1e-10);
+		this.modelPath = existingModelPath;
+		this.deserialize(existingModelPath, dataTools);
+	}
 	
 	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output) {
 		this(cmdPath, validPaths, output, 1.0, 1e-10);
 	}
 	
 	public ModelCReg(String cmdPath, List<CorpRelLabelPath> validPaths, OutputWriter output, double l1, double l2) {
-		this.warmRestart = false;
 		this.cmdPath = cmdPath;
 		this.modelPath = null;
 		this.validPaths = validPaths;
@@ -47,6 +60,7 @@ public class ModelCReg extends Model {
 		this.hyperParameters = new HashMap<String, Double>();
 		setHyperParameter("l1", l1);
 		setHyperParameter("l2", l2);
+		setHyperParameter("warmRestart", 0);
 	}
 	
 	@Override
@@ -71,8 +85,11 @@ public class ModelCReg extends Model {
 	}
 
 	@Override
-	public boolean deserialize(String modelPath) {
+	public boolean deserialize(String modelPath, CorpDataTools dataTools) {
 		this.modelPath = modelPath;
+		if (!deserializeParameters())
+			return false;
+		
 		return true;
 	}
 
@@ -99,13 +116,16 @@ public class ModelCReg extends Model {
 						" -y " + trainYPath + 
 						" --l1 " + getHyperParameter("l1") + 
 						" --l2 " + getHyperParameter("l2") + 
-						((this.warmRestart && outputFile.exists()) ? " --weights " + outputPath : "") +
+						((hasHyperParameter("warmRestart") && getHyperParameter("warmRestart") > 0 && outputFile.exists()) ? " --weights " + outputPath : "") +
 						" --z " + outputPath;
 		trainCmd = trainCmd.replace("\\", "/"); 
 		if (!CommandRunner.run(trainCmd))
 			return false;
 		
 		this.modelPath = outputPath;
+		
+		if (!serializeParameters())
+			return false;
 		
 		this.output.debugWriteln("CReg finished training model for " + outputPath);
 		
@@ -255,7 +275,8 @@ public class ModelCReg extends Model {
 	public Model clone() {
 		ModelCReg cloneModel = new ModelCReg(this.cmdPath, this.validPaths, this.output, getHyperParameter("l1"), getHyperParameter("l2"));
 		cloneModel.modelPath = this.modelPath;
-		cloneModel.warmRestart = this.warmRestart;
+		for (Entry<String, Double> hyperParameter : this.hyperParameters.entrySet())
+			cloneModel.setHyperParameter(hyperParameter.getKey(), hyperParameter.getValue());
 		return cloneModel;
 	}
 	

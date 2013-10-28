@@ -7,6 +7,7 @@ import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.BrownClusterer;
+import corp.util.SerializationUtil;
 import corp.util.StanfordUtil;
 import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -59,5 +60,20 @@ public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 	@Override
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureNGramContext(this.n, this.minFeatureOccurrence, this.contextWindowSize, this.cleanFn, this.clusterer);
+	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		String str = "NGramContext(n=" + this.n + ", " +
+							"minFeatureOccurrence=" + this.minFeatureOccurrence + ", " +
+							"contextWindowSize=" + this.contextWindowSize + ", " +
+							"cleanFn=" + this.cleanFn.toString() + ", " +
+							"clusterer=" + this.clusterer.getName() + ")";
+		
+		if (withInit) {
+			str += "\t" + SerializationUtil.serializeArguments(this.vocabulary);
+		}
+		
+		return str;
 	}
 }

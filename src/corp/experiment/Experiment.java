@@ -4,35 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import corp.data.CorpMetaData;
-import corp.data.Gazetteer;
+import corp.data.CorpDataTools;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
-import corp.data.feature.CorpRelFeature;
-import corp.data.feature.CorpRelFeatureGazetteer;
-import corp.data.feature.CorpRelFeatureGazetteerContains;
-import corp.data.feature.CorpRelFeatureGazetteerEditDistance;
-import corp.data.feature.CorpRelFeatureGazetteerInitialism;
-import corp.data.feature.CorpRelFeatureGazetteerPrefixTokens;
-import corp.data.feature.CorpRelFeatureMetaDataAttribute;
-import corp.data.feature.CorpRelFeatureNGramContext;
-import corp.data.feature.CorpRelFeatureNGramDep;
-import corp.data.feature.CorpRelFeatureNGramSentence;
-import corp.data.feature.CorpRelFeatureSelfEditDistance;
-import corp.data.feature.CorpRelFeatureSelfEquality;
-import corp.data.feature.CorpRelFeatureSelfInitialism;
-import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
-import corp.data.feature.CorpRelFeatureSelfShareGazetteerId;
 import corp.data.feature.CorpRelFeaturizedDataSet;
-import corp.util.BrownClusterer;
 import corp.util.CorpProperties;
 import corp.util.OutputWriter;
-import corp.util.StringUtil;
+import corp.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class Experiment {
@@ -43,11 +24,7 @@ public abstract class Experiment {
 	protected int maxDocuments;
 	protected Random rand;
 	
-	protected Map<String, Gazetteer> gazetteers;
-	protected Map<String, CorpMetaData> metaData;
-	protected Map<String, StringUtil.StringTransform> cleanFns;
-	protected Map<String, StringUtil.StringCollectionTransform> collectionFns;
-	protected Map<String, BrownClusterer> clusterers;
+	protected CorpDataTools dataTools;
 	
 	protected AnnotationCache annotationCache;
 	protected CorpRelFeaturizedDataSet dataSet;
@@ -71,45 +48,9 @@ public abstract class Experiment {
 			new File(this.properties.getExperimentOutputPath(), name + ".model.out")
 		);
 		
-		this.output.debugWriteln("Loading Gazetteers...");
-
-		this.collectionFns = new HashMap<String, StringUtil.StringCollectionTransform>();
-		this.cleanFns = new HashMap<String, StringUtil.StringTransform>();
-		this.gazetteers = new HashMap<String, Gazetteer>();
-		
-		this.collectionFns.put("Prefixes", StringUtil.getPrefixesFn());
-		this.collectionFns.put("None", null);
-		
-		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
-		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
-		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTickerGazetteer", this.properties.getBloombergCorpTickerGazetteerPath()));
-			
-		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
-		this.cleanFns.put("StopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
-		this.cleanFns.put("NGramStopWordCleanFn", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
-		this.cleanFns.put("CorpKeyFn", StringUtil.getCorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn")));
-		
-		this.gazetteers.put("CorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath()));
-		this.gazetteers.put("CorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath()));
-		this.gazetteers.put("BloombergMetaDataGazetteer", new Gazetteer("BloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath()));
-		this.gazetteers.put("StopWordCorpScrapedGazetteer", new Gazetteer("StopWordCorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("StopWordCleanFn")));
-		
-		this.gazetteers.put("CorpKeyCorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
-		this.gazetteers.put("CorpKeyCorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
-		this.gazetteers.put("CorpKeyBloombergMetaDataGazetteer", new Gazetteer("BloombergMetaData", this.properties.getBloombergMetaDataGazetteerPath(), this.cleanFns.get("CorpKeyFn")));
-		
-		this.gazetteers.put("NonCorpScrapedGazetteer", new Gazetteer("NonCorpScraped", this.properties.getNonCorpScrapedGazetteerPath()));
+		this.output.debugWriteln("Loading Data Tools...");
+		this.dataTools = new CorpDataTools(this.properties, this.output);
 				
-		this.output.debugWriteln("Loading Meta Data...");
-		
-		this.metaData = new HashMap<String, CorpMetaData>();
-		this.metaData.put("CorpMetaData", new CorpMetaData("Corp", this.properties.getCorpMetaDataPath()));
-		this.metaData.put("BloombergMetaData", new CorpMetaData("Bloomberg", this.properties.getBloombergMetaDataPath()));
-		
-		this.output.debugWriteln("Loading clusterers...");
-		this.clusterers = new HashMap<String, BrownClusterer>();
-		this.clusterers.put("None", null);
-		
 		this.output.debugWriteln("Loading Annotation Cache...");
 		this.annotationCache = new AnnotationCache(
 			this.properties.getStanfordAnnotationDirPath(),
@@ -127,7 +68,7 @@ public abstract class Experiment {
 				this.maxDocuments,
 				0,
 				this.output,
-				this.metaData.get("CorpMetaData")
+				this.dataTools.getMetaData("CorpMetaData")
 		);
 		
 		this.output.debugWriteln("Loaded " + documentSet.getDocuments().size() + " documents.");
@@ -159,7 +100,7 @@ public abstract class Experiment {
 	
 	protected void parseInitial(List<String> lines) {
 		for (String line : lines) {
-			Pair<String, String> assignment = parseAssignment(line);
+			Pair<String, String> assignment = SerializationUtil.deserializeAssignment(line);
 			
 			if (assignment == null)
 				continue;
@@ -170,144 +111,6 @@ public abstract class Experiment {
 			else if (assignment.first().equals("maxDocuments"))
 				this.maxDocuments = Integer.parseInt(assignment.second());
 		}
-	}
-	
-	protected CorpRelFeature parseFeature(String featureStr) {
-		int argumentsStart = featureStr.indexOf("(");
-		if (argumentsStart < 0)
-			throw new IllegalArgumentException("Missing or invalid feature argument string.");
-		int argumentsEnd = featureStr.indexOf(")", argumentsStart);
-		if (argumentsEnd <= argumentsStart)
-			throw new IllegalArgumentException("Missing or invalid feature argument string.");
-		String featureName = featureStr.substring(0, argumentsStart);
-		String argumentsStr = featureStr.substring(argumentsStart+1, argumentsEnd);
-		Map<String, String> arguments = parseArguments(argumentsStr);
-		
-		CorpRelFeature feature = null;
-		if (featureName.equals("GazetteerContains")) {
-			feature = new CorpRelFeatureGazetteerContains(
-					this.gazetteers.get(arguments.get("gazetteer")), 
-					CorpRelFeatureGazetteer.InputType.valueOf(arguments.get("inputType")));
-		} else if (featureName.equals("GazetteerEditDistance")) {
-			feature = new CorpRelFeatureGazetteerEditDistance(
-					this.gazetteers.get(arguments.get("gazetteer")), 
-					CorpRelFeatureGazetteer.InputType.valueOf(arguments.get("inputType")));		
-		} else if (featureName.equals("GazetteerInitialism")) {
-			feature = new CorpRelFeatureGazetteerInitialism(
-					this.gazetteers.get(arguments.get("gazetteer")), 
-					CorpRelFeatureGazetteer.InputType.valueOf(arguments.get("inputType")),
-					Boolean.parseBoolean(arguments.get("allowPrefix")));		
-		} else if (featureName.equals("GazetteerPrefixTokens")) {
-			feature = new CorpRelFeatureGazetteerPrefixTokens(
-					this.gazetteers.get(arguments.get("gazetteer")), 
-					CorpRelFeatureGazetteer.InputType.valueOf(arguments.get("inputType")),
-					Integer.parseInt(arguments.get("minTokens")));				
-		} else if (featureName.equals("MetaDataAttribute")) {
-			feature = new CorpRelFeatureMetaDataAttribute(
-					this.gazetteers.get(arguments.get("gazetteer")), 
-					this.metaData.get(arguments.get("metaData")),
-					CorpMetaData.Attribute.valueOf(arguments.get("attribute")),
-					CorpRelFeatureMetaDataAttribute.InputType.valueOf(arguments.get("inputType")),
-					Integer.parseInt(arguments.get("minFeatureOccurrence")),
-					this.collectionFns.get(arguments.get("attributeTransformFn")));	
-		} else if (featureName.equals("NGramContext")) {
-			feature = new CorpRelFeatureNGramContext(
-					Integer.valueOf(arguments.get("n")),
-					Integer.valueOf(arguments.get("minFeatureOccurrence")),
-					Integer.valueOf(arguments.get("contextWindowSize")),
-					this.cleanFns.get(arguments.get("cleanFn")),
-					getClusterer(arguments.get("clusterer")));
-		} else if (featureName.equals("NGramDep")) {
-			feature = new CorpRelFeatureNGramDep(
-					Integer.valueOf(arguments.get("n")), 
-					Integer.valueOf(arguments.get("minFeatureOccurrence")),
-					CorpRelFeatureNGramDep.Mode.valueOf(arguments.get("mode")),
-					Boolean.valueOf(arguments.get("useRelationTypes")),
-					this.cleanFns.get(arguments.get("cleanFn")),
-					getClusterer(arguments.get("clusterer")));
-		} else if (featureName.equals("NGramSentence")) {
-			feature = new CorpRelFeatureNGramSentence(
-					Integer.valueOf(arguments.get("n")),
-					Integer.valueOf(arguments.get("minFeatureOccurrence")),
-					this.cleanFns.get(arguments.get("cleanFn")),
-					getClusterer(arguments.get("clusterer")));
-		} else if (featureName.equals("SelfEditDistance")) {
-			feature = new CorpRelFeatureSelfEditDistance(this.cleanFns.get(arguments.get("cleanFn")));
-		} else if (featureName.equals("SelfEquality")) {
-			feature = new CorpRelFeatureSelfEquality(this.cleanFns.get(arguments.get("cleanFn")));
-		} else if (featureName.equals("SelfInitialism")) {
-			feature = new CorpRelFeatureSelfInitialism(
-					Boolean.valueOf(arguments.get("allowPrefix")),
-					this.cleanFns.get(arguments.get("cleanFn")));
-		} else if (featureName.equals("SelfPrefixTokens")) {
-			feature = new CorpRelFeatureSelfPrefixTokens(
-					Integer.valueOf(arguments.get("minTokens")),
-					this.cleanFns.get(arguments.get("cleanFn")));
-		} else if (featureName.equals("SelfShareGazetteerId")) {
-			feature = new CorpRelFeatureSelfShareGazetteerId(
-					this.gazetteers.get(arguments.get("gazetteer")),
-					this.cleanFns.get(arguments.get("cleanFn")));
-		} else {
-			throw new IllegalArgumentException("Invlalid feature name: " + featureName);
-		}
-		
-		return feature;
-	}
-	
-	protected Map<String, String> parseArguments(String argumentsStr) {
-		String[] argumentStrs = argumentsStr.split(",");
-		Map<String, String> arguments = new HashMap<String, String>();
-		for (String argumentStr : argumentStrs) {
-			Pair<String, String> assignment = parseAssignment(argumentStr);
-			if (assignment == null)
-				continue;
-			arguments.put(assignment.first(), assignment.second());
-		}
-		return arguments;
-	}
-	
-	protected List<String> parseList(String listStr) {
-		String[] valueStrs = listStr.split(",");
-		List<String> values = new ArrayList<String>();
-		for (int i = 0; i < valueStrs.length; i++)
-			values.add(valueStrs[i].trim());
-		return values;
-	}
-	
-	protected Pair<String, String> parseAssignment(String assignmentStr) {
-		int equalsIndex = assignmentStr.indexOf("=");
-		if (!(equalsIndex >= 0 && equalsIndex < assignmentStr.length()))
-			return null;
-		
-		String first = assignmentStr.substring(0, equalsIndex).trim();
-		String second = null;
-		if (equalsIndex == assignmentStr.length() - 1)
-			second = "";
-		else
-			second = assignmentStr.substring(equalsIndex + 1).trim();
-		
-		if (!first.matches("[A-Za-z0-9]*"))
-			return null;
-		
-		return new Pair<String, String>(first, second);
-	}
-	
-	protected BrownClusterer getClusterer(String name) {
-		if (!name.contains("Brown") || !name.contains("_"))
-			return null;
-		String[] nameParts = name.split("_");
-		int numClusters = Integer.parseInt(nameParts[0]);
-		
-		if (!this.clusterers.containsKey(name)) {
-			this.clusterers.put(name, 
-					new BrownClusterer(name, 
-										this.properties.getBrownClustererCommandPath(), 
-										new File(this.properties.getBrownClustererSourceDocument()), 
-										numClusters,
-										this.output));
-		}
-		
-		return this.clusterers.get(name);
 	}
 	
 	protected abstract void parse(List<String> lines);

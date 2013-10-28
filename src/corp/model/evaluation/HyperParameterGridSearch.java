@@ -164,7 +164,7 @@ public class HyperParameterGridSearch {
 			positionModel.setHyperParameter(entry.getKey(), entry.getValue());	
 		}
 		
-		positionModel.warmRestartOn();
+		positionModel.setHyperParameter("warmRestart", 1);
 		
 		AccuracyValidation accuracy = new AccuracyValidation(positionModel, this.trainData, this.testData, this.outputPath, this.output);
 		double computedAccuracy = accuracy.run();

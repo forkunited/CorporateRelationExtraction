@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.BrownClusterer;
 import corp.util.CounterTable;
+import corp.util.SerializationUtil;
 import corp.util.StanfordUtil;
 import corp.util.Stemmer;
 import corp.util.StringUtil;
@@ -22,8 +23,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	protected String namePrefix;
 	protected StringUtil.StringTransform cleanFn;
 	protected BrownClusterer clusterer;
-	
-	private HashMap<String, Integer> vocabulary;
+	protected HashMap<String, Integer> vocabulary;
 
 	private String getNamePrefix() {
 		String clustererName = "";
@@ -45,6 +45,14 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		
 		counter.removeCountsLessThan(this.minFeatureOccurrence);
 		this.vocabulary = counter.buildIndex();
+	}
+	
+	@Override
+	public void init(String initStr) {
+		this.vocabulary = new HashMap<String, Integer>();
+		Map<String, String> strVocabulary = SerializationUtil.deserializeArguments(initStr);
+		for (Entry<String, String> entry : strVocabulary.entrySet())
+			this.vocabulary.put(entry.getKey(), Integer.parseInt(entry.getValue()));
 	}
 	
 	@Override

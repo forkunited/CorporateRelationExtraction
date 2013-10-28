@@ -8,6 +8,7 @@ import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.BrownClusterer;
+import corp.util.SerializationUtil;
 import corp.util.StanfordUtil;
 import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -100,5 +101,21 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 	@Override
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureNGramDep(this.n, this.minFeatureOccurrence, this.mode, this.useRelationTypes, this.cleanFn, this.clusterer);
+	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		String str = "NGramDep(n=" + this.n + ", " +
+						"minFeatureOccurrence=" + this.minFeatureOccurrence + ", " +
+						"mode=" + this.mode + ", " +
+						"useRelationTypes=" + this.useRelationTypes + ", " +
+						"cleanFn=" + this.cleanFn.toString() + ", " +
+						"clusterer=" + this.clusterer.getName() + ")";
+	
+		if (withInit) {
+			str += "\t" + SerializationUtil.serializeArguments(this.vocabulary);
+		}
+	
+		return str;
 	}
 }

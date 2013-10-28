@@ -30,6 +30,10 @@ public class CorpProperties {
 	private String latentFactionsCommandPath;
 	private String latentFactionsSourceDirPath;
 	
+	public CorpProperties() {
+		this("corp.properties");
+	}
+	
 	public CorpProperties(String propertiesPath) {
 		try {
 			FileReader reader = new FileReader(propertiesPath);

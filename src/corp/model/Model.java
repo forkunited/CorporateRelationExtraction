@@ -1,25 +1,26 @@
 package corp.model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
-import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class Model {
+	protected String modelPath;
 	protected List<CorpRelLabelPath> validPaths;
-	protected List<CorpRelFeature> features;
 	protected Map<String, Double> hyperParameters;
-	protected boolean warmRestart;
-	
-	public void warmRestartOn() {
-		this.warmRestart = true;
-	}
 	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
 		return this.validPaths;
@@ -59,8 +60,59 @@ public abstract class Model {
 		return this.hyperParameters.get(parameter);
 	}
 	
-	public abstract boolean deserialize(String modelPath);
+	public boolean hasHyperParameter(String parameter) {
+		return this.hyperParameters.containsKey(parameter);
+	}
+	
+	public abstract boolean deserialize(String modelPath, CorpDataTools dataTools);
 	public abstract boolean train(CorpRelFeaturizedDataSet data, String outputPath);
 	public abstract List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data);
 	public abstract Model clone();
+
+	protected boolean serializeParameters() {
+		if (this.modelPath == null)
+			return false;
+		
+        try {
+    		BufferedWriter w = new BufferedWriter(new FileWriter(this.modelPath + ".p"));  		
+    		
+    		for (CorpRelLabelPath path : this.validPaths) {
+    			w.write(path.toString() + "\t");
+    		}
+    		w.write("\n");
+    		
+    		for (Entry<String, Double> hyperParameter : this.hyperParameters.entrySet()) {
+    			w.write(hyperParameter.getKey() + "\t" + hyperParameter.getValue() + "\n");
+    		}
+    		
+            w.close();
+            return true;
+        } catch (IOException e) { e.printStackTrace(); return false; }
+	}
+	
+	protected boolean deserializeParameters() {
+		if (this.modelPath == null)
+			return false;
+		
+        try {
+    		BufferedReader r = new BufferedReader(new FileReader(this.modelPath + ".p"));  		
+    		
+    		String validPathsLine = r.readLine();
+    		String[] validPathStrs = validPathsLine.trim().split("\t");
+    		this.validPaths = new ArrayList<CorpRelLabelPath>();
+    		for (String validPathStr : validPathStrs) {
+    			this.validPaths.add(CorpRelLabelPath.fromString(validPathStr));
+    		}
+    		
+    		String hyperParameterLine = null;
+    		this.hyperParameters = new HashMap<String, Double>();
+    		while ((hyperParameterLine = r.readLine()) != null) {
+    			String[] hyperParameterParts = hyperParameterLine.split("\t");
+    			setHyperParameter(hyperParameterParts[0], Double.parseDouble(hyperParameterParts[1]));
+    		}
+
+    		r.close();
+            return true;
+        } catch (IOException e) { e.printStackTrace(); return false; }
+	}
 }

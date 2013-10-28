@@ -22,4 +22,9 @@ public class CorpRelFeatureGazetteerContains extends CorpRelFeatureGazetteer {
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureGazetteerContains(this.gazetteer, this.inputType);
 	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "GazetteerContains(gazetteer=" + this.gazetteer.getName() + "Gazetteer, inputType=" + this.inputType + ")";
+	}
 }

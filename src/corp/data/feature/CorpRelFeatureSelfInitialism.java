@@ -25,5 +25,10 @@ public class CorpRelFeatureSelfInitialism extends CorpRelFeatureSelf {
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureSelfInitialism(this.allowPrefix, this.cleanFn);
 	}
+	
+	@Override
+	public String toString(boolean withInit) {
+		return "SelfInitialism(cleanFn=" + this.cleanFn.toString() + ", allowPrefix=" + this.allowPrefix + ")";
+	}
 
 }

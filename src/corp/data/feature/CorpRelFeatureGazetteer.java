@@ -26,10 +26,14 @@ public abstract class CorpRelFeatureGazetteer extends CorpRelFeature {
 	
 	@Override
 	public void init(List<CorpRelDatum> data) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
+	@Override
+	public void init(String initStr) {
+		
+	}
+	
 	@Override
 	public Map<String, Double> computeMapNoInit(CorpRelDatum datum) {
 		List<String> names = getNames();

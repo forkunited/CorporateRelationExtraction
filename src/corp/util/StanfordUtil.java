@@ -46,6 +46,15 @@ public class StanfordUtil {
 		return StanfordUtil.getDocumentSentences(documentAnnotation).get(sentenceIndex);
 	}
 	
+	public static String getDocumentSentenceText(Annotation documentAnnotation, int sentenceIndex) {
+		CoreMap sentenceAnnotation = StanfordUtil.getDocumentSentence(documentAnnotation, sentenceIndex);
+		List<String> sentenceTokens = StanfordUtil.getSentenceTokenTexts(sentenceAnnotation);
+		StringBuilder sentenceStr = new StringBuilder();
+		for (String token : sentenceTokens)
+			sentenceStr = sentenceStr.append(token).append(" ");
+		return sentenceStr.toString();
+	}
+	
 	public static List<CoreLabel> getDocumentSentenceTokens(Annotation documentAnnotation, int sentenceIndex) {
 		return StanfordUtil.getSentenceTokens(StanfordUtil.getDocumentSentences(documentAnnotation).get(sentenceIndex));
 	}
