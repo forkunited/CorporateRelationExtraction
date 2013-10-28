@@ -35,6 +35,6 @@ public class CorpRelFeatureGazetteerPrefixTokens  extends CorpRelFeatureGazettee
 	
 	@Override
 	public String toString(boolean withInit) {
-		return "GazetteerPrefixTokens(gazetteer=" + this.gazetteer.getName() + "Gazetteer, minTokens=" + this.minTokens + ")";
+		return "GazetteerPrefixTokens(gazetteer=" + this.gazetteer.getName() + "Gazetteer, inputType=" + this.inputType + ", minTokens=" + this.minTokens + ")";
 	}
 }
