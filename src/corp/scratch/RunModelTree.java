@@ -153,7 +153,7 @@ public class RunModelTree {
 	    		}
 	    		outputJSON.put("p", pObject);
 	    		
-	    		w.write(outputJSON.toString());
+	    		w.write(outputJSON.toString() + "\n");
     		}
     		
             w.close();
