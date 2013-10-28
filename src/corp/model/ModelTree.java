@@ -229,16 +229,16 @@ public class ModelTree extends Model {
     		BufferedReader r = new BufferedReader(new FileReader(this.modelPath + ".f"));  		
     		String line = null;
     		while ((line = r.readLine()) != null) {
-    			String[] lineParts = line.split("\t");
-    			if (lineParts.length < 2) {
+    			int tabIndex = line.indexOf("\t");
+    			if (tabIndex < 0) {
     				r.close();
     				return false;
     			}
-    			
-    			CorpRelLabelPath path = CorpRelLabelPath.fromString(lineParts[0]);
+    		
+    			CorpRelLabelPath path = CorpRelLabelPath.fromString(line.substring(0, tabIndex));
     			if (!this.extraFeatures.containsKey(path))
     				this.extraFeatures.put(path, new ArrayList<CorpRelFeature>());
-    			this.extraFeatures.get(path).add(CorpRelFeature.fromString(lineParts[1], dataTools));
+    			this.extraFeatures.get(path).add(CorpRelFeature.fromString(line.substring(tabIndex+1, line.length()), dataTools));
     		}
     		r.close();
             return true;
