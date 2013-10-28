@@ -154,6 +154,8 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 			} catch (OutOfMemoryError e) {
 				output.debugWriteln("ERROR: Out of memory while featurizing data!");
 				System.exit(0);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
