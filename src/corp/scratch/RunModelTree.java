@@ -1,6 +1,7 @@
 package corp.scratch;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,10 +110,10 @@ public class RunModelTree {
     		for (Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>> p : posterior) {
 	    		JSONObject outputJSON = new JSONObject();
 	    		String author = p.first().getAuthorCorpName();
-	    		String annotationPath = p.first().getDocument().getAnnotationPath();
+	    		File annotationFile = new File(p.first().getDocument().getAnnotationPath());
 	    		
 	    		outputJSON.put("author", author);
-	    		outputJSON.put("annotationPath", annotationPath);
+	    		outputJSON.put("annotationFile", annotationFile.getName());
 	    		
 	    		JSONArray mentions = new JSONArray();
 	    		Map<Integer, JSONObject> sentenceObjects = new HashMap<Integer, JSONObject>();
