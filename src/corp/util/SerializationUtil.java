@@ -41,8 +41,8 @@ public class SerializationUtil {
 		else
 			second = assignmentStr.substring(equalsIndex + 1).trim();
 		
-		if (!first.matches("[A-Za-z0-9]*"))
-			return null;
+		/*if (!first.matches("[A-Za-z0-9]*"))
+			return null;*/
 		
 		return new Pair<String, String>(first,second);
 	}
