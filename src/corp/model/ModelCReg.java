@@ -258,13 +258,17 @@ public class ModelCReg extends Model {
 		
 		this.output.debugWriteln("CReg outputting prediction data for " + this.modelPath);
 		
-		if (!outputXData(predictXPath, data, false))
+		if (!outputXData(predictXPath, data, false)) {
+			this.output.debugWriteln("Error: CReg failed to output feature data.")
 			return null;
+		}
 		
 		String predictCmd = this.cmdPath + " -w " + this.modelPath + " -W -D --tx " + predictXPath + " > " + predictOutPath;
 		predictCmd = predictCmd.replace("\\", "/"); 
-		if (!CommandRunner.run(predictCmd))
+		if (!CommandRunner.run(predictCmd)) {
+			this.output.debugWriteln("Error: CReg failed to run on output data.");
 			return null;
+		}
 		
 		this.output.debugWriteln("CReg predicting data for " + this.modelPath);
 		
