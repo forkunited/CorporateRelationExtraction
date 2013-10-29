@@ -74,7 +74,9 @@ public class CorpRelDatum {
 		CorpRelDatum datum = (CorpRelDatum)o;
 		if (!this.authorCorpName.equals(datum.authorCorpName))
 			return false;
-		if (!this.labelPath.equals(datum.labelPath))
+		if ((this.labelPath != null && datum.labelPath != null && !this.labelPath.equals(datum.labelPath))
+			|| (this.labelPath == null && datum.labelPath != null)
+			|| (this.labelPath != null && datum.labelPath == null))
 			return false;
 		if (this.otherOrgTokenSpans.size() != datum.otherOrgTokenSpans.size())
 			return false;
