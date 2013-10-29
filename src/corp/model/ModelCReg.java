@@ -259,7 +259,7 @@ public class ModelCReg extends Model {
 		this.output.debugWriteln("CReg outputting prediction data for " + this.modelPath);
 		
 		if (!outputXData(predictXPath, data, false)) {
-			this.output.debugWriteln("Error: CReg failed to output feature data.")
+			this.output.debugWriteln("Error: CReg failed to output feature data.");
 			return null;
 		}
 		
@@ -268,6 +268,7 @@ public class ModelCReg extends Model {
 		if (!CommandRunner.run(predictCmd)) {
 			this.output.debugWriteln("Error: CReg failed to run on output data.");
 			return null;
+			
 		}
 		
 		this.output.debugWriteln("CReg predicting data for " + this.modelPath);
