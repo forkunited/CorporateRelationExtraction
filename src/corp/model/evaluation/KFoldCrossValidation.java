@@ -84,9 +84,9 @@ public class KFoldCrossValidation {
 			return -1.0;
 		}
 		
-		this.output.resultsWriteln("Fold\tAccuracy\t" + validationResults[0].getBestParameters().toKeyString("\t"));
+		this.output.resultsWriteln("Fold\tAccuracy\t" + ((this.possibleParameterValues != null) ? validationResults[0].getBestParameters().toKeyString("\t") : ""));
 		for (int i = 0; i < validationResults.length; i++) {
-			this.output.resultsWriteln(i + "\t" + validationResults[i].getAccuracy() + "\t" + validationResults[i].getBestParameters().toValueString("\t"));
+			this.output.resultsWriteln(i + "\t" + validationResults[i].getAccuracy() + "\t" + ((this.possibleParameterValues != null) ? validationResults[i].getBestParameters().toValueString("\t") : ""));
 			avgAccuracy += validationResults[i].getAccuracy();
 			aggregateConfusions.add(validationResults[i].getConfusionMatrix());
 		}
@@ -95,28 +95,30 @@ public class KFoldCrossValidation {
 		
 		this.output.resultsWriteln("\nAverage Confusion Matrix:\n " + aggregateConfusions.toString(1.0/this.folds.length));
 		
-		this.output.resultsWriteln("\nGrid search results:");
-		this.output.resultsWrite(validationResults[0].getGridEvaluation().get(0).first().toKeyString("\t") + "\t");
-		for (int i = 0; i < this.folds.length; i++)
-			this.output.resultsWrite("Fold " + i + "\t");
-		this.output.resultsWrite("\n");
-		
-		List<Pair<HyperParameterGridSearch.GridPosition, List<Double>>> gridFoldResults = new ArrayList<Pair<HyperParameterGridSearch.GridPosition, List<Double>>>();
-		for (int i = 0; i < validationResults.length; i++) {
-			List<Pair<HyperParameterGridSearch.GridPosition, Double>> gridEvaluation = validationResults[i].getGridEvaluation();
-			for (int j = 0; j < gridEvaluation.size(); j++) {
-				if (gridFoldResults.size() <= j)
-					gridFoldResults.add(new Pair<HyperParameterGridSearch.GridPosition, List<Double>>(gridEvaluation.get(j).first(), new ArrayList<Double>()));
-				gridFoldResults.get(j).second().add(gridEvaluation.get(j).second());
-			}
-		}
-		
-		for (Pair<HyperParameterGridSearch.GridPosition, List<Double>> gridFoldResult : gridFoldResults) {
-			this.output.resultsWrite(gridFoldResult.first().toValueString("\t") + "\t");
-			for (int i = 0; i < gridFoldResult.second().size(); i++) {
-				this.output.resultsWrite(gridFoldResult.second().get(i) + "\t");
-			}
+		if (this.possibleParameterValues != null) {
+			this.output.resultsWriteln("\nGrid search results:");
+			this.output.resultsWrite(validationResults[0].getGridEvaluation().get(0).first().toKeyString("\t") + "\t");
+			for (int i = 0; i < this.folds.length; i++)
+				this.output.resultsWrite("Fold " + i + "\t");
 			this.output.resultsWrite("\n");
+			
+			List<Pair<HyperParameterGridSearch.GridPosition, List<Double>>> gridFoldResults = new ArrayList<Pair<HyperParameterGridSearch.GridPosition, List<Double>>>();
+			for (int i = 0; i < validationResults.length; i++) {
+				List<Pair<HyperParameterGridSearch.GridPosition, Double>> gridEvaluation = validationResults[i].getGridEvaluation();
+				for (int j = 0; j < gridEvaluation.size(); j++) {
+					if (gridFoldResults.size() <= j)
+						gridFoldResults.add(new Pair<HyperParameterGridSearch.GridPosition, List<Double>>(gridEvaluation.get(j).first(), new ArrayList<Double>()));
+					gridFoldResults.get(j).second().add(gridEvaluation.get(j).second());
+				}
+			}
+			
+			for (Pair<HyperParameterGridSearch.GridPosition, List<Double>> gridFoldResult : gridFoldResults) {
+				this.output.resultsWrite(gridFoldResult.first().toValueString("\t") + "\t");
+				for (int i = 0; i < gridFoldResult.second().size(); i++) {
+					this.output.resultsWrite(gridFoldResult.second().get(i) + "\t");
+				}
+				this.output.resultsWrite("\n");
+			}
 		}
 		
 		return avgAccuracy;
