@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import corp.data.CorpMetaData;
-import corp.data.Gazetteer;
+import ark.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelLabel;
@@ -12,18 +12,19 @@ import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeatureSelfEquality;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
+import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
-import corp.util.StringUtil;
+import ark.util.OutputWriter;
+import ark.util.StringUtil;
 
 public class CorpKeyFnPerformance {
 	public static void main(String[] args) {
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
 		Gazetteer bloombergCorpTickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
 			
 		StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(stopWordGazetteer);
-		StringUtil.StringTransform corpKeyFn = StringUtil.getCorpKeyFn(bloombergCorpTickerGazetteer,stopWordCleanFn);
+		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(bloombergCorpTickerGazetteer,stopWordCleanFn);
 
 		AnnotationCache annotationCache = new AnnotationCache(
 			properties.getStanfordAnnotationDirPath(),

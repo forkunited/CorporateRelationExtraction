@@ -19,7 +19,7 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 
 /**
  * Construct a random sample of data from documents that have gone
@@ -32,7 +32,7 @@ public class ConstructDataSample {
 	private static CorpProperties properties;
 	
 	public static void main(String[] args) {
-		properties = new CorpProperties("corp.properties");
+		properties = new CorpProperties();
 		
 		// Hard-coded paths to places on cab for now... this is just a one-off
 		int N_2 = Integer.parseInt("2500"/*args[0]*/);

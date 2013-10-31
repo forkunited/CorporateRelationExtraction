@@ -24,8 +24,8 @@ import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.ModelTree;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
-import corp.util.StanfordUtil;
+import ark.util.OutputWriter;
+import ark.util.StanfordUtil;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.Pair;
 
@@ -38,7 +38,7 @@ public class RunModelTree {
 		int batchSize = Integer.parseInt(args[4]);
 		
 		OutputWriter output = new OutputWriter();
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		CorpDataTools dataTools = new CorpDataTools(properties, output);
 		
 		output.debugWriteln("Loading model...");

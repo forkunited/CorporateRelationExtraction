@@ -10,12 +10,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.CorpMetaData;
-import corp.data.Gazetteer;
+import ark.data.Gazetteer;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
-import corp.util.CounterTable;
-import corp.util.SerializationUtil;
-import corp.util.StringUtil;
+import ark.data.CounterTable;
+import ark.util.SerializationUtil;
+import ark.util.StringUtil;
 
 public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	public enum InputType {

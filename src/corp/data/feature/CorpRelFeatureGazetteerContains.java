@@ -1,6 +1,6 @@
 package corp.data.feature;
 
-import corp.data.Gazetteer;
+import ark.data.Gazetteer;
 
 public class CorpRelFeatureGazetteerContains extends CorpRelFeatureGazetteer {
 	public CorpRelFeatureGazetteerContains(Gazetteer gazetteer, CorpRelFeatureGazetteer.InputType inputType) {

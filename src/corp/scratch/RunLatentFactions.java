@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import corp.data.CorpMetaData;
-import corp.data.Gazetteer;
+import ark.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeature;
 import corp.data.feature.CorpRelFeatureNGramSentence;
+import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 import corp.util.LatentFactions;
-import corp.util.OutputWriter;
-import corp.util.StringUtil;
+import ark.util.OutputWriter;
+import ark.util.StringUtil;
 
 public class RunLatentFactions {
 	public static void main(String[] args) {
@@ -24,13 +25,13 @@ public class RunLatentFactions {
 		int maxDocuments = Integer.parseInt(args[4]);
 		
 		OutputWriter output = new OutputWriter();
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		
 		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
 		Gazetteer tickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
 
 		StringUtil.StringTransform stopWordCleanFn =  StringUtil.getStopWordsCleanFn(stopWordGazetteer);
-		StringUtil.StringTransform corpKeyFn = StringUtil.getCorpKeyFn(tickerGazetteer,  stopWordCleanFn);
+		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(tickerGazetteer,  stopWordCleanFn);
 		
 		LatentFactions latentFactions = new LatentFactions(
 				name, 

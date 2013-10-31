@@ -13,7 +13,7 @@ import corp.data.annotation.CorpRelDataSet;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.annotation.CorpRelLabelPath;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private List<CorpRelFeature> features;

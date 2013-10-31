@@ -13,15 +13,16 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import corp.data.CorpMetaData;
-import corp.data.Gazetteer;
+import ark.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeaturizedDataSet;
+import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
-import corp.util.StringUtil;
+import ark.util.OutputWriter;
+import ark.util.StringUtil;
 
 /**
  * Stubs for constructing clean Gazetteers from old messy Gazetteer files
@@ -105,7 +106,7 @@ public class ConstructGazetteer {
 	}
 	
 	public static void constructOrgEntitySet(String outputFile) {
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		CorpMetaData metaData = new CorpMetaData("GazetteerSource", properties.getCorpMetaDataPath());
 		
 		AnnotationCache annotationCache = new AnnotationCache(
@@ -206,10 +207,10 @@ public class ConstructGazetteer {
 	}
 	
 	public static void constructTickerGazetteer(String outputFile) {
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
 		StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(stopWordGazetteer);
-		StringUtil.StringTransform corpKeyFn = StringUtil.getCorpKeyFn(null, stopWordCleanFn);
+		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(null, stopWordCleanFn);
 		CorpMetaData corpMetaData = new CorpMetaData("Corp", properties.getCorpMetaDataPath());
 		CorpMetaData bloombergMetaData = new CorpMetaData("Bloomberg", properties.getBloombergMetaDataPath());
 		

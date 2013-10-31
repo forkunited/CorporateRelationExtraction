@@ -1,6 +1,6 @@
 package corp.data.feature;
 
-import corp.util.StringUtil;
+import ark.util.StringUtil;
 
 public class CorpRelFeatureSelfEditDistance extends CorpRelFeatureSelf {
 	public CorpRelFeatureSelfEditDistance() {

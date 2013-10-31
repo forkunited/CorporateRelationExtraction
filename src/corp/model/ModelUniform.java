@@ -10,7 +10,7 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.data.feature.CorpRelFeaturizedDatum;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 public class ModelUniform extends Model {

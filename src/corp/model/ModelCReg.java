@@ -16,9 +16,9 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import corp.util.CommandRunner;
+import ark.util.CommandRunner;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;

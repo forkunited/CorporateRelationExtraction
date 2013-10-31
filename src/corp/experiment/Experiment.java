@@ -12,8 +12,8 @@ import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
-import corp.util.SerializationUtil;
+import ark.util.OutputWriter;
+import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class Experiment {
@@ -30,7 +30,7 @@ public abstract class Experiment {
 	protected CorpRelFeaturizedDataSet dataSet;
 	
 	public void run(String name) {
-		this.properties = new CorpProperties("corp.properties");
+		this.properties = new CorpProperties();
 		
 		List<String> inputLines = readInputFile(name);
 		parseInitial(inputLines);

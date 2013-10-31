@@ -2,7 +2,7 @@ package corp.data.annotation;
 
 import java.util.List;
 
-import corp.util.StanfordUtil;
+import ark.util.StanfordUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.CoreMap;
 

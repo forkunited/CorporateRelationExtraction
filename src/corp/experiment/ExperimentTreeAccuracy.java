@@ -7,7 +7,7 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.evaluation.AccuracyValidation;
 import corp.model.evaluation.ConfusionMatrix;
-import corp.util.SerializationUtil;
+import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 public class ExperimentTreeAccuracy extends ExperimentTree {

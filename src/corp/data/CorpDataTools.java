@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import corp.util.BrownClusterer;
+import ark.util.OutputWriter;
+import ark.wrapper.BrownClusterer;
+
+import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
-import corp.util.StringUtil;
+import ark.util.StringUtil;
+import ark.data.Gazetteer;
 
 public class CorpDataTools {
 	private CorpProperties properties;
@@ -38,7 +41,7 @@ public class CorpDataTools {
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
 		this.cleanFns.put("StopWordCleanFn_StopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
 		this.cleanFns.put("StopWordCleanFn_NGramStopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
-		this.cleanFns.put("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord", StringUtil.getCorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn_StopWord")));
+		this.cleanFns.put("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord", new CorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn_StopWord")));
 		
 		this.gazetteers.put("CorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath()));
 		this.gazetteers.put("CorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath()));

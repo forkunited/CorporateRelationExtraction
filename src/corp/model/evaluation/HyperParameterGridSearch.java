@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.Model;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 public class HyperParameterGridSearch {

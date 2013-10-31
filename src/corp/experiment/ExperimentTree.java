@@ -12,7 +12,7 @@ import corp.model.Model;
 import corp.model.ModelCReg;
 import corp.model.ModelTree;
 import corp.model.ModelUniform;
-import corp.util.SerializationUtil;
+import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class ExperimentTree extends Experiment {

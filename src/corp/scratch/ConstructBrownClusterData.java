@@ -10,9 +10,9 @@ import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentSet;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
-import corp.util.StanfordUtil;
-import corp.util.StringUtil;
+import ark.util.OutputWriter;
+import ark.util.StanfordUtil;
+import ark.util.StringUtil;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 
@@ -22,7 +22,7 @@ public class ConstructBrownClusterData {
 	}
 	
 	protected void constructForAnnotated() {
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		String outputPath = properties.getBrownClustererSourceDocument();
 		
 		AnnotationCache annotationCache = new AnnotationCache(
@@ -73,7 +73,7 @@ public class ConstructBrownClusterData {
 	}
 	
 	protected static void constructForAll() {
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		String outputPath = properties.getBrownClustererSourceDocument();
 		
 		System.out.println("Loading documents...");

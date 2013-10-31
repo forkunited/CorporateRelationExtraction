@@ -1,7 +1,7 @@
 package corp.data.feature;
 
-import corp.data.Gazetteer;
-import corp.util.StringUtil;
+import ark.data.Gazetteer;
+import ark.util.StringUtil;
 
 public class CorpRelFeatureGazetteerInitialism  extends CorpRelFeatureGazetteer {
 	private boolean allowPrefix;

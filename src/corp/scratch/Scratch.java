@@ -18,7 +18,7 @@ import corp.data.feature.CorpRelFeatureSelfPrefixTokens;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.ModelCReg;
 import corp.util.CorpProperties;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 /**
@@ -28,7 +28,7 @@ public class Scratch {
 	public static void main(String[] args) {
 		System.out.println("Loading configuration properties...");
 		
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		
 		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(

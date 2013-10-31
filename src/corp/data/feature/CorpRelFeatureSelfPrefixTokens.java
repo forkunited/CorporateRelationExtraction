@@ -1,6 +1,6 @@
 package corp.data.feature;
 
-import corp.util.StringUtil;
+import ark.util.StringUtil;
 
 public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 	private int minTokens;

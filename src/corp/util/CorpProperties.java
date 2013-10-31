@@ -1,11 +1,8 @@
 package corp.util;
 
-import java.io.FileReader;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
+import ark.util.ARKProperties;
 
-public class CorpProperties {
+public class CorpProperties extends ARKProperties {
 	private String corpRelDirPath;
 	private String corpRelTestDirPath;
 	private String stanfordAnnotationDirPath;
@@ -31,51 +28,32 @@ public class CorpProperties {
 	private String latentFactionsSourceDirPath;
 	
 	public CorpProperties() {
-		this("corp.properties");
-	}
-	
-	public CorpProperties(String propertiesPath) {
-		try {
-			FileReader reader = new FileReader(propertiesPath);
-			Properties properties = new Properties();
-			properties.load(reader);
-			Map<String, String> env = System.getenv();
-			
-			this.corpRelDirPath = loadProperty(env, properties, "corpRelDirPath");
-			this.corpRelTestDirPath = loadProperty(env, properties, "corpRelTestDirPath");
-			this.stanfordAnnotationDirPath = loadProperty(env, properties, "stanfordAnnotationDirPath");
-			this.stanfordAnnotationCacheSize = Integer.valueOf(loadProperty(env, properties, "stanfordAnnotationCacheSize"));
-			this.stanfordCoreMapDirPath = loadProperty(env, properties, "stanfordCoreMapDirPath");
-			this.stanfordCoreMapCacheSize = Integer.valueOf(loadProperty(env, properties, "stanfordCoreMapCacheSize"));
-			this.cregDataDirPath = loadProperty(env, properties, "cregDataDirPath");
-			this.cregCommandPath = loadProperty(env, properties, "cregCommandPath");
-			this.corpScrapedGazetteerPath = loadProperty(env, properties, "corpScrapedGazetteerPath");
-			this.corpMetaDataGazetteerPath = loadProperty(env, properties, "corpMetaDataGazetteerPath");
-			this.bloombergMetaDataGazetteerPath = loadProperty(env, properties, "bloombergMetaDataGazetteerPath");
-			this.nonCorpScrapedGazetteerPath = loadProperty(env, properties, "nonCorpScrapedGazetteerPath");
-			this.stopWordGazetteerPath = loadProperty(env, properties, "stopWordGazetteerPath");
-			this.ngramStopWordGazetteerPath = loadProperty(env, properties, "ngramStopWordGazetteerPath");
-			this.bloombergCorpTickerGazetteerPath = loadProperty(env, properties, "bloombergCorpTickerGazetteerPath");
-			this.corpMetaDataPath = loadProperty(env, properties, "corpMetaDataPath");
-			this.bloombergMetaDataPath = loadProperty(env, properties, "bloombergMetaDataPath");
-			this.experimentInputPath = loadProperty(env, properties, "experimentInputPath");
-			this.experimentOutputPath = loadProperty(env, properties, "experimentOutputPath");
-			this.brownClustererCommandPath = loadProperty(env, properties, "brownClustererCommandPath");
-			this.brownClustererSourceDocument = loadProperty(env, properties, "brownClustererSourceDocument");
-			this.latentFactionsCommandPath = loadProperty(env, properties, "latentFactionsCommandPath");
-			this.latentFactionsSourceDirPath = loadProperty(env, properties, "latentFactionsSourceDirPath");
-			
-			reader.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private String loadProperty(Map<String, String> env, Properties properties, String property) {
-		String propertyValue = properties.getProperty(property);
-		for (Entry<String, String> envEntry : env.entrySet())
-			propertyValue = propertyValue.replace("${" + envEntry.getKey() + "}", envEntry.getValue());
-		return propertyValue;
+		// FIXME: Do this differently... environment variables...?
+		super(new String[] { "corp.properties", "/user/wmcdowell/sloan/Projects/CorporateRelationDetection/corp.properties" } );
+
+		this.corpRelDirPath = loadProperty("corpRelDirPath");
+		this.corpRelTestDirPath = loadProperty("corpRelTestDirPath");
+		this.stanfordAnnotationDirPath = loadProperty("stanfordAnnotationDirPath");
+		this.stanfordAnnotationCacheSize = Integer.valueOf(loadProperty("stanfordAnnotationCacheSize"));
+		this.stanfordCoreMapDirPath = loadProperty("stanfordCoreMapDirPath");
+		this.stanfordCoreMapCacheSize = Integer.valueOf(loadProperty("stanfordCoreMapCacheSize"));
+		this.cregDataDirPath = loadProperty("cregDataDirPath");
+		this.cregCommandPath = loadProperty("cregCommandPath");
+		this.corpScrapedGazetteerPath = loadProperty("corpScrapedGazetteerPath");
+		this.corpMetaDataGazetteerPath = loadProperty("corpMetaDataGazetteerPath");
+		this.bloombergMetaDataGazetteerPath = loadProperty("bloombergMetaDataGazetteerPath");
+		this.nonCorpScrapedGazetteerPath = loadProperty("nonCorpScrapedGazetteerPath");
+		this.stopWordGazetteerPath = loadProperty("stopWordGazetteerPath");
+		this.ngramStopWordGazetteerPath = loadProperty("ngramStopWordGazetteerPath");
+		this.bloombergCorpTickerGazetteerPath = loadProperty("bloombergCorpTickerGazetteerPath");
+		this.corpMetaDataPath = loadProperty("corpMetaDataPath");
+		this.bloombergMetaDataPath = loadProperty("bloombergMetaDataPath");
+		this.experimentInputPath = loadProperty("experimentInputPath");
+		this.experimentOutputPath = loadProperty("experimentOutputPath");
+		this.brownClustererCommandPath = loadProperty("brownClustererCommandPath");
+		this.brownClustererSourceDocument = loadProperty("brownClustererSourceDocument");
+		this.latentFactionsCommandPath = loadProperty("latentFactionsCommandPath");
+		this.latentFactionsSourceDirPath = loadProperty("latentFactionsSourceDirPath");
 	}
 	
 	public String getCorpRelDirPath() {

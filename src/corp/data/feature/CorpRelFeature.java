@@ -7,7 +7,7 @@ import java.util.Map;
 import corp.data.CorpDataTools;
 import corp.data.CorpMetaData;
 import corp.data.annotation.CorpRelDatum;
-import corp.util.SerializationUtil;
+import ark.util.SerializationUtil;
 
 public abstract class CorpRelFeature {
 	public CorpRelFeature() {

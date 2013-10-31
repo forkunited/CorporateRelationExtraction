@@ -1,7 +1,7 @@
 package corp.data.feature;
 
-import corp.data.Gazetteer;
-import corp.util.StringUtil;
+import ark.data.Gazetteer;
+import ark.util.StringUtil;
 
 public class CorpRelFeatureGazetteerEditDistance extends CorpRelFeatureGazetteer {
 	public CorpRelFeatureGazetteerEditDistance(Gazetteer gazetteer, CorpRelFeatureGazetteer.InputType inputType) {

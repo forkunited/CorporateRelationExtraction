@@ -6,7 +6,7 @@ import java.util.Map;
 
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
-import corp.util.StringUtil;
+import ark.util.StringUtil;
 
 public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 	protected enum ExtremumType {

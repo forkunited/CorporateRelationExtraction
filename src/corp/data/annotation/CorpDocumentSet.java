@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import corp.data.CorpMetaData;
-import corp.util.OutputWriter;
+import ark.util.OutputWriter;
 
 public class CorpDocumentSet {
 	private String corpRelDirPath;

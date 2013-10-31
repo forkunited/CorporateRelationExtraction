@@ -2,8 +2,8 @@ package corp.data.feature;
 
 import java.util.List;
 
-import corp.data.Gazetteer;
-import corp.util.StringUtil;
+import ark.data.Gazetteer;
+import ark.util.StringUtil;
 
 public class CorpRelFeatureSelfShareGazetteerId extends CorpRelFeatureSelf {
 	private Gazetteer gazetteer;

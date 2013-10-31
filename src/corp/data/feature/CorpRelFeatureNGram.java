@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
-import corp.util.BrownClusterer;
-import corp.util.CounterTable;
-import corp.util.SerializationUtil;
-import corp.util.StanfordUtil;
-import corp.util.Stemmer;
-import corp.util.StringUtil;
+import ark.wrapper.BrownClusterer;
+import ark.data.CounterTable;
+import ark.util.SerializationUtil;
+import ark.util.StanfordUtil;
+import ark.util.Stemmer;
+import ark.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public abstract class CorpRelFeatureNGram extends CorpRelFeature {

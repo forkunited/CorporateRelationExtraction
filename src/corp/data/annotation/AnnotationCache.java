@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import corp.util.OutputWriter;
-import corp.util.StanfordUtil;
+import ark.util.OutputWriter;
+import ark.util.StanfordUtil;
 
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;

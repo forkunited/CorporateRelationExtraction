@@ -6,10 +6,10 @@ import java.util.List;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
-import corp.util.BrownClusterer;
-import corp.util.SerializationUtil;
-import corp.util.StanfordUtil;
-import corp.util.StringUtil;
+import ark.wrapper.BrownClusterer;
+import ark.util.SerializationUtil;
+import ark.util.StanfordUtil;
+import ark.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {

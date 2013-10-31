@@ -3,7 +3,7 @@ package corp.experiment;
 import java.io.File;
 import java.util.List;
 import corp.model.evaluation.KFoldCrossValidation;
-import corp.util.SerializationUtil;
+import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 public class ExperimentTreeKCV extends ExperimentTree {

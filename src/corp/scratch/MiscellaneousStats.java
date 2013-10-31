@@ -13,9 +13,9 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
-import corp.util.CounterTable;
-import corp.util.OutputWriter;
-import corp.util.StringUtil;
+import ark.data.CounterTable;
+import ark.util.OutputWriter;
+import ark.util.StringUtil;
 
 public class MiscellaneousStats {
 	public static void main(String[] args) {
@@ -25,7 +25,7 @@ public class MiscellaneousStats {
 	public static void computeOrganizationTermCounts() {
 		System.out.println("Loading configuration properties...");
 		
-		CorpProperties properties = new CorpProperties("corp.properties");
+		CorpProperties properties = new CorpProperties();
 		
 		System.out.println("Loading Annotation Cache...");
 		AnnotationCache annotationCache = new AnnotationCache(
