@@ -77,7 +77,7 @@ public class HConstructCorpRelNetwork {
 					context.write(this.relationId, this.relationObj);
 				}
 			} catch (Exception e1) {
-				
+				e1.printStackTrace();
 			}
 		}
 	}
