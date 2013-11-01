@@ -102,8 +102,8 @@ public class HConstructCorpRelNetwork {
 				Set pEntries = p.entrySet();
 				for (Object o : pEntries) {
 					Entry e = (Entry)o;
-					String label = (String)e.getKey();
-					double pValue = (Double)e.getValue();
+					String label = e.getKey().toString();
+					double pValue = Double.parseDouble(e.getValue().toString());
 					if (!posteriorSum.containsKey(label))
 						posteriorSum.put(label, 0.0);
 					posteriorSum.put(label, posteriorSum.get(label) + pValue);
