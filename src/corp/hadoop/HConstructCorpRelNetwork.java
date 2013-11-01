@@ -1,8 +1,10 @@
 package corp.hadoop;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 
 import net.sf.json.JSONArray;
@@ -19,6 +21,10 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
+import corp.util.CorpKeyFn;
+import corp.util.CorpProperties;
+
+import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
 public class HConstructCorpRelNetwork {
@@ -26,7 +32,12 @@ public class HConstructCorpRelNetwork {
 	public static class HConstructCorpRelNetworkMapper extends Mapper<Object, Text, Text, Text> {
 		private Text relationId = new Text();
 		private Text relationObj = new Text();
-		private StringUtil.StringTransform corpKeyFn = null; // FIXME
+		
+		private CorpProperties properties = new CorpProperties();
+		private Gazetteer stopWordGazetteer = new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath());
+		private Gazetteer bloombergCorpTickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", this.properties.getBloombergCorpTickerGazetteerPath());
+		private StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(this.stopWordGazetteer);
+		private CorpKeyFn corpKeyFn = new CorpKeyFn(this.bloombergCorpTickerGazetteer, this.stopWordCleanFn);
 		
 		/*
 		 * Skip badly gzip'd files
@@ -45,9 +56,6 @@ public class HConstructCorpRelNetwork {
 		}
 
 		public void map(Object key, Text value, Context context) {
-
-			String line = value.toString();
-			
 			try {
 				JSONObject relationObj = JSONObject.fromObject(value.toString());
 				if (relationObj != null) {
@@ -56,10 +64,16 @@ public class HConstructCorpRelNetwork {
 						return;
 					String mention = mentions.getJSONObject(0).getString("text");
 					String author = relationObj.getString("author");
-				//	String relationId = this.corpKeyFn.transform(author) + "." + this.corpKeyFn.transform(mention);
-					
-					this.relationId.set(relationId);
+					String annotationFile = relationObj.getString("annotationFile");
+					int dateStartIndex = annotationFile.indexOf("-8-K-") + 5;
+					String year = annotationFile.substring(dateStartIndex, dateStartIndex+4);
+					String relationId = this.corpKeyFn.transform(author) + "." + this.corpKeyFn.transform(mention);
+					String relationIdYear = year + "." + relationId;
+					String relationIdFull = "FULL." + relationId;
+					this.relationId.set(relationIdFull);
 					this.relationObj.set(value);
+					context.write(this.relationId, this.relationObj);
+					this.relationId.set(relationIdYear);
 					context.write(this.relationId, this.relationObj);
 				}
 			} catch (Exception e1) {
@@ -68,34 +82,64 @@ public class HConstructCorpRelNetwork {
 		}
 	}
 
-	public static class BBNDetectUsersReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
+	@SuppressWarnings("rawtypes")
+	public static class HConstructCorpRelNetworkReducer extends Reducer<Text, Text, Text, Text> {
 		private Text fullText = new Text();
 		
-		public void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+			this.fullText.clear();
+			
+			Map<String, Double> posteriorSum = new HashMap<String, Double>();
+			JSONArray sources = new JSONArray();
+			int count = 0;
 			for (Text text : values) {
-				fullText.append(text.getBytes(), 0, text.getLength());
-				fullText.append("\t".getBytes(), 0, 1);
+				String textStr = text.toString();
+				JSONObject textJSON = JSONObject.fromObject(textStr);
+				JSONObject p = textJSON.getJSONObject("p");
+				
+				Set pEntries = p.entrySet();
+				for (Object o : pEntries) {
+					Entry e = (Entry)o;
+					String label = (String)e.getKey();
+					double pValue = (Double)e.getValue();
+					if (!posteriorSum.containsKey(label))
+						posteriorSum.put(label, 0.0);
+					posteriorSum.put(label, posteriorSum.get(label) + pValue);
+				}
+				
+				sources.add(JSONObject.fromObject(textStr));
+				count++;
 			}
 			
+			JSONObject posteriorObj = JSONObject.fromObject(posteriorSum);
+			JSONObject aggregateObj = new JSONObject();
+			aggregateObj.put("p", posteriorObj);
+			aggregateObj.put("count", count);
+			
+			byte[] aggregateStr = aggregateObj.toString().getBytes();
+			byte[] sourcesStr = sources.toString().getBytes();
+			
+			this.fullText.append(aggregateStr, 0, aggregateStr.length);
+			this.fullText.append("\t".getBytes(), 0, 1);
+			this.fullText.append(sourcesStr, 0, sourcesStr.length);
+			
 			context.write(key, this.fullText);
-
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		/*Configuration conf = new Configuration();
+		Configuration conf = new Configuration();
 		String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 		@SuppressWarnings("deprecation")
-		Job job = new Job(conf, "HBBNDetectUsers");
-		job.setJarByClass(HBBNDetectUsers.class);
-		job.setMapperClass(BBNDetectUsersMapper.class);
-		job.setCombinerClass(BBNDetectUsersReducer.class);
-		job.setReducerClass(BBNDetectUsersReducer.class);
+		Job job = new Job(conf, "HConstructCorpRelNetwork");
+		job.setJarByClass(HConstructCorpRelNetwork.class);
+		job.setMapperClass(HConstructCorpRelNetworkMapper.class);
+		job.setReducerClass(HConstructCorpRelNetworkReducer.class);
 		job.setOutputKeyClass(LongWritable.class);
 		job.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
 		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
-		System.exit(job.waitForCompletion(true) ? 0 : 1);*/
+		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
 }
 
