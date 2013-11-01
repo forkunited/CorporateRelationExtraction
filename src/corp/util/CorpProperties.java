@@ -29,7 +29,7 @@ public class CorpProperties extends ARKProperties {
 	
 	public CorpProperties() {
 		// FIXME: Do this differently... environment variables...?
-		super(new String[] { "corp.properties", "/user/wmcdowell/sloan/Projects/CorporateRelationDetection/corp.properties" } );
+		super(new String[] { "corp.properties", "/user/wmcdowell/sloan/Projects/CorporateRelationExtraction/corp.properties" } );
 
 		this.corpRelDirPath = loadProperty("corpRelDirPath");
 		this.corpRelTestDirPath = loadProperty("corpRelTestDirPath");
