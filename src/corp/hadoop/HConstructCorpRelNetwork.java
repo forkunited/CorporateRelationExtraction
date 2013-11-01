@@ -12,7 +12,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -138,7 +137,7 @@ public class HConstructCorpRelNetwork {
 		job.setJarByClass(HConstructCorpRelNetwork.class);
 		job.setMapperClass(HConstructCorpRelNetworkMapper.class);
 		job.setReducerClass(HConstructCorpRelNetworkReducer.class);
-		job.setOutputKeyClass(LongWritable.class);
+		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
 		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
