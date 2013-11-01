@@ -60,8 +60,9 @@ public class HConstructCorpRelNetwork {
 				JSONObject relationObj = JSONObject.fromObject(value.toString());
 				if (relationObj != null) {
 					JSONArray mentions = relationObj.getJSONArray("mentions");
-					if (mentions.size() == 0)
-						return;
+					if (mentions.size() == 0) {
+						throw new IllegalArgumentException("Relation object missing mentions...");
+					}
 					String mention = mentions.getJSONObject(0).getString("text");
 					String author = relationObj.getString("author");
 					String annotationFile = relationObj.getString("annotationFile");
@@ -75,6 +76,8 @@ public class HConstructCorpRelNetwork {
 					context.write(this.relationId, this.relationObj);
 					this.relationId.set(relationIdYear);
 					context.write(this.relationId, this.relationObj);
+				} else {
+					throw new IllegalArgumentException("Invalid relation object.");
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
