@@ -98,7 +98,7 @@ public class LDA {
         	this.inferencer = this.model.getInferencer();
         	
         	this.model.printTopicWordWeights(this.wordWeightsFile);
-        	this.model.printTopWords(this.topWordsFile, 10, true);
+        	this.model.printTopWords(this.topWordsFile, 20, true);
         } catch (Exception e) {
         	e.printStackTrace();
         	this.output.debugWriteln("Error: Failed to train LDA model:\n " + e.getStackTrace());

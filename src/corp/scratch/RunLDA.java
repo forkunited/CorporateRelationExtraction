@@ -94,6 +94,17 @@ public class RunLDA {
 			}
 		};
 		
-		System.out.println(lda.run(documentSet, documentFn, randomSeed, numTopics, iterations));
+		lda.run(documentSet, documentFn, randomSeed, numTopics, iterations);
+		
+		/* Test */
+		lda = new LDA(name,
+			  new File(properties.getLDASourceDirectory()), 
+			  maxThreads, 
+			  output);
+		System.out.println(lda.load());
+		CorpRelDatum datum = documentSet.getDocuments().get(0).getCorpRelDatums().get(0);
+		double[] dist = lda.computeTopicDistribution(datum, documentFn);
+		System.out.println(dist.toString());
+		System.out.println(datum);
 	}	
 }
