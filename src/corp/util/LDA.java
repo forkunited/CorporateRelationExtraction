@@ -30,6 +30,8 @@ public class LDA {
 	private File inputFile;
 	private File modelFile;
 	private File stateFile;
+	private File topWordsFile;
+	private File wordWeightsFile;
 	private File stopWordsFile;
 	private int maxThreads;
 	private OutputWriter output;
@@ -45,6 +47,8 @@ public class LDA {
 		this.inputFile = new File(sourceDirPath, name + "_Input");
 		this.modelFile = new File(sourceDirPath, name + "_Model");
 		this.stateFile = new File(sourceDirPath, name + "_State");
+		this.topWordsFile = new File(sourceDirPath, name + "_TopWords");
+		this.wordWeightsFile = new File(sourceDirPath, name + "_WordWeights");
 		this.stopWordsFile = new File(sourceDirPath, "stopwords.txt");
 	
 		this.maxThreads = maxThreads;
@@ -92,6 +96,9 @@ public class LDA {
         
         	this.model.estimate();
         	this.inferencer = this.model.getInferencer();
+        	
+        	this.model.printTopicWordWeights(this.wordWeightsFile);
+        	this.model.printTopWords(this.topWordsFile, 10, true);
         } catch (Exception e) {
         	e.printStackTrace();
         	this.output.debugWriteln("Error: Failed to train LDA model:\n " + e.getStackTrace());
