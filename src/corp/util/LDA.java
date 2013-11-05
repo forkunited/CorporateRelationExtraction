@@ -91,14 +91,12 @@ public class LDA {
 	        this.model.setNumIterations(iterations);
 	        
 	        this.model.setRandomSeed(seed);
-	        this.model.setSaveSerializedModel(10, this.modelFile.getAbsolutePath());
-	        this.model.setSaveState(10, this.stateFile.getAbsolutePath());
-        
         	this.model.estimate();
         	this.inferencer = this.model.getInferencer();
         	
         	this.model.printTopicWordWeights(this.wordWeightsFile);
         	this.model.printTopWords(this.topWordsFile, 20, true);
+        	this.model.write(this.modelFile);
         } catch (Exception e) {
         	e.printStackTrace();
         	this.output.debugWriteln("Error: Failed to train LDA model:\n " + e.getStackTrace());
