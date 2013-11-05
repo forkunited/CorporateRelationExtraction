@@ -105,7 +105,8 @@ public class RunLDA {
 		CorpDocument document = documentSet.getDocuments().get(0);
 		CorpRelDatum datum = document.loadUnannotatedCorpRels(false).get(0);
 		double[] dist = lda.computeTopicDistribution(datum, documentFn);
-		System.out.println(dist.toString());
+		for (int i = 0; i < dist.length; i++)
+			System.out.println(dist[i]);
 		System.out.println(datum);
 	}	
 }
