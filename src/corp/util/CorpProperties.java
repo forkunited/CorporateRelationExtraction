@@ -26,6 +26,7 @@ public class CorpProperties extends ARKProperties {
 	private String brownClustererSourceDocument;
 	private String latentFactionsCommandPath;
 	private String latentFactionsSourceDirPath;
+	private String LDASourceDirPath;
 	
 	public CorpProperties() {
 		// FIXME: Do this differently... environment variables...?
@@ -54,6 +55,7 @@ public class CorpProperties extends ARKProperties {
 		this.brownClustererSourceDocument = loadProperty("brownClustererSourceDocument");
 		this.latentFactionsCommandPath = loadProperty("latentFactionsCommandPath");
 		this.latentFactionsSourceDirPath = loadProperty("latentFactionsSourceDirPath");
+		this.LDASourceDirPath = loadProperty("LDASourceDirPath");
 	}
 	
 	public String getCorpRelDirPath() {
@@ -146,5 +148,9 @@ public class CorpProperties extends ARKProperties {
 	
 	public String getLatentFactionsSourceDirectory() {
 		return this.latentFactionsSourceDirPath;
+	}
+	
+	public String getLDASourceDirectory() {
+		return this.LDASourceDirPath;
 	}
 }
