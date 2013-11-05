@@ -29,7 +29,6 @@ public class LDA {
 	private String name;
 	private File inputFile;
 	private File modelFile;
-	private File stateFile;
 	private File topWordsFile;
 	private File wordWeightsFile;
 	private File stopWordsFile;
@@ -46,7 +45,6 @@ public class LDA {
 		String sourceDirPath = sourceDir.getAbsolutePath();
 		this.inputFile = new File(sourceDirPath, name + "_Input");
 		this.modelFile = new File(sourceDirPath, name + "_Model");
-		this.stateFile = new File(sourceDirPath, name + "_State");
 		this.topWordsFile = new File(sourceDirPath, name + "_TopWords");
 		this.wordWeightsFile = new File(sourceDirPath, name + "_WordWeights");
 		this.stopWordsFile = new File(sourceDirPath, "stopwords.txt");
