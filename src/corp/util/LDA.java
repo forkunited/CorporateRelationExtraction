@@ -93,7 +93,7 @@ public class LDA {
         	this.inferencer = this.model.getInferencer();
         	
         	this.model.printTopicWordWeights(this.wordWeightsFile);
-        	this.model.printTopWords(this.topWordsFile, 20, true);
+        	this.model.printTopWords(this.topWordsFile, 100, true);
         	this.model.write(this.modelFile);
         } catch (Exception e) {
         	e.printStackTrace();
