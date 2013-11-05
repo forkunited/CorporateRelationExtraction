@@ -130,9 +130,9 @@ public class LDA {
 					
 					id++;
 				}
-				
-				w.close();
 			}
+			
+			w.close();
 			
 			this.output.debugWriteln("LDA finished constructing training data.");
 			
