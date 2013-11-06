@@ -64,6 +64,10 @@ public class LDA {
 		this.pipes = new SerialPipes(pipeList);
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+	
 	public boolean run(CorpDocumentSet documents, DatumDocumentTransform documentFn, int seed, int numTopics, int iterations) {
 		this.output.debugWriteln("Training LDA model " + this.name + "...");
 		
@@ -148,6 +152,9 @@ public class LDA {
 	}
 	
 	public boolean load() {
+		if (this.model != null)
+			return true;
+		
 		this.output.debugWriteln("Loading LDA model " + this.name + "...");
 		
 		try {
@@ -161,6 +168,10 @@ public class LDA {
 		this.output.debugWriteln("Finished loading LDA model " + this.name + ".");
 		
 		return true;
+	}
+	
+	public int getNumTopics() {
+		return this.model.getNumTopics();
 	}
 	
 	public List<double[]> computeTopicDistributions(List<CorpRelDatum> data, DatumDocumentTransform documentFn) {

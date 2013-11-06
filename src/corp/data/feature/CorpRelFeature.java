@@ -81,7 +81,12 @@ public abstract class CorpRelFeature {
 			feature = new CorpRelFeatureGazetteerPrefixTokens(
 					dataTools.getGazetteer(arguments.get("gazetteer")), 
 					CorpRelFeatureGazetteer.InputType.valueOf(arguments.get("inputType")),
-					Integer.parseInt(arguments.get("minTokens")));				
+					Integer.parseInt(arguments.get("minTokens")));
+		} else if (featureName.equals("LDA")) {
+			feature = new CorpRelFeatureLDA(
+					dataTools.getLDA(arguments.get("lda")),
+					dataTools.getCleanFn(arguments.get("corpKeyFn")),
+					dataTools.getCleanFn(arguments.get("cleanFn")));
 		} else if (featureName.equals("MetaDataAttribute")) {
 			feature = new CorpRelFeatureMetaDataAttribute(
 					dataTools.getGazetteer(arguments.get("gazetteer")), 

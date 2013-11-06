@@ -9,6 +9,7 @@ import ark.wrapper.BrownClusterer;
 
 import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
+import corp.util.LDA;
 import ark.util.StringUtil;
 import ark.data.Gazetteer;
 
@@ -21,6 +22,7 @@ public class CorpDataTools {
 	private Map<String, StringUtil.StringTransform> cleanFns;
 	private Map<String, StringUtil.StringCollectionTransform> collectionFns;
 	private Map<String, BrownClusterer> clusterers;
+	private Map<String, LDA> ldas;
 	
 	public CorpDataTools(CorpProperties properties, OutputWriter output) {
 		this.properties = properties;
@@ -58,6 +60,8 @@ public class CorpDataTools {
 		this.metaData.put("BloombergMetaData", new CorpMetaData("Bloomberg", this.properties.getBloombergMetaDataPath()));
 		
 		this.clusterers.put("None", null);
+		
+		this.ldas.put("40G_T21LDA", new LDA("40G_T21", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 	}
 	
 	public CorpDataTools(CorpProperties properties,
@@ -108,5 +112,9 @@ public class CorpDataTools {
 		}
 		
 		return this.clusterers.get(name);
+	}
+	
+	public LDA getLDA(String name) {
+		return this.ldas.get(name);
 	}
 }
