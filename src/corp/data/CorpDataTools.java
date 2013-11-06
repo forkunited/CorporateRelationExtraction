@@ -61,6 +61,7 @@ public class CorpDataTools {
 		
 		this.clusterers.put("None", null);
 		
+		this.ldas = new HashMap<String, LDA>();
 		this.ldas.put("40G_T21LDA", new LDA("40G_T21", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 	}
 	
