@@ -32,7 +32,7 @@ treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=Cor
 
 treeModelFeature=NGramSentence(n=2, minFeatureOccurrence=4, cleanFn=DefaultCleanFn, clusterer=None)
 
-treeModelFeature=LDA(lda=40G_T21, corpKeyFn=CorpKeyFn, cleanFn=DefaultCleanFn)
+treeModelFeature=LDA(lda=40G_T21LDA, corpKeyFn=CorpKeyFn, cleanFn=DefaultCleanFn)
 
 
 
