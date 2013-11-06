@@ -26,4 +26,4 @@ treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, 
 treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=500_Brown)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=500_Brown)
 
-treeModelFeature=LDA(lda=40G_T21LDA, corpKeyFn=CorpKeyFn, cleanFn=DefaultCleanFn)
+treeModelFeature=LDA(lda=40G_T21LDA, corpKeyFn=CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord, cleanFn=DefaultCleanFn)

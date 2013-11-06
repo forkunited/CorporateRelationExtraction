@@ -45,5 +45,5 @@ treeModelFeature=SelfPrefixTokens(minTokens=2, cleanFn=StopWordCleanFn)
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=4, contextWindowSize=1, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=NGramContext(n=2, minFeatureOccurrence=4, contextWindowSize=2, cleanFn=DefaultCleanFn, clusterer=None)
 
-treeModelFeature=LDA(lda=40G_T21LDA, corpKeyFn=CorpKeyFn, cleanFn=DefaultCleanFn)
+treeModelFeature=LDA(lda=40G_T21LDA, corpKeyFn=CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord, cleanFn=DefaultCleanFn)
 
