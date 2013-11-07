@@ -187,6 +187,15 @@ public class LDA {
 	}
 
 	public double[] computeTopicDistribution(CorpRelDatum datum, DatumDocumentTransform documentFn) {
+		// Useful????
+		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
+
+        // Pipes: lowercase, tokenize, remove stopwords, map to features
+        pipeList.add( new CharSequenceLowercase() );
+        pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
+        pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
+		this.pipes = new SerialPipes(pipeList);
+		
 		InstanceList instances = new InstanceList(this.pipes);
 		String documentStr = documentFn.transform(datum);
 		try {
