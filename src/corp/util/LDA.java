@@ -194,7 +194,8 @@ public class LDA {
 	        return this.inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
 		} catch (Exception e) {
 			this.output.debugWriteln("Failed on Document str: " + documentStr + " Datum: " + datum + " Exception: " + e.getMessage());
-			return new double[this.getNumTopics()];
+			throw e;
+			//return new double[this.getNumTopics()];
 		}
 	}
 }
