@@ -36,7 +36,6 @@ public class LDA {
 	private OutputWriter output;
 	
 	private ParallelTopicModel model;
-	private SerialPipes pipes;
 	private TopicInferencer inferencer;
 	
 	public LDA(String name, File sourceDir, int maxThreads, OutputWriter output) {
@@ -51,17 +50,6 @@ public class LDA {
 	
 		this.maxThreads = maxThreads;
 		this.output = output;
-		
-        // Begin by importing documents from text to feature sequences
-        ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
-
-        // Pipes: lowercase, tokenize, remove stopwords, map to features
-        pipeList.add( new CharSequenceLowercase() );
-        pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
-        pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
-        pipeList.add( new TokenSequence2FeatureSequence() );
-		
-		this.pipes = new SerialPipes(pipeList);
 	}
 	
 	public String getName() {
@@ -76,7 +64,7 @@ public class LDA {
 			return false;
 		}
 
-        InstanceList instances = new InstanceList (this.pipes);
+        InstanceList instances = new InstanceList(constructPipes());
 
         try {
 	        Reader fileReader = new InputStreamReader(new FileInputStream(this.inputFile), "UTF-8");
@@ -175,7 +163,7 @@ public class LDA {
 	}
 	
 	public List<double[]> computeTopicDistributions(List<CorpRelDatum> data, DatumDocumentTransform documentFn) {
-        InstanceList instances = new InstanceList(this.pipes);
+        InstanceList instances = new InstanceList(constructPipes());
         List<double[]> topicDistributions = new ArrayList<double[]>();
         for (int i = 0; i < data.size(); i++) {
         	instances.addThruPipe(new Instance(documentFn.transform(data.get(i)), null, String.valueOf(i), null));
@@ -187,17 +175,7 @@ public class LDA {
 	}
 
 	public double[] computeTopicDistribution(CorpRelDatum datum, DatumDocumentTransform documentFn) {
-		// Useful????
-		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
-
-        // Pipes: lowercase, tokenize, remove stopwords, map to features
-        pipeList.add( new CharSequenceLowercase() );
-        pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
-        pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
-        pipeList.add( new TokenSequence2FeatureSequence() );
-		this.pipes = new SerialPipes(pipeList);
-		
-		InstanceList instances = new InstanceList(this.pipes);
+		InstanceList instances = new InstanceList(constructPipes());
 		String documentStr = documentFn.transform(datum);
 		try {
 	        instances.addThruPipe(new Instance(documentStr, null, "0", null));
@@ -209,5 +187,15 @@ public class LDA {
 			throw e;
 			//return new double[this.getNumTopics()];
 		}
+	}
+	
+	private SerialPipes constructPipes() {
+		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
+        pipeList.add( new CharSequenceLowercase() );
+        pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
+        pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
+        pipeList.add( new TokenSequence2FeatureSequence() );
+        SerialPipes pipes = new SerialPipes(pipeList);
+        return pipes;
 	}
 }
