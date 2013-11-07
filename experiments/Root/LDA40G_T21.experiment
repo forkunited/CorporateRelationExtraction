@@ -5,15 +5,12 @@ treeAllowSubpaths=false
 maxDocuments=-1
 
 treeModelPath=
-treeModel=CReg
+treeModel=CReg(l1=0.0,l2=1.0)
 treeModelValidPath=SelfRef
 treeModelValidPath=OCorp
 treeModelValidPath=NonCorp
 treeModelValidPath=Generic
 treeModelValidPath=Error
-
-treeModelParameterSearch=l1=0,.5,1,2,4
-treeModelParameterSearch=l2=0,.5,1,2,4
 
 treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
 treeModelFeature=GazetteerContains(gazetteer=StopWordGazetteer, inputType=Mentioned)

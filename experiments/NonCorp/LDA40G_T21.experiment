@@ -8,10 +8,7 @@ treeModelPath=
 treeModel=Uniform
 treeModelValidPath=NonCorp
 treeModelPath=NonCorp
-treeModel=CReg
-
-treeModelParameterSearch=l1=0,.25,.5,1,4,5
-treeModelParameterSearch=l2=0,1,2,3,4
+treeModel=CReg(l1=0.5,l2=1.0)
 
 treeModelValidPath=NonCorp-US
 treeModelValidPath=NonCorp-State
