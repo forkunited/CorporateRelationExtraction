@@ -63,6 +63,11 @@ public class CorpDataTools {
 		
 		this.ldas = new HashMap<String, LDA>();
 		this.ldas.put("40G_T21LDA", new LDA("40G_T21", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("40G_T42LDA", new LDA("40G_T42", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("40G_T84LDA", new LDA("40G_T84", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("40G_T168LDA", new LDA("40G_T168", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("40G_T336LDA", new LDA("40G_T336", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("40G_T672LDA", new LDA("40G_T672", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 	}
 	
 	public CorpDataTools(CorpProperties properties,

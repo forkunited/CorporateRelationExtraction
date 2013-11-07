@@ -27,6 +27,7 @@ public class RunLDA {
 		int maxThreads = Integer.parseInt(args[3]);
 		int maxDocuments = Integer.parseInt(args[4]);
 		int randomSeed = Integer.parseInt(args[5]);
+		boolean sentenceLevel = Boolean.parseBoolean(args[6]);
 		
 		OutputWriter output = new OutputWriter();
 		CorpProperties properties = new CorpProperties();
@@ -63,50 +64,56 @@ public class RunLDA {
 				new CorpMetaData("Corp", properties.getCorpMetaDataPath())
 		);
 		
-		LDA.DatumDocumentTransform documentFn = new LDA.DatumDocumentTransform() {
-			public String transform(CorpRelDatum datum) {
-				CorpDocument datumDoc = datum.getDocument();
-				List<CorpDocumentTokenSpan> spans = datum.getOtherOrgTokenSpans();
-				Set<Integer> sentences = new HashSet<Integer>();
-				Set<String> mentions = new HashSet<String>();
-				String author = corpKeyFn.transform(datum.getAuthorCorpName());
-				for (CorpDocumentTokenSpan span : spans) {
-					mentions.add(corpKeyFn.transform(span.toString()));
-					sentences.add(span.getSentenceIndex());
-				
-				}
-				
-				StringBuilder retStr = new StringBuilder();
-				retStr.append(author).append(" ");
-				for (String mention : mentions)
-					retStr.append(mention).append(" ");
-				for (Integer sentenceIndex : sentences) {
-					List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(datumDoc.getSentenceAnnotation(sentenceIndex));
-					for (String tokenText : tokenTexts) {
-						String cleanToken = cleanFn.transform(tokenText);
-						if (cleanToken == null || cleanToken.length() == 0)
-							continue;
-						retStr.append(cleanToken).append(" ");
+		LDA.DatumDocumentTransform documentFn = null;
+		
+		if (sentenceLevel) {
+			documentFn = new LDA.DatumDocumentTransform() {
+				public String transform(CorpRelDatum datum) {
+					CorpDocument datumDoc = datum.getDocument();
+					List<CorpDocumentTokenSpan> spans = datum.getOtherOrgTokenSpans();
+					Set<Integer> sentences = new HashSet<Integer>();
+					Set<String> mentions = new HashSet<String>();
+					String author = corpKeyFn.transform(datum.getAuthorCorpName());
+					for (CorpDocumentTokenSpan span : spans) {
+						mentions.add(corpKeyFn.transform(span.toString()));
+						sentences.add(span.getSentenceIndex());
+					
 					}
+					
+					StringBuilder retStr = new StringBuilder();
+					retStr.append(author).append(" ");
+					for (String mention : mentions)
+						retStr.append(mention).append(" ");
+					for (Integer sentenceIndex : sentences) {
+						List<String> tokenTexts = StanfordUtil.getSentenceTokenTexts(datumDoc.getSentenceAnnotation(sentenceIndex));
+						for (String tokenText : tokenTexts) {
+							String cleanToken = cleanFn.transform(tokenText);
+							if (cleanToken == null || cleanToken.length() == 0)
+								continue;
+							retStr.append(cleanToken).append(" ");
+						}
+					}
+					
+					return retStr.toString();
 				}
-				
-				return retStr.toString();
-			}
-		};
+			};
+		}
 		
 		lda.run(documentSet, documentFn, randomSeed, numTopics, iterations);
 		
 		/* Test */
-		lda = new LDA(name,
-			  new File(properties.getLDASourceDirectory()), 
-			  maxThreads, 
-			  output);
-		System.out.println(lda.load());
-		CorpDocument document = documentSet.getDocuments().get(0);
-		CorpRelDatum datum = document.loadUnannotatedCorpRels(false).get(0);
-		double[] dist = lda.computeTopicDistribution(datum, documentFn);
-		for (int i = 0; i < dist.length; i++)
-			System.out.println(dist[i]);
-		System.out.println(datum);
+		if (sentenceLevel) {
+			lda = new LDA(name,
+				  new File(properties.getLDASourceDirectory()), 
+				  maxThreads, 
+				  output);
+			System.out.println(lda.load());
+			CorpDocument document = documentSet.getDocuments().get(0);
+			CorpRelDatum datum = document.loadUnannotatedCorpRels(false).get(0);
+			double[] dist = lda.computeTopicDistribution(datum, documentFn);
+			for (int i = 0; i < dist.length; i++)
+				System.out.println(dist[i]);
+			System.out.println(datum);
+		}
 	}	
 }

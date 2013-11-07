@@ -19,13 +19,17 @@ import cc.mallet.topics.*;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDatum;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.util.CoreMap;
 import ark.util.OutputWriter;
+import ark.util.StanfordUtil;
+import ark.util.StringUtil;
 
 public class LDA {
 	public interface DatumDocumentTransform {
 		public String transform(CorpRelDatum datum);
 	}
-	
+
 	private String name;
 	private File inputFile;
 	private File modelFile;
@@ -112,18 +116,33 @@ public class LDA {
 			int id = 0;
 			for (CorpDocument doc : docs) {
 				this.output.dataWriteln("LDA constructing training data for " + doc.getAnnotationPath() + " (" + id + ")...");
-				List<CorpRelDatum> data = doc.loadUnannotatedCorpRels(false);
-				if (data == null)
-					continue;
 				String annotationName = (new File(doc.getAnnotationPath())).getName();
-				
-				for (int i = 0; i < data.size(); i++) {
-					String documentStr = documentFn.transform(data.get(i));
-					String documentName = annotationName + "_" + id;
+				if (documentFn != null) {
+					// One document per datum
+					List<CorpRelDatum> data = doc.loadUnannotatedCorpRels(false);
+					if (data == null)
+						continue;
 					
-					w.write(documentName + "\tX\t" + documentStr + "\n");
-					
-					id++;
+					for (int i = 0; i < data.size(); i++) {
+						String documentStr = documentFn.transform(data.get(i));
+						String documentName = annotationName + "_" + id;
+						
+						w.write(documentName + "\tX\t" + documentStr + "\n");
+						
+						id++;
+					}
+				} else {
+					// One document per document
+					Annotation docAnnotation = doc.getAnnotation();
+					List<CoreMap> sentences = StanfordUtil.getDocumentSentences(docAnnotation);
+					StringBuilder docStr = new StringBuilder();
+					for (CoreMap sentence : sentences) {
+						List<String> sentenceTokens = StanfordUtil.getSentenceTokenTexts(sentence);
+						for (String sentenceToken : sentenceTokens)
+							docStr = docStr.append(sentenceToken).append(" ");
+					}
+					String cleanDocStr = StringUtil.clean(docStr.toString());
+					w.write(annotationName + "\tX\t" + cleanDocStr + "\n");
 				}
 			}
 			
