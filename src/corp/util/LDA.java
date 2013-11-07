@@ -194,6 +194,7 @@ public class LDA {
         pipeList.add( new CharSequenceLowercase() );
         pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
         pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
+        pipeList.add( new TokenSequence2FeatureSequence() );
 		this.pipes = new SerialPipes(pipeList);
 		
 		InstanceList instances = new InstanceList(this.pipes);
