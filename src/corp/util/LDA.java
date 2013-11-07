@@ -191,7 +191,7 @@ public class LDA {
 		String documentStr = documentFn.transform(datum);
 		try {
 	        instances.addThruPipe(new Instance(documentStr, null, "0", null));
-	        this.output.debugWriteln("GOT PAST THE PIPE");
+	        this.output.debugWriteln("GOT PAST THE PIPE ON: " + documentStr);
 	        return this.inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
 		} catch (Exception e) {
 			e.printStackTrace();
