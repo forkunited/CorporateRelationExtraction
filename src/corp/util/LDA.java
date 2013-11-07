@@ -177,16 +177,8 @@ public class LDA {
 	public double[] computeTopicDistribution(CorpRelDatum datum, DatumDocumentTransform documentFn) {
 		InstanceList instances = new InstanceList(constructPipes());
 		String documentStr = documentFn.transform(datum);
-		try {
-	        instances.addThruPipe(new Instance(documentStr, null, "0", null));
-	        this.output.debugWriteln("GOT PAST THE PIPE ON: " + documentStr);
-	        return this.inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.output.debugWriteln("Failed on Document str: " + documentStr + " Datum: " + datum + " Exception: " + e.getMessage());
-			throw e;
-			//return new double[this.getNumTopics()];
-		}
+        instances.addThruPipe(new Instance(documentStr, null, "0", null));
+        return this.inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
 	}
 	
 	private SerialPipes constructPipes() {
