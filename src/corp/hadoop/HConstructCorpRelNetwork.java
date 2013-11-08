@@ -2,6 +2,7 @@ package corp.hadoop;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -20,6 +21,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
+import corp.data.CorpMetaData;
 import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 
@@ -37,7 +39,7 @@ public class HConstructCorpRelNetwork {
 		private Gazetteer bloombergCorpTickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", this.properties.getBloombergCorpTickerGazetteerPath());
 		private StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(this.stopWordGazetteer);
 		private CorpKeyFn corpKeyFn = new CorpKeyFn(this.bloombergCorpTickerGazetteer, this.stopWordCleanFn);
-		
+	
 		/*
 		 * Skip badly gzip'd files
 		 */
@@ -62,6 +64,7 @@ public class HConstructCorpRelNetwork {
 					if (mentions.size() == 0) {
 						throw new IllegalArgumentException("Relation object missing mentions...");
 					}
+					
 					String mention = mentions.getJSONObject(0).getString("text");
 					String author = relationObj.getString("author");
 					String annotationFile = relationObj.getString("annotationFile");
@@ -70,6 +73,7 @@ public class HConstructCorpRelNetwork {
 					String relationId = this.corpKeyFn.transform(author) + "." + this.corpKeyFn.transform(mention);
 					String relationIdYear = year + "." + relationId;
 					String relationIdFull = "FULL." + relationId;
+					
 					this.relationId.set(relationIdFull);
 					this.relationObj.set(value);
 					context.write(this.relationId, this.relationObj);
@@ -87,6 +91,9 @@ public class HConstructCorpRelNetwork {
 	@SuppressWarnings("rawtypes")
 	public static class HConstructCorpRelNetworkReducer extends Reducer<Text, Text, Text, Text> {
 		private Text fullText = new Text();
+		private CorpProperties properties = new CorpProperties();
+		private CorpMetaData corpMetaData = new CorpMetaData("Corp", this.properties.getCorpMetaDataPath());
+		private Gazetteer corpMetaDataGazetteer = new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath());
 		
 		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 			this.fullText.clear();
@@ -94,6 +101,8 @@ public class HConstructCorpRelNetwork {
 			Map<String, Double> posteriorSum = new HashMap<String, Double>();
 			JSONArray sources = new JSONArray();
 			int count = 0;
+			String firstMention = null;
+			String author = null;
 			for (Text text : values) {
 				String textStr = text.toString();
 				JSONObject textJSON = JSONObject.fromObject(textStr);
@@ -109,14 +118,25 @@ public class HConstructCorpRelNetwork {
 					posteriorSum.put(label, posteriorSum.get(label) + pValue);
 				}
 				
-				sources.add(JSONObject.fromObject(textStr));
+				JSONObject source = JSONObject.fromObject(textStr);
+				if (firstMention == null) {
+					firstMention = source.getJSONArray("mentions").getJSONObject(0).getString("text");
+				}
+				
+				if (author == null) {
+					author = source.getString("author");
+				}
+				
+				sources.add(source);
 				count++;
 			}
-			
+
 			JSONObject posteriorObj = JSONObject.fromObject(posteriorSum);
 			JSONObject aggregateObj = new JSONObject();
 			aggregateObj.put("p", posteriorObj);
 			aggregateObj.put("count", count);
+			aggregateObj.put("authorSICs", getCorpSICs(author));
+			aggregateObj.put("mentionSICs", getCorpSICs(firstMention));
 			
 			byte[] aggregateStr = aggregateObj.toString().getBytes();
 			byte[] sourcesStr = sources.toString().getBytes();
@@ -126,6 +146,16 @@ public class HConstructCorpRelNetwork {
 			this.fullText.append(sourcesStr, 0, sourcesStr.length);
 			
 			context.write(key, this.fullText);
+		}
+		
+		private JSONArray getCorpSICs(String corp) {
+			List<String> ids = this.corpMetaDataGazetteer.getIds(corp);
+			JSONArray sicsJSON = new JSONArray();
+			for (String id : ids) {
+				List<String> sicsForId = this.corpMetaData.getAttributeById(id, CorpMetaData.Attribute.SIC);
+				sicsJSON.addAll(sicsForId);
+			}		
+			return sicsJSON;
 		}
 	}
 

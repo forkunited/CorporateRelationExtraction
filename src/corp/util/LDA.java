@@ -194,10 +194,12 @@ public class LDA {
 	}
 
 	public double[] computeTopicDistribution(CorpRelDatum datum, DatumDocumentTransform documentFn) {
-		InstanceList instances = new InstanceList(constructPipes());
-		String documentStr = documentFn.transform(datum);
-        instances.addThruPipe(new Instance(documentStr, null, "0", null));
-        return this.inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
+		synchronized(documentFn) { // Hack... fixes issue with stop words file opened by multiple threads
+			InstanceList instances = new InstanceList(constructPipes());
+			String documentStr = documentFn.transform(datum);
+	        instances.addThruPipe(new Instance(documentStr, null, "0", null));
+	        return this.inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
+		}
 	}
 	
 	private SerialPipes constructPipes() {
@@ -207,6 +209,7 @@ public class LDA {
         pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
         pipeList.add( new TokenSequence2FeatureSequence() );
         SerialPipes pipes = new SerialPipes(pipeList);
+        
         return pipes;
 	}
 }
