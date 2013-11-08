@@ -25,18 +25,27 @@ public class ComputeLDAOrgTopics {
 		Map<String, Map<String, Double>> wordWeights = lda.loadWordWeights(true);
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(properties.getLDASourceDirectory(), name + "_OrgTopics")));
-			
+			BufferedWriter orgTopicsW = new BufferedWriter(new FileWriter(new File(properties.getLDASourceDirectory(), name + "_OrgTopics")));
+			BufferedWriter orgMaxTopicsW = new BufferedWriter(new FileWriter(new File(properties.getLDASourceDirectory(), name + "_MaxOrgTopics")));
 			for (Entry<String, Map<String, Double>> entry : wordWeights.entrySet()) {
 				Map<String, Double> normalizedDist = normalizeDistribution(entry.getValue());
-				
-				bw.write(entry.getKey() + "\t");
-				for (Entry<String, Double> weightEntry : normalizedDist.entrySet())
-					bw.write(weightEntry.getKey() + ": " + weightEntry.getValue() + "\t");
-				bw.write("\n");
+				double maxTopicValue = 0;
+				String maxTopic = null;
+				orgTopicsW.write(entry.getKey() + "\t");
+				for (Entry<String, Double> weightEntry : normalizedDist.entrySet()) {
+					orgTopicsW.write(weightEntry.getKey() + ": " + weightEntry.getValue() + "\t");
+					if (weightEntry.getValue() > maxTopicValue) {
+						maxTopicValue = weightEntry.getValue();
+						maxTopic = weightEntry.getKey();
+					}
+				}
+				orgTopicsW.write("\n");
+			
+				orgMaxTopicsW.write(entry.getKey() + "\t" + maxTopic + "\t" + maxTopicValue + "\n");
 			}
 			
-			bw.close();
+			orgTopicsW.close();
+			orgMaxTopicsW.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
