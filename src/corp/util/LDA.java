@@ -167,6 +167,7 @@ public class LDA {
 		try {
 			this.model = ParallelTopicModel.read(this.modelFile);
 			this.inferencer = this.model.getInferencer();
+			this.inferencer.setRandomSeed(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
