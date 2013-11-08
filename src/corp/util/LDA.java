@@ -1,14 +1,20 @@
 package corp.util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import cc.mallet.types.*;
@@ -176,6 +182,69 @@ public class LDA {
 		this.output.debugWriteln("Finished loading LDA model " + this.name + ".");
 		
 		return true;
+	}
+	
+	public Map<String, Map<String, Double>> loadWordWeights() {
+		return loadWordWeights(false);
+	}
+	
+	public Map<String, Map<String, Double>> loadWordWeights(boolean onlyOrgs) {
+		Map<String, Map<String, Double>> wordWeights = new TreeMap<String, Map<String, Double>>();
+		Set<String> orgs = null;
+		if (onlyOrgs)
+			orgs = loadOrgs();
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(this.wordWeightsFile));
+			
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				String[] lineParts = line.split("\t");
+				String topic = lineParts[0];
+				String word = lineParts[1];
+				if (onlyOrgs && !orgs.contains(word))
+					continue;
+				
+				double weight = Double.parseDouble(lineParts[2]);
+				if (!wordWeights.containsKey(word))
+					wordWeights.put(word, new TreeMap<String, Double>());
+				if (!wordWeights.get(word).containsKey(topic))
+					wordWeights.get(word).put(topic, weight);
+				
+			}
+			
+			br.close();
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    	return null;
+	    }
+		
+		return wordWeights;
+	}
+	
+	public Set<String> loadOrgs() {
+		Set<String> orgs = new HashSet<String>();
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(this.inputFile));
+			
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				String[] lineParts = line.split("\t");
+				String wordsPart = lineParts[2];
+				String[] words = wordsPart.split("\\s+");
+				
+				orgs.add(words[0]);
+				orgs.add(words[1]);
+			}
+			
+			br.close();
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    	return null;
+	    }
+		
+		return orgs;
 	}
 	
 	public int getNumTopics() {
