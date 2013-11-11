@@ -1,12 +1,13 @@
 package corp.data;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import ark.util.FileUtil;
 
 public class CorpMetaData {
 	public enum Attribute {
@@ -101,7 +102,7 @@ public class CorpMetaData {
 		this.idsToAttributes = new HashMap<String, Attributes>();
 		
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(sourceFilePath));
+			BufferedReader br = FileUtil.getFileReader(sourceFilePath);
 			String headingLine = br.readLine();
 			if (headingLine == null) {
 				br.close();
