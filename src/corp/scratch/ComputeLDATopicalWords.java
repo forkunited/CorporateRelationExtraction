@@ -15,6 +15,10 @@ import edu.stanford.nlp.util.Pair;
 public class ComputeLDATopicalWords {
 	public static void main(String[] args) {
 		String name = args[0];
+		double stopWordsThreshold = 0.0;
+		if (args.length > 1)
+			stopWordsThreshold = Double.valueOf(args[1]);
+		
 		OutputWriter output = new OutputWriter();
 		CorpProperties properties = new CorpProperties();
 		
@@ -34,9 +38,23 @@ public class ComputeLDATopicalWords {
 		
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(properties.getLDASourceDirectory(), name + "_WordEntopies")));
+			BufferedWriter sbw = null;
+			if (stopWordsThreshold > 0) {
+				int stopWordsPercent = (int)Math.floor(stopWordsThreshold*100);
+				sbw = new BufferedWriter(new FileWriter(new File(properties.getLDASourceDirectory(), name + "_StopWords_" + stopWordsPercent)));
+			}
 			
+			int i = 0;
 			for (Entry<Double, Pair<String, String>> entry : entropies.entrySet()) {
 				bw.write(entry.getValue().first() + "\t" + entry.getValue().second() + "\t" + entry.getKey() + "\n");
+				if (stopWordsThreshold > 0 && i < entropies.size()*stopWordsThreshold) {
+					sbw.write(entry.getValue().first() + "\n");
+				}
+				i++;
+			}
+			
+			if (stopWordsThreshold > 0) {
+				sbw.close();
 			}
 			
 			bw.close();

@@ -89,7 +89,7 @@ public class LDA {
 	        this.model.addInstances(instances);
 	        this.model.setNumThreads(this.maxThreads);
 	        this.model.setNumIterations(iterations);
-	        
+	        this.model.setOptimizeInterval(10);
 	        this.model.setRandomSeed(seed);
         	this.model.estimate();
         	this.inferencer = this.model.getInferencer();
