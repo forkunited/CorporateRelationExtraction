@@ -93,6 +93,7 @@ public class LDA {
 	        this.model.setRandomSeed(seed);
         	this.model.estimate();
         	this.inferencer = this.model.getInferencer();
+        	this.inferencer.setRandomSeed(1);
         	
         	this.model.printTopicWordWeights(this.wordWeightsFile);
         	this.model.printTopWords(this.topWordsFile, 100, true);
