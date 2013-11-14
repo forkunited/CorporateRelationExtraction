@@ -15,7 +15,6 @@ treeModelParameterSearch=l2=0,1,2,3,4
 
 treeModelValidPath=NonCorp-US
 treeModelValidPath=NonCorp-State
-treeModelValidPath=NonCorp-Suply
 treeModelValidPath=NonCorp-nonUS
 treeModelValidPath=NonCorp-Ind
 treeModelValidPath=NonCorp-Rating
