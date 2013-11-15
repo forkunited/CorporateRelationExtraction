@@ -133,19 +133,20 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 			
 		}
 		
-		List<CorpRelDatum> synchronizedData = Collections.synchronizedList(data);
-		ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
+		//List<CorpRelDatum> synchronizedData = Collections.synchronizedList(data);
+		//ExecutorService threadPool = Executors.newFixedThreadPool(this.maxThreads);
 		
 		for (CorpRelFeature feature : this.features) {
-			threadPool.submit(new FeaturizeFeatureThread(feature, synchronizedData, featureValues));
+			featureValues = feature.computeMatrix(data, featureValues);
+			//threadPool.submit(new FeaturizeFeatureThread(feature, synchronizedData, featureValues));
 		}
 		
-		try {
+		/*try {
 			threadPool.shutdown();
 			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		return featurizedData;
 	}
