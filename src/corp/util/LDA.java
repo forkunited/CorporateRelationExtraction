@@ -48,7 +48,7 @@ public class LDA {
 	private ParallelTopicModel model;
 	private TopicInferencer inferencer;
 	
-	private ArrayList<Pipe> pipeList;
+	private TokenSequenceRemoveStopwords stopWordsPipe;
 	
 	public LDA(String name, File sourceDir, int maxThreads, OutputWriter output) {
 		this.name = name;
@@ -63,11 +63,7 @@ public class LDA {
 		this.maxThreads = maxThreads;
 		this.output = output;
 		
-		this.pipeList = new ArrayList<Pipe>();
-        this.pipeList.add( new CharSequenceLowercase() );
-        this.pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
-        this.pipeList.add( new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false) );
-        this.pipeList.add( new TokenSequence2FeatureSequence() );
+		this.stopWordsPipe = new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false);
 	}
 	
 	public String getName() {
@@ -282,8 +278,13 @@ public class LDA {
 	}
 	
 	private SerialPipes constructPipes() {
-
-        SerialPipes pipes = new SerialPipes(this.pipeList);
+		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
+        pipeList.add( new CharSequenceLowercase() );
+        pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
+        pipeList.add( this.stopWordsPipe );
+        pipeList.add( new TokenSequence2FeatureSequence() );
+		
+        SerialPipes pipes = new SerialPipes(pipeList);
         
         return pipes;
 	}
