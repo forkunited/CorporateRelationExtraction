@@ -100,6 +100,17 @@ public class CorpRelFeatureLDA extends CorpRelFeature {
 	}
 	
 	@Override
+	public List<List<Double>> computeMatrix(List<CorpRelDatum> data, List<List<Double>> existingMatrix) {
+		List<double[]> topicDists = this.lda.computeTopicDistributions(data, this.documentFn);
+		for (int i = 0; i < data.size(); i++) {
+			for (int j = 0; j < topicDists.get(i).length; j++) {
+				existingMatrix.get(i).add(topicDists.get(i)[j]);
+			}
+		}		
+		return existingMatrix;
+	}
+	
+	@Override
 	public CorpRelFeature clone() {
 		return new CorpRelFeatureLDA(this.lda, this.corpKeyFn, this.cleanFn);
 	}
