@@ -49,6 +49,7 @@ public class LDA {
 	private TopicInferencer inferencer;
 	
 	private TokenSequenceRemoveStopwords stopWordsPipe;
+	private Pattern tokenSequencePattern;
 	
 	public LDA(String name, File sourceDir, int maxThreads, OutputWriter output) {
 		this.name = name;
@@ -64,6 +65,7 @@ public class LDA {
 		this.output = output;
 		
 		this.stopWordsPipe = new TokenSequenceRemoveStopwords(this.stopWordsFile, "UTF-8", false, false, false);
+		this.tokenSequencePattern = Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}");
 	}
 	
 	public String getName() {
@@ -256,7 +258,7 @@ public class LDA {
 		return this.model.getNumTopics();
 	}
 	
-	public List<double[]> computeTopicDistributions(List<CorpRelDatum> data, DatumDocumentTransform documentFn) {
+	public synchronized List<double[]> computeTopicDistributions(List<CorpRelDatum> data, DatumDocumentTransform documentFn) {
         InstanceList instances = new InstanceList(constructPipes());
         List<double[]> topicDistributions = new ArrayList<double[]>();
         for (int i = 0; i < data.size(); i++) {
@@ -268,7 +270,7 @@ public class LDA {
 		return topicDistributions;
 	}
 
-	public double[] computeTopicDistribution(CorpRelDatum datum, DatumDocumentTransform documentFn) {
+	public synchronized double[] computeTopicDistribution(CorpRelDatum datum, DatumDocumentTransform documentFn) {
 		synchronized(documentFn) { // Hack... fixes issue with stop words file opened by multiple threads
 			InstanceList instances = new InstanceList(constructPipes());
 			String documentStr = documentFn.transform(datum);
@@ -280,7 +282,7 @@ public class LDA {
 	private SerialPipes constructPipes() {
 		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
         pipeList.add( new CharSequenceLowercase() );
-        pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
+        pipeList.add( new CharSequence2TokenSequence(this.tokenSequencePattern) );
         pipeList.add( this.stopWordsPipe );
         pipeList.add( new TokenSequence2FeatureSequence() );
 		
