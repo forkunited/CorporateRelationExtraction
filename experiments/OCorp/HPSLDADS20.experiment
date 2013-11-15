@@ -1,0 +1,36 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=-1
+
+treeModelPath=
+treeModel=Uniform
+treeModelValidPath=OCorp
+treeModelPath=OCorp
+treeModel=CReg(l1=0.0,l2=3.0)
+
+treeModelValidPath=OCorp-Family
+treeModelValidPath=OCorp-Merger
+treeModelValidPath=OCorp-Legal
+treeModelValidPath=OCorp-Partner
+treeModelValidPath=OCorp-NewHire
+treeModelValidPath=OCorp-Cust
+treeModelValidPath=OCorp-Suply
+treeModelValidPath=OCorp-Compete
+treeModelValidPath=OCorp-News
+treeModelValidPath=OCorp-Finance
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+
+treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioned, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
+treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Mentioner, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
+treeModelFeature=MetaDataAttribute(gazetteer=CorpMetaDataGazetteer, metaData=CorpMetaData, attribute=SIC, inputType=Both, minFeatureOccurrence=5, attributeTransformFn=Prefixes)
+
+treeModelFeature=NGramSentence(n=2, minFeatureOccurrence=4, cleanFn=DefaultCleanFn, clusterer=None)
+
+treeModelFeature=LDA(lda=HPS_40G_T21_S-D21_20LDA, corpKeyFn=CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord, cleanFn=DefaultCleanFn)
+treeModelFeature=LDA(lda=HPS_40G_T84_S-D21_20LDA, corpKeyFn=CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord, cleanFn=DefaultCleanFn)
+treeModelFeature=LDA(lda=HPS_40G_T336_S-D21_20LDA, corpKeyFn=CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord, cleanFn=DefaultCleanFn)
+

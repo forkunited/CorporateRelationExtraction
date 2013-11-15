@@ -69,6 +69,13 @@ public class CorpDataTools {
 		this.ldas.put("HPS_40G_T84_SLDA", new LDA("HPS_40G_T84_S", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 		this.ldas.put("HPS_40G_T336_SLDA", new LDA("HPS_40G_T336_S", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 	
+		this.ldas.put("HPS_40G_T21_S-D21_10LDA", new LDA("HPS_40G_T21_S-D21_10", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("HPS_40G_T21_S-D21_20LDA", new LDA("HPS_40G_T21_S-D21_20", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("HPS_40G_T84_S-D21_10LDA", new LDA("HPS_40G_T84_S-D21_10", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("HPS_40G_T84_S-D21_20LDA", new LDA("HPS_40G_T84_S-D21_20", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("HPS_40G_T336_S-D21_10LDA", new LDA("HPS_40G_T336_S-D21_10", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		this.ldas.put("HPS_40G_T336_S-D21_20LDA", new LDA("HPS_40G_T336_S-D21_20", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+
 	}
 	
 	public CorpDataTools(CorpProperties properties,
