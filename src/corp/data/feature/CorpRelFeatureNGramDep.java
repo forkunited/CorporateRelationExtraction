@@ -53,7 +53,7 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 	@Override
 	protected HashSet<String> getNGramsForDatum(CorpRelDatum datum) {
 		List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
-		HashSet<String> ngrams = new HashSet<String>();
+		HashSet<String> retNgrams = new HashSet<String>();
 		CorpDocument document = datum.getDocument();
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
 			List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(document.getSentenceAnnotation(tokenSpan.getSentenceIndex()));
@@ -79,23 +79,24 @@ public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 					int depIndex = depWord.index() - 1; // Convert to 0-based
 					if (depIndex < tokens.size() - this.n + 1 
 							&& (depIndex < startIndex || depIndex >= endIndex)) {
-						String ngram = getCleanNGram(tokens, depIndex);
-						if (ngram == null)
+						List<String> ngrams = getCleanNGrams(tokens, depIndex);
+						if (ngrams == null)
 							continue;
-						
-						if (this.useRelationTypes) {
-							GrammaticalRelation gr = deps.reln(word, depWord);
-							if (gr == null)
-								gr = deps.reln(depWord, word);
-							ngram += "_" + ((gr == null) ? "" : gr.getShortName());
+						for (String ngram : ngrams) {
+							if (this.useRelationTypes) {
+								GrammaticalRelation gr = deps.reln(word, depWord);
+								if (gr == null)
+									gr = deps.reln(depWord, word);
+								ngram += "_" + ((gr == null) ? "" : gr.getShortName());
+							}
+							retNgrams.add(ngram);
 						}
-						ngrams.add(ngram);
 					}
 				}
 			}
 		}
 		
-		return ngrams;
+		return retNgrams;
 	}
 
 	@Override

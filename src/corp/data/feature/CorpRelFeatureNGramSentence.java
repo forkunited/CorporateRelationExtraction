@@ -35,17 +35,18 @@ public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 	@Override
 	protected HashSet<String> getNGramsForDatum(CorpRelDatum datum) {
 		List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
-		HashSet<String> ngrams = new HashSet<String>();
+		HashSet<String> retNgrams = new HashSet<String>();
 		CorpDocument document = datum.getDocument();
 		for (CorpDocumentTokenSpan tokenSpan : tokenSpans) {
 			List<CoreLabel> tokens = StanfordUtil.getSentenceTokens(document.getSentenceAnnotation(tokenSpan.getSentenceIndex()));
 			for (int i = 0; i < tokens.size()-this.n+1; i++) {
-				String ngram = getCleanNGram(tokens, i);
-				if (ngram != null)
-					ngrams.add(ngram);
+				List<String> ngrams = getCleanNGrams(tokens, i);
+				if (ngrams != null) {
+					retNgrams.addAll(ngrams);
+				}
 			}
 		}
-		return ngrams;
+		return retNgrams;
 	}
 
 

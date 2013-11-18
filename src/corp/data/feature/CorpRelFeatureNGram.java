@@ -91,8 +91,19 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 		return existingNames;
 	}
 
-	protected String getCleanNGram(List<CoreLabel> tokens, int startIndex) {
+	protected List<String> getCleanNGrams(List<CoreLabel> tokens, int startIndex) {
 		List<String> ngram = StanfordUtil.getTokensNGramTexts(tokens, startIndex, this.n);
+		List<String> retNgrams = new ArrayList<String>();
+		if (this.n == 1 && this.clusterer != null) {
+			String cluster = this.clusterer.getCluster(this.cleanFn.transform(ngram.get(0)));
+			if (cluster == null)
+				return null;
+			for (int i = 2; i < cluster.length(); i *= 2) {
+				retNgrams.add(cluster.substring(0, i));
+			}
+			return retNgrams;
+		}
+		
 		StringBuilder ngramGlue = new StringBuilder();
 		for (String gram : ngram) {
 			String cleanGram = this.cleanFn.transform(gram);
@@ -112,7 +123,9 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 			return null;
 		
 		ngramGlue = ngramGlue.delete(ngramGlue.length() - 1, ngramGlue.length());
-		return ngramGlue.toString();
+		retNgrams.add(ngramGlue.toString());
+		
+		return retNgrams;
 	}
 	
 	protected abstract HashSet<String> getNGramsForDatum(CorpRelDatum datum);
