@@ -17,7 +17,7 @@ import corp.data.annotation.CorpRelLabelPath;
 import ark.util.OutputWriter;
 
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
-	private boolean FEATURIZE_THREADED_BY_DATUM = false;
+	private boolean FEATURIZE_THREADED_BY_DATUM = true;
 	
 	private List<CorpRelFeature> features;
 	private int maxThreads;
@@ -149,30 +149,6 @@ public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 		}*/
 		
 		return featurizedData;
-	}
-	
-	private class FeaturizeFeatureThread implements Runnable {
-		private List<List<Double>> featureValues;
-		private List<CorpRelDatum> data;
-		private CorpRelFeature feature;
-		
-		public FeaturizeFeatureThread(CorpRelFeature feature, List<CorpRelDatum> data, List<List<Double>> featureValues) {
-			this.feature = feature;
-			this.data = data;
-			this.featureValues = featureValues;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				this.feature.computeMatrix(this.data, this.featureValues);
-			} catch (OutOfMemoryError e) {
-				output.debugWriteln("ERROR: Out of memory while featurizing data!");
-				System.exit(0);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	private CorpRelFeaturizedDatum[] featurizeThreadedByDatum(List<CorpRelDatum> data) {
