@@ -88,11 +88,11 @@ public class CorpDocumentSet {
 						for (File annotation : annotations) {
 							if (annotation.isDirectory())
 								continue;
-							if (annotation.getName().contains("-8-K-") && annotation.getName().contains("toked.nlp.obj"))
+							if (annotation.getName().contains("-8-K-") && (annotation.getName().contains(".obj")))
 								annotationFiles.add(annotation);
 						}
 					}
-				} else if (annotationDirFile.getName().contains("-8-K-") && annotationDirFile.getName().contains("toked.nlp.obj")) {
+				} else if (annotationDirFile.getName().contains("-8-K-") && annotationDirFile.getName().contains(".obj")) {
 					annotationFiles.add(annotationDirFile);
 				}
 			}
