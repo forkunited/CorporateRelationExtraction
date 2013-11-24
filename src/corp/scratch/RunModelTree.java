@@ -90,9 +90,9 @@ public class RunModelTree {
 		
 		if (!runForBatch(model, dataBatch, maxThreads, output, outputPath)) {
 			output.debugWriteln("Batch failed... exiting.");
-			numBatches++;
-			output.debugWriteln("Ran classifier for " + numBatches + " batches.");
 		}
+		numBatches++;
+		output.debugWriteln("Ran classifier for " + numBatches + " batches.");
 	}
 	
 	private static boolean runForBatch(ModelTree model, List<CorpRelDatum> dataBatch, int maxThreads, OutputWriter output, String outputPath) {
