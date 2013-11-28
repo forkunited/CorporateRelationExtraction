@@ -22,9 +22,12 @@ public class CorpKeyFnPerformance {
 		CorpProperties properties = new CorpProperties();
 		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
 		Gazetteer bloombergCorpTickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
-			
+		Gazetteer nonCorpInitialismGazetteer = new Gazetteer("NonCorpInitialismGazetteer", properties.getNonCorpInitialismGazetteerPath());
 		StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(stopWordGazetteer);
-		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(bloombergCorpTickerGazetteer,stopWordCleanFn);
+		List<Gazetteer> corpKeyFnKeyMaps = new ArrayList<Gazetteer>();
+		corpKeyFnKeyMaps.add(bloombergCorpTickerGazetteer);
+		corpKeyFnKeyMaps.add(nonCorpInitialismGazetteer);
+		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(corpKeyFnKeyMaps,stopWordCleanFn);
 
 		AnnotationCache annotationCache = new AnnotationCache(
 			properties.getStanfordAnnotationDirPath(),

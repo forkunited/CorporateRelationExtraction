@@ -1,6 +1,7 @@
 package corp.scratch;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,11 +34,15 @@ public class RunLDA {
 		CorpProperties properties = new CorpProperties();
 		
 		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
-		Gazetteer tickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
-
+		Gazetteer bloombergCorpTickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
+		Gazetteer nonCorpInitialismGazetteer = new Gazetteer("NonCorpInitialismGazetteer", properties.getNonCorpInitialismGazetteerPath());
+		List<Gazetteer> corpKeyFnKeyMaps = new ArrayList<Gazetteer>();
+		corpKeyFnKeyMaps.add(bloombergCorpTickerGazetteer);
+		corpKeyFnKeyMaps.add(nonCorpInitialismGazetteer);
+		
 		StringUtil.StringTransform stopWordCleanFn =  StringUtil.getStopWordsCleanFn(stopWordGazetteer);
 		final StringUtil.StringTransform cleanFn = StringUtil.getDefaultCleanFn();
-		final StringUtil.StringTransform corpKeyFn = new CorpKeyFn(tickerGazetteer,  stopWordCleanFn);
+		final StringUtil.StringTransform corpKeyFn = new CorpKeyFn(corpKeyFnKeyMaps,  stopWordCleanFn);
 		
 		
 		LDA lda = new LDA(name,

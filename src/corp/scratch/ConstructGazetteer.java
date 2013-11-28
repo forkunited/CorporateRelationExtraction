@@ -44,7 +44,8 @@ public class ConstructGazetteer {
 		*/
 		//constructFromMetaData("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/MetaData/Bloomberg.metadata",
 		//					  "C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/BloombergMetaData.gazetteer");
-		constructTickerGazetteer("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/BloombergCorpTicker.gazetteer");
+		//constructTickerGazetteer("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/BloombergCorpTicker.gazetteer");
+		constructNonCorpInitialismGazetteer("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/Gazetteer/NonCorpInitialism.gazetteer");
 	}
 	
 	public static void constructFromOldGazetteer(String inputFile, String outputFile) {
@@ -264,6 +265,56 @@ public class ConstructGazetteer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void constructNonCorpInitialismGazetteer(String outputFile) {
+		CorpProperties properties = new CorpProperties();
+		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
+		StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(stopWordGazetteer);
+		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(null, stopWordCleanFn);
 		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+			BufferedReader br = new BufferedReader(new FileReader(properties.getNonCorpScrapedGazetteerPath()));
+			Map<String, HashSet<String>> nonCorpKeysToInitialisms = new HashMap<String, HashSet<String>>();
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				String[] lineParts = line.split("\t");
+				if (lineParts.length < 3)
+					continue;
+				String name = lineParts[lineParts.length - 2];
+				String initialism = lineParts[lineParts.length - 1];
+			
+				if (!initialism.toUpperCase().equals(initialism))
+					continue;
+				String nonCorpKey = corpKeyFn.transform(name);
+				if (!nonCorpKeysToInitialisms.containsKey(nonCorpKey))
+					nonCorpKeysToInitialisms.put(nonCorpKey, new HashSet<String>());
+				nonCorpKeysToInitialisms.get(nonCorpKey).add(initialism);
+			}
+			
+			for (Entry<String, HashSet<String>> entry : nonCorpKeysToInitialisms.entrySet()) {
+				if (entry.getValue().size() == 0)
+					continue;
+				
+				bw.write(entry.getKey() + "\t");
+				System.out.print(entry.getKey() + "\t");
+				for (String ticker : entry.getValue()) {
+					bw.write(ticker + "\t");
+					System.out.print(ticker + "\t");
+				}
+				
+				bw.write("\n");
+				System.out.print("\n");
+			}
+			
+			bw.write("new_york_stock_exchange\tNYSE\n");
+			System.out.print("new_york_stock_exchange\tNYSE\n");
+			
+			bw.close();
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

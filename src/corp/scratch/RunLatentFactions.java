@@ -27,11 +27,14 @@ public class RunLatentFactions {
 		OutputWriter output = new OutputWriter();
 		CorpProperties properties = new CorpProperties();
 		
-		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());
-		Gazetteer tickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
-
-		StringUtil.StringTransform stopWordCleanFn =  StringUtil.getStopWordsCleanFn(stopWordGazetteer);
-		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(tickerGazetteer,  stopWordCleanFn);
+		Gazetteer stopWordGazetteer = new Gazetteer("StopWord", properties.getStopWordGazetteerPath());		
+		Gazetteer bloombergCorpTickerGazetteer = new Gazetteer("BloombergCorpTickerGazetteer", properties.getBloombergCorpTickerGazetteerPath());
+		Gazetteer nonCorpInitialismGazetteer = new Gazetteer("NonCorpInitialismGazetteer", properties.getNonCorpInitialismGazetteerPath());
+		StringUtil.StringTransform stopWordCleanFn = StringUtil.getStopWordsCleanFn(stopWordGazetteer);
+		List<Gazetteer> corpKeyFnKeyMaps = new ArrayList<Gazetteer>();
+		corpKeyFnKeyMaps.add(bloombergCorpTickerGazetteer);
+		corpKeyFnKeyMaps.add(nonCorpInitialismGazetteer);
+		StringUtil.StringTransform corpKeyFn = new CorpKeyFn(corpKeyFnKeyMaps,stopWordCleanFn);
 		
 		LatentFactions latentFactions = new LatentFactions(
 				name, 

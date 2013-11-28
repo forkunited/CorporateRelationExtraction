@@ -18,6 +18,7 @@ public class CorpProperties extends ARKProperties {
 	private String stopWordGazetteerPath;
 	private String ngramStopWordGazetteerPath;
 	private String bloombergCorpTickerGazetteerPath;
+	private String nonCorpInitialismGazetteerPath;
 	private String corpMetaDataPath;
 	private String bloombergMetaDataPath;
 	private String experimentInputPath;
@@ -47,6 +48,7 @@ public class CorpProperties extends ARKProperties {
 		this.stopWordGazetteerPath = loadProperty("stopWordGazetteerPath");
 		this.ngramStopWordGazetteerPath = loadProperty("ngramStopWordGazetteerPath");
 		this.bloombergCorpTickerGazetteerPath = loadProperty("bloombergCorpTickerGazetteerPath");
+		this.nonCorpInitialismGazetteerPath = loadProperty("nonCorpInitialismGazetteerPath");
 		this.corpMetaDataPath = loadProperty("corpMetaDataPath");
 		this.bloombergMetaDataPath = loadProperty("bloombergMetaDataPath");
 		this.experimentInputPath = loadProperty("experimentInputPath");
@@ -116,6 +118,10 @@ public class CorpProperties extends ARKProperties {
 	
 	public String getBloombergCorpTickerGazetteerPath() {
 		return this.bloombergCorpTickerGazetteerPath;
+	}
+	
+	public String getNonCorpInitialismGazetteerPath() {
+		return this.nonCorpInitialismGazetteerPath;
 	}
 	
 	public String getCorpMetaDataPath() {

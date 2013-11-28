@@ -1,7 +1,9 @@
 package corp.data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ark.util.OutputWriter;
@@ -39,11 +41,19 @@ public class CorpDataTools {
 		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
 		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
 		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTicker", this.properties.getBloombergCorpTickerGazetteerPath()));
+		this.gazetteers.put("NonCorpInitialismGazetteer", new Gazetteer("NonCorpInitialism", this.properties.getNonCorpInitialismGazetteerPath()));
 			
+		
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
 		this.cleanFns.put("StopWordCleanFn_StopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
 		this.cleanFns.put("StopWordCleanFn_NGramStopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
-		this.cleanFns.put("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord", new CorpKeyFn(this.gazetteers.get("BloombergCorpTickerGazetteer"), this.cleanFns.get("StopWordCleanFn_StopWord")));
+		
+		List<Gazetteer> corpKeyFnKeyMaps = new ArrayList<Gazetteer>();
+		corpKeyFnKeyMaps.add(this.gazetteers.get("BloombergCorpTickerGazetteer"));
+		this.cleanFns.put("CorpKeyFn_BloombergCorpTicker_StopWordCleanFn_StopWord", new CorpKeyFn(corpKeyFnKeyMaps, this.cleanFns.get("StopWordCleanFn_StopWord")));
+		
+		corpKeyFnKeyMaps.add(this.gazetteers.get("NonCorpInitialismGazetteer"));
+		this.cleanFns.put("CorpKeyFn_BloombergCorpTicker_NonCorpInitialism_StopWordCleanFn_StopWord", new CorpKeyFn(corpKeyFnKeyMaps, this.cleanFns.get("StopWordCleanFn_StopWord")));
 		
 		this.gazetteers.put("CorpScrapedGazetteer", new Gazetteer("CorpScraped", this.properties.getCorpScrapedGazetteerPath()));
 		this.gazetteers.put("CorpMetaDataGazetteer", new Gazetteer("CorpMetaData", this.properties.getCorpMetaDataGazetteerPath()));

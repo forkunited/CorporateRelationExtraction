@@ -6,14 +6,21 @@ import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
 public class CorpKeyFn implements StringUtil.StringTransform {
-	private Gazetteer keyMap;
+	private List<Gazetteer> keyMaps;
 	private StringUtil.StringTransform cleanFn;
 	private String transformName;
 	
-	public CorpKeyFn(Gazetteer keyMap, StringUtil.StringTransform cleanFn) {
-		this.keyMap = keyMap;
+	public CorpKeyFn(List<Gazetteer> keyMaps, StringUtil.StringTransform cleanFn) {
+		this.keyMaps = keyMaps;
 		this.cleanFn = cleanFn;
-		this.transformName = "CorpKeyFn_" + ((keyMap == null) ? "" : keyMap.getName()) + "_" + cleanFn.toString();
+		this.transformName = "CorpKeyFn_";
+		
+		if (keyMaps != null) {
+			for (Gazetteer keyMap : keyMaps)
+				this.transformName += keyMap.getName() + "_";
+		}
+		
+		this.transformName += cleanFn.toString();
 	}
 	
 	public String toString() {
@@ -21,13 +28,15 @@ public class CorpKeyFn implements StringUtil.StringTransform {
 	}
 	
 	public String transform(String str) {
-		if (keyMap != null && keyMap.contains(str)) {
-			List<String> keys = keyMap.getIds(str);
-			if (keys.size() == 1)
-				return keys.get(0);
+		if (this.keyMaps != null) {
+			for (Gazetteer keyMap : this.keyMaps) {
+				List<String> keys = keyMap.getIds(str);
+				if (keys.size() == 1)
+					return keys.get(0);	
+			}
 		}
 		
-		str = cleanFn.transform(str);
+		str = this.cleanFn.transform(str);
 		String[] strParts = str.split(" ");
 		StringBuilder transformedStr = new StringBuilder();
 		for (String strPart : strParts) {
