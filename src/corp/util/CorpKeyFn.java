@@ -31,7 +31,7 @@ public class CorpKeyFn implements StringUtil.StringTransform {
 		if (this.keyMaps != null) {
 			for (Gazetteer keyMap : this.keyMaps) {
 				List<String> keys = keyMap.getIds(str);
-				if (keys.size() == 1)
+				if (keys != null && keys.size() == 1)
 					return keys.get(0);	
 			}
 		}
