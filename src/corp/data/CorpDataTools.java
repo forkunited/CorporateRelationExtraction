@@ -72,7 +72,7 @@ public class CorpDataTools {
 		this.clusterers.put("None", null);
 		
 		this.ldas = new HashMap<String, LDA>();
-		this.ldas.put("HPS_40G_T21_DLDA", new LDA("HPS_40G_T21_D", new File(this.properties.getLDASourceDirectory()), 1, this.output));
+		/*this.ldas.put("HPS_40G_T21_DLDA", new LDA("HPS_40G_T21_D", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 		this.ldas.put("HPS_40G_T84_DLDA", new LDA("HPS_40G_T84_D", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 		this.ldas.put("HPS_40G_T336_DLDA", new LDA("HPS_40G_T336_D", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 		this.ldas.put("HPS_40G_T21_SLDA", new LDA("HPS_40G_T21_S", new File(this.properties.getLDASourceDirectory()), 1, this.output));
@@ -85,7 +85,7 @@ public class CorpDataTools {
 		this.ldas.put("HPS_40G_T84_S-D21_20LDA", new LDA("HPS_40G_T84_S-D21_20", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 		this.ldas.put("HPS_40G_T336_S-D21_10LDA", new LDA("HPS_40G_T336_S-D21_10", new File(this.properties.getLDASourceDirectory()), 1, this.output));
 		this.ldas.put("HPS_40G_T336_S-D21_20LDA", new LDA("HPS_40G_T336_S-D21_20", new File(this.properties.getLDASourceDirectory()), 1, this.output));
-
+		*/
 	}
 	
 	public CorpDataTools(CorpProperties properties,
