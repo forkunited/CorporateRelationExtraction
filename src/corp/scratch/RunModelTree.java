@@ -36,6 +36,7 @@ public class RunModelTree {
 		int maxThreads = Integer.parseInt(args[2]);
 		int maxDocuments = Integer.parseInt(args[3]);
 		int batchSize = Integer.parseInt(args[4]);
+		String annotationDirPath = args[5];
 		
 		OutputWriter output = new OutputWriter();
 		CorpProperties properties = new CorpProperties();
@@ -48,7 +49,7 @@ public class RunModelTree {
 		output.debugWriteln("Loading documents...");
 		
 		AnnotationCache annotationCache = new AnnotationCache(
-				properties.getStanfordAnnotationDirPath(),
+				annotationDirPath,
 				properties.getStanfordAnnotationCacheSize(),
 				new OutputWriter()
 		);
