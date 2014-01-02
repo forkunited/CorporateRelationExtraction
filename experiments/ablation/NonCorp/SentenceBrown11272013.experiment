@@ -1,0 +1,22 @@
+maxThreads=4
+randomSeed=1
+crossValidationFolds=10
+treeAllowSubpaths=false
+maxDocuments=-1
+
+treeModelPath=
+treeModel=Uniform
+treeModelValidPath=NonCorp
+treeModelPath=NonCorp
+treeModel=CReg(l1=0.5,l2=1.0)
+
+treeModelValidPath=NonCorp-US
+treeModelValidPath=NonCorp-State
+treeModelValidPath=NonCorp-nonUS
+treeModelValidPath=NonCorp-Ind
+treeModelValidPath=NonCorp-Rating
+treeModelValidPath=NonCorp-University
+
+treeModelFeature=NGramSentence(n=1, minFeatureOccurrence=2, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=None)
+treeModelFeature=NGramContext(n=1, minFeatureOccurrence=2, contextWindowSize=0, cleanFn=DefaultCleanFn, clusterer=500_Brown)
