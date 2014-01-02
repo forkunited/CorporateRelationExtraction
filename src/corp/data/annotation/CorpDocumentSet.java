@@ -258,12 +258,21 @@ public class CorpDocumentSet {
 		if (annotationFile.exists())
 			return annotationFileName;
 		
+		String alternativeFileName = fileName.substring(0, fileName.indexOf(".nlp")) + ".cle.nlp.obj";
+		File alternativeFile = new File(this.annotationCache.getDocAnnoDirPath(), alternativeFileName);
+		if (alternativeFile.exists())
+			return alternativeFileName;
+		
 		int dateStartIndex = fileName.indexOf("-8-K-") + 5;
 		String year = fileName.substring(dateStartIndex, dateStartIndex+4);
 		String month = fileName.substring(dateStartIndex+4, dateStartIndex+6);
 		annotationFile = new File(this.annotationCache.getDocAnnoDirPath(), year + "/" + month + "/" + annotationFileName);
 		if (annotationFile.exists())
 			return annotationFileName;
+		
+		alternativeFile = new File(this.annotationCache.getDocAnnoDirPath(), year + "/" + month + "/" + alternativeFileName);
+		if (alternativeFile.exists())
+			return alternativeFileName;
 		
 		return null;
 	}
