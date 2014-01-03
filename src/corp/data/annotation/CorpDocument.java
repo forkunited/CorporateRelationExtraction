@@ -232,6 +232,7 @@ public class CorpDocument {
 			
 			// FIXME: Remove this
 			if (nerTextOnly.equals("Nicholas_Financial_Inc.")) {
+				this.output.debugWriteln("NICHOLAS:");
 				for (CoreLabel sentenceToken : sentenceTokens)
 					this.output.debugWriteln(sentenceToken.originalText());
 			}
