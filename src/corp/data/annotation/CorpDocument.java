@@ -225,6 +225,12 @@ public class CorpDocument {
 			return null;
 		
 		int numSentences = getSentenceCount();
+		
+		// FIXME: Remove this
+		if (nerText.equals("Nicholas_Financial_Inc./ORGANIZATION")) {
+			this.output.debugWriteln("NICHOLAS SENTENCES: " + numSentences);
+		}
+		
 		List<CorpDocumentTokenSpan> spans = new ArrayList<CorpDocumentTokenSpan>();
 		for (int sentenceIndex = Math.max(0, minSentenceIndex); sentenceIndex < Math.min(numSentences, maxSentenceIndex + 1); sentenceIndex++) {
 			CoreMap sentenceAnnotation = getSentenceAnnotation(sentenceIndex);
