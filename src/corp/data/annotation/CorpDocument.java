@@ -226,22 +226,10 @@ public class CorpDocument {
 		
 		int numSentences = getSentenceCount();
 		
-		// FIXME: Remove this
-		if (nerText.equals("Nicholas_Financial_Inc./ORGANIZATION")) {
-			this.output.debugWriteln("NICHOLAS SENTENCES: " + numSentences);
-		}
-		
 		List<CorpDocumentTokenSpan> spans = new ArrayList<CorpDocumentTokenSpan>();
 		for (int sentenceIndex = Math.max(0, minSentenceIndex); sentenceIndex < Math.min(numSentences, maxSentenceIndex + 1); sentenceIndex++) {
 			CoreMap sentenceAnnotation = getSentenceAnnotation(sentenceIndex);
 			List<CoreLabel> sentenceTokens = sentenceAnnotation.get(TokensAnnotation.class);
-			
-			// FIXME: Remove this
-			if (nerTextOnly.equals("Nicholas_Financial_Inc.")) {
-				this.output.debugWriteln("NICHOLAS:");
-				for (CoreLabel sentenceToken : sentenceTokens)
-					this.output.debugWriteln(sentenceToken.originalText());
-			}
 			
 			for (int i = 0; i < sentenceTokens.size(); i++) {
 				boolean match = true;
