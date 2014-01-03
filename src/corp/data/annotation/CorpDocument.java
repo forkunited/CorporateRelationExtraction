@@ -153,8 +153,10 @@ public class CorpDocument {
 	        	String text = keyText[1].trim();
 	        	
 	        	List<CorpDocumentTokenSpan> tokenSpans = nerTextToTokenSpans(text, sentenceIndex - 1, sentenceIndex + 1);
-	        	if (tokenSpans == null || tokenSpans.size() == 0)
+	        	if (tokenSpans == null || tokenSpans.size() == 0) {
+	        		this.output.debugWriteln("Note: Failed to load training example token span from Stanford annotation (key: " + key + " text: " + text + " sid: " + sentenceIndex + " file: " + path + ")");
 	        		continue;
+	        	}
 	        	
 	        	if (!keyToTokenSpans.containsKey(key))
 	        		keyToTokenSpans.put(key, new ArrayList<CorpDocumentTokenSpan>());
