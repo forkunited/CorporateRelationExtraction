@@ -229,6 +229,13 @@ public class CorpDocument {
 		for (int sentenceIndex = Math.max(0, minSentenceIndex); sentenceIndex < Math.min(numSentences, maxSentenceIndex + 1); sentenceIndex++) {
 			CoreMap sentenceAnnotation = getSentenceAnnotation(sentenceIndex);
 			List<CoreLabel> sentenceTokens = sentenceAnnotation.get(TokensAnnotation.class);
+			
+			// FIXME: Remove this
+			if (nerTextOnly.equals("Nicholas_Financial_Inc.")) {
+				for (CoreLabel sentenceToken : sentenceTokens)
+					this.output.debugWriteln(sentenceToken.originalText());
+			}
+			
 			for (int i = 0; i < sentenceTokens.size(); i++) {
 				boolean match = true;
 				for (int j = i; j < Math.min(sentenceTokens.size(), i + nerTokens.length); j++) {
