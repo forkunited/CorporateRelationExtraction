@@ -63,6 +63,7 @@ public class CorpKeyFnPerformance {
 		validPaths.add(new CorpRelLabelPath(CorpRelLabel.Error));
 		
 		double tp = 0.0;
+		double tn = 0.0;
 		double fp = 0.0;
 		double fn = 0.0;
 		for (CorpRelFeaturizedDatum datum : data) {
@@ -72,9 +73,11 @@ public class CorpKeyFnPerformance {
 			
 			boolean corpKeyFnSelf = datum.getFeatureValues().get(0).equals(1.0);
 			boolean labeledSelf = validPaths.get(0).equals(path);
-			if (corpKeyFnSelf == labeledSelf)
+			if (corpKeyFnSelf && labeledSelf) {
 				tp += 1.0;
-			else if (corpKeyFnSelf) {
+			} else if (!corpKeyFnSelf && !labeledSelf) {
+				tn += 1.0;
+			} else if (corpKeyFnSelf) {
 				fp += 1.0;
 				System.out.println("False Positive: " + datum.getAuthorCorpName() + "\t" + datum.getOtherOrgTokenSpans().get(0).toString());
 			} else if (labeledSelf) {
@@ -86,9 +89,11 @@ public class CorpKeyFnPerformance {
 			}
 		}
 		
+		double accuracy = (tp+tn)/(tp+tn+fp+fn);
 		double p = tp/(tp+fp);
 		double r = tp/(tp+fn);
 		double f1 = 2.0*p*r/(p+r);
+		System.out.println("Accuracy: " + accuracy);
 		System.out.println("Precision: " + p);
 		System.out.println("Recall: " + r);
 		System.out.println("F1: " + f1);
