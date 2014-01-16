@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,6 +68,53 @@ public class CorpDocumentSet {
 	
 	public List<CorpDocument> getUnannotatedDocuments() {
 		return new ArrayList<CorpDocument>(this.unannotatedDocuments.values());
+	}
+	
+	
+	public Set<String> getCorpRelAnnotators() {
+		Set<String> annotators = new HashSet<String>();
+		
+		for (CorpDocument document : this.annotatedDocuments.values())
+			annotators.addAll(document.getCorpRelAnnotators());
+		
+		return annotators;
+	}
+	
+	// Returns map from annotator to sentence to datum keys to datums
+	public Map<String, Map<String, Map<String, CorpRelDatum>>> getAnnotatorDatums() {
+		return getAnnotatorDatums(null);
+	}
+	
+	public Map<String, Map<String, Map<String, CorpRelDatum>>> getAnnotatorDatums(CorpRelLabelPath prefixFilter) {
+		Map<String, Map<String, Map<String, CorpRelDatum>>> annotatorDatums = new HashMap<String, Map<String, Map<String, CorpRelDatum>>>();
+	
+		for (CorpDocument document : this.annotatedDocuments.values()) {
+			Map<String, Map<String, Map<String, CorpRelDatum>>> datums = document.getAnnotatorDatums(prefixFilter);
+			for (Entry<String, Map<String, Map<String, CorpRelDatum>>> entry : datums.entrySet()) {
+				if (!annotatorDatums.containsKey(entry.getKey()))
+					annotatorDatums.put(entry.getKey(), entry.getValue());
+				else 
+					annotatorDatums.get(entry.getKey()).putAll(entry.getValue());
+				
+			}
+		}
+		
+		return annotatorDatums;
+	}
+	
+	// Returns map from sentence to annotator to datum keys to datums
+	public Map<String, Map<String, Map<String, CorpRelDatum>>> getSentenceAnnotatedDatums() {
+		return getSentenceAnnotatedDatums(null);
+	}
+	
+	public Map<String, Map<String, Map<String, CorpRelDatum>>> getSentenceAnnotatedDatums(CorpRelLabelPath prefixFilter) {
+		Map<String, Map<String, Map<String, CorpRelDatum>>> sentenceDatums = new HashMap<String, Map<String, Map<String, CorpRelDatum>>>();
+		
+		for (CorpDocument document : this.annotatedDocuments.values()) {
+			sentenceDatums.putAll(document.getSentenceAnnotatedDatums(prefixFilter));
+		}
+		
+		return sentenceDatums;
 	}
 	
 	private void loadUnannotatedDocuments(int maxUnannotatedDocuments, CorpMetaData metaData) {

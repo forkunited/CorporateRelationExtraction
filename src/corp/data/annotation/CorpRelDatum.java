@@ -6,6 +6,8 @@ public class CorpRelDatum {
 	private String authorCorpName;
 	private List<CorpDocumentTokenSpan> otherOrgTokenSpans;
 	private CorpRelLabelPath labelPath;
+	private String annotator;
+	private String annotationMentionKey;
 	
 	public CorpRelDatum(String authorCorpName, List<CorpDocumentTokenSpan> otherOrgTokenSpans) {
 		if (otherOrgTokenSpans.size() == 0)
@@ -24,6 +26,24 @@ public class CorpRelDatum {
 	public boolean setLabelPath(CorpRelLabelPath labelPath) {
 		this.labelPath = labelPath;
 		return true;
+	}
+	
+	public boolean setAnnotator(String annotator) {
+		this.annotator = annotator;
+		return true;
+	}
+	
+	public String getAnnotator() {
+		return this.annotator;
+	}
+	
+	public boolean setAnnotationMentionKey(String annotationMentionKey) {
+		this.annotationMentionKey = annotationMentionKey;
+		return true;
+	}
+	
+	public String getAnnotationMentionKey() {
+		return this.annotationMentionKey;
 	}
 	
 	public String getAuthorCorpName() {
