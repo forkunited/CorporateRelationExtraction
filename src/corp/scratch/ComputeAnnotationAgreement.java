@@ -1,13 +1,10 @@
 package corp.scratch;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import ark.util.OutputWriter;
 import corp.data.CorpDataTools;
@@ -34,7 +31,7 @@ public class ComputeAnnotationAgreement {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				1,
-				-1,
+				100,
 				0,
 				output,
 				dataTools.getMetaData("CorpMetaData")
