@@ -92,7 +92,7 @@ public class ComputeAnnotationAgreement {
 	
 	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
 		// Sentence to user to mention key to datum
-		Map<String, Map<String, Map<String, CorpRelDatum>>> sentenceAnnotatedDatums = documentSet.getSentenceAnnotatedDatums();
+		Map<String, Map<String, Map<String, CorpRelDatum>>> sentenceAnnotatedDatums = documentSet.getSentenceAnnotatedDatums(pathPrefix);
 		int sentenceCount = sentenceAnnotatedDatums.size();
 		int mentionCount = 0;
 		Map<Integer, Integer> mentionAnnotationsHistogram = new HashMap<Integer, Integer>();
