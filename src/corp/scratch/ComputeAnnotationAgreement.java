@@ -113,7 +113,7 @@ public class ComputeAnnotationAgreement {
 		for (CorpRelLabelPath path : paths)
 			computeCounts(documentSet, output, path);
 		for (CorpRelLabelPath path : paths)
-			computeCohens(documentSet, output, path, null);
+			computeCohens(documentSet, output, path, validPaths);
 	}
 	
 	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
