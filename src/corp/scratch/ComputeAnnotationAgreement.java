@@ -145,7 +145,7 @@ public class ComputeAnnotationAgreement {
 				double expectedAgreement = computeExpectedAgreement(annotatorP1, annotatorP2);
 				String pairKey = annotatorEntry1.getKey() + "\t" + annotatorEntry2.getKey();
 				
-				pairAgreements.put(pairKey, (agreementCount.first() - expectedAgreement)/(1 - expectedAgreement));
+				pairAgreements.put(pairKey, expectedAgreement < 1 ? (agreementCount.first() - expectedAgreement)/(1 - expectedAgreement) : 0);
 				pairCounts.put(pairKey, agreementCount.second());
 			}
 		}		
@@ -159,13 +159,14 @@ public class ComputeAnnotationAgreement {
 				writer.debugWriteln(agreementEntry.getKey() + "\t" + agreementEntry.getValue() + "\t" + pairCounts.get(agreementEntry.getKey()));
 				total += agreementEntry.getValue();
 			}
-			writer.debugWriteln("Overall Average: " + (total/pairAgreements.size()));
+			
+			writer.debugWriteln("Overall Average: " + ((pairAgreements.size() > 0) ? (total/pairAgreements.size()) : "NaN"));
 		} else {
 			double total = 0;
 			for (Entry<String, Double> agreementEntry : pairAgreements.entrySet()) {
 				total += agreementEntry.getValue();
 			}
-			writer.debugWriteln(pathPrefix + " Average: " + (total/pairAgreements.size()));
+			writer.debugWriteln(pathPrefix + " Average: " + ((pairAgreements.size() > 0) ? (total/pairAgreements.size()) : "NaN"));
 		}
 	}
 	
@@ -184,7 +185,7 @@ public class ComputeAnnotationAgreement {
 		}
 		
 		for (Entry<CorpRelLabelPath, Double> entry : dist.entrySet()) {
-			entry.setValue(entry.getValue() / total);
+			entry.setValue(total > 0 ? entry.getValue() / total : 0);
 		}
 		
 		return dist;
