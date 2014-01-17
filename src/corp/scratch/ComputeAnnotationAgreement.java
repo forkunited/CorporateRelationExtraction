@@ -32,7 +32,7 @@ public class ComputeAnnotationAgreement {
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				1,
-				100,
+				-1,
 				0,
 				output,
 				dataTools.getMetaData("CorpMetaData")
@@ -85,10 +85,35 @@ public class ComputeAnnotationAgreement {
 		paths.add(CorpRelLabelPath.fromString("OCorp-Suply-Cons"));
 		paths.add(CorpRelLabelPath.fromString("OCorp-Suply-Audit"));
 	
+		List<CorpRelLabelPath> validPaths = new ArrayList<CorpRelLabelPath>();
+		validPaths.add(CorpRelLabelPath.fromString("SelfRef"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp"));
+		validPaths.add(CorpRelLabelPath.fromString("Generic"));
+		validPaths.add(CorpRelLabelPath.fromString("DontKnow"));
+		validPaths.add(CorpRelLabelPath.fromString("Error"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Family"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Merger"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Legal"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Partner"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-NewHire"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Cust"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Suply"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Compete"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-News"));
+		validPaths.add(CorpRelLabelPath.fromString("OCorp-Finance"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-US"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-State"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-Suply"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-nonUS"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-Ind"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-Rating"));
+		validPaths.add(CorpRelLabelPath.fromString("NonCorp-University"));
+		
 		for (CorpRelLabelPath path : paths)
 			computeCounts(documentSet, output, path);
 		for (CorpRelLabelPath path : paths)
-			computeCohens(documentSet, output, path);
+			computeCohens(documentSet, output, path, null);
 	}
 	
 	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
@@ -129,19 +154,19 @@ public class ComputeAnnotationAgreement {
 	}
 	
 	
-	private static void computeCohens(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
+	private static void computeCohens(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix, List<CorpRelLabelPath> validPaths) {
 		// Sentence to user to mention key to datum
 		Map<String, Map<String, Map<String, CorpRelDatum>>> annotatorDatums = documentSet.getAnnotatorDatums(pathPrefix);
 		Map<String, Double> pairAgreements = new HashMap<String, Double>();
 		Map<String, Integer> pairCounts = new HashMap<String, Integer>();
 		
 		for (Entry<String, Map<String, Map<String, CorpRelDatum>>> annotatorEntry1 : annotatorDatums.entrySet()) {
-			Map<CorpRelLabelPath, Double> annotatorP1 = computeLabelDistribution(annotatorEntry1.getValue());
+			Map<CorpRelLabelPath, Double> annotatorP1 = computeLabelDistribution(annotatorEntry1.getValue(), validPaths);
 			for (Entry<String, Map<String, Map<String, CorpRelDatum>>> annotatorEntry2 : annotatorDatums.entrySet()) {
 				if (annotatorEntry1.getKey().compareTo(annotatorEntry2.getKey()) >= 0)
 					continue;
-				Map<CorpRelLabelPath, Double> annotatorP2 = computeLabelDistribution(annotatorEntry2.getValue());
-				Pair<Double, Integer> agreementCount = computeAgreement(annotatorEntry1.getValue(), annotatorEntry2.getValue());
+				Map<CorpRelLabelPath, Double> annotatorP2 = computeLabelDistribution(annotatorEntry2.getValue(), validPaths);
+				Pair<Double, Integer> agreementCount = computeAgreement(annotatorEntry1.getValue(), annotatorEntry2.getValue(), validPaths);
 				double expectedAgreement = computeExpectedAgreement(annotatorP1, annotatorP2);
 				String pairKey = annotatorEntry1.getKey() + "\t" + annotatorEntry2.getKey();
 				
@@ -180,12 +205,17 @@ public class ComputeAnnotationAgreement {
 		}
 	}
 	
-	private static Map<CorpRelLabelPath, Double> computeLabelDistribution(Map<String, Map<String, CorpRelDatum>> data) {
+	private static Map<CorpRelLabelPath, Double> computeLabelDistribution(Map<String, Map<String, CorpRelDatum>> data, List<CorpRelLabelPath> validPaths) {
 		Map<CorpRelLabelPath, Double> dist = new HashMap<CorpRelLabelPath, Double>();
 		double total = 0;
 		for (Entry<String, Map<String, CorpRelDatum>> entry1 : data.entrySet()) {
 			for (Entry<String, CorpRelDatum> entry2 : entry1.getValue().entrySet()) {
-				CorpRelLabelPath path = entry2.getValue().getLabelPath();
+				CorpRelLabelPath path = null;
+				if (validPaths == null)
+					path = entry2.getValue().getLabelPath();
+				else 
+					path = entry2.getValue().getLabelPath().getLongestValidPrefix(validPaths);
+				
 				if (!dist.containsKey(path))
 					dist.put(path, 1.0);
 				else
@@ -201,15 +231,25 @@ public class ComputeAnnotationAgreement {
 		return dist;
 	}
 	
-	private static Pair<Double, Integer> computeAgreement(Map<String, Map<String, CorpRelDatum>> data1, Map<String, Map<String, CorpRelDatum>> data2) {
+	private static Pair<Double, Integer> computeAgreement(Map<String, Map<String, CorpRelDatum>> data1, Map<String, Map<String, CorpRelDatum>> data2, List<CorpRelLabelPath> validPaths) {
 		double agree = 0.0;
 		int total = 0;
 		for (Entry<String, Map<String, CorpRelDatum>> entry1 : data1.entrySet()) {
 			for (Entry<String, CorpRelDatum> entry2 : entry1.getValue().entrySet()) {
 				if (!data2.containsKey(entry1.getKey()) || !data2.get(entry1.getKey()).containsKey(entry2.getKey()))
 					continue;
-			
-				if (data2.get(entry1.getKey()).get(entry2.getKey()).getLabelPath().equals(entry2.getValue().getLabelPath())) {
+				
+				CorpRelLabelPath path1 = null, path2 = null;
+				
+				if (validPaths == null) {
+					path2 = data2.get(entry1.getKey()).get(entry2.getKey()).getLabelPath();
+					path1 = entry2.getValue().getLabelPath();
+				} else {
+					path2 = data2.get(entry1.getKey()).get(entry2.getKey()).getLabelPath().getLongestValidPrefix(validPaths);
+					path1 = entry2.getValue().getLabelPath().getLongestValidPrefix(validPaths);
+				}
+				
+				if (path1.equals(path2)) {
 					agree += 1.0;
 				}
 				
