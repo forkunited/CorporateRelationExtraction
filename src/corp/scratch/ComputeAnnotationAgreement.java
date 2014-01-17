@@ -13,6 +13,7 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.util.CorpProperties;
+import edu.stanford.nlp.util.Pair;
 
 public class ComputeAnnotationAgreement {
 	public static void main(String args[]) {
@@ -86,8 +87,8 @@ public class ComputeAnnotationAgreement {
 	
 		for (CorpRelLabelPath path : paths)
 			computeCounts(documentSet, output, path);
-		//for (CorpRelLabelPath path : paths)
-		//	computeAgreement(documentSet, output, path);
+		for (CorpRelLabelPath path : paths)
+			computeCohens(documentSet, output, path);
 	}
 	
 	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
@@ -127,19 +128,94 @@ public class ComputeAnnotationAgreement {
 		}
 	}
 	
-	/*
-	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
+	
+	private static void computeCohens(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
 		// Sentence to user to mention key to datum
-		Map<String, Map<String, Map<String, CorpRelDatum>>> sentenceAnnotatedDatums = documentSet.getSentenceAnnotatedDatums();
-		int sentenceCount = sentenceAnnotatedDatums.size();
-		int mentionCount = 0;
-		for (Entry<String, Map<String, Map<String, CorpRelDatum>>> sentenceEntry : sentenceAnnotatedDatums.entrySet()) {
-			Set<String> mentionKeys = new HashSet<String>();
-			for (Map<String, CorpRelDatum> mentionMaps : sentenceEntry.getValue().values())
-				mentionKeys.addAll(mentionMaps.keySet());
-			mentionCount += mentionKeys.size();
+		Map<String, Map<String, Map<String, CorpRelDatum>>> annotatorDatums = documentSet.getAnnotatorDatums(pathPrefix);
+		Map<String, Double> pairAgreements = new HashMap<String, Double>();
+		Map<String, Integer> pairCounts = new HashMap<String, Integer>();
+		
+		for (Entry<String, Map<String, Map<String, CorpRelDatum>>> annotatorEntry1 : annotatorDatums.entrySet()) {
+			Map<CorpRelLabelPath, Double> annotatorP1 = computeLabelDistribution(annotatorEntry1.getValue());
+			for (Entry<String, Map<String, Map<String, CorpRelDatum>>> annotatorEntry2 : annotatorDatums.entrySet()) {
+				if (annotatorEntry1.getKey().compareTo(annotatorEntry2.getKey()) >= 0)
+					continue;
+				Map<CorpRelLabelPath, Double> annotatorP2 = computeLabelDistribution(annotatorEntry2.getValue());
+				Pair<Double, Integer> agreementCount = computeAgreement(annotatorEntry1.getValue(), annotatorEntry2.getValue());
+				double expectedAgreement = computeExpectedAgreement(annotatorP1, annotatorP2);
+				String pairKey = annotatorEntry1.getKey() + "\t" + annotatorEntry2.getKey();
+				
+				pairAgreements.put(pairKey, (agreementCount.first() - expectedAgreement)/(1 - expectedAgreement));
+				pairCounts.put(pairKey, agreementCount.second());
+			}
 		}		
 		
-		writer.debugWriteln(pathPrefix.toString() + ": Sentences=" + sentenceCount + " Mentions=" + mentionCount);
-	}*/
+		if (pathPrefix == null) {
+			int annotatorCount = annotatorDatums.size();
+			writer.debugWriteln("Overall Annotator Count: " + annotatorCount);
+			writer.debugWriteln("Overall Agreements: ");
+			double total = 0;
+			for (Entry<String, Double> agreementEntry : pairAgreements.entrySet()) {
+				writer.debugWriteln(agreementEntry.getKey() + "\t" + agreementEntry.getValue() + "\t" + pairCounts.get(agreementEntry.getKey()));
+				total += agreementEntry.getValue();
+			}
+			writer.debugWriteln("Overall Average: " + (total/pairAgreements.size()));
+		} else {
+			double total = 0;
+			for (Entry<String, Double> agreementEntry : pairAgreements.entrySet()) {
+				total += agreementEntry.getValue();
+			}
+			writer.debugWriteln(pathPrefix + " Average: " + (total/pairAgreements.size()));
+		}
+	}
+	
+	private static Map<CorpRelLabelPath, Double> computeLabelDistribution(Map<String, Map<String, CorpRelDatum>> data) {
+		Map<CorpRelLabelPath, Double> dist = new HashMap<CorpRelLabelPath, Double>();
+		double total = 0;
+		for (Entry<String, Map<String, CorpRelDatum>> entry1 : data.entrySet()) {
+			for (Entry<String, CorpRelDatum> entry2 : entry1.getValue().entrySet()) {
+				CorpRelLabelPath path = entry2.getValue().getLabelPath();
+				if (!dist.containsKey(path))
+					dist.put(path, 1.0);
+				else
+					dist.put(path,  dist.get(path) + 1.0);
+				total++;
+			}
+		}
+		
+		for (Entry<CorpRelLabelPath, Double> entry : dist.entrySet()) {
+			entry.setValue(entry.getValue() / total);
+		}
+		
+		return dist;
+	}
+	
+	private static Pair<Double, Integer> computeAgreement(Map<String, Map<String, CorpRelDatum>> data1, Map<String, Map<String, CorpRelDatum>> data2) {
+		double agree = 0.0;
+		int total = 0;
+		for (Entry<String, Map<String, CorpRelDatum>> entry1 : data1.entrySet()) {
+			for (Entry<String, CorpRelDatum> entry2 : entry1.getValue().entrySet()) {
+				if (!data2.containsKey(entry1.getKey()) || !data2.get(entry1.getKey()).containsKey(entry2.getKey()))
+					continue;
+			
+				if (data2.get(entry1.getKey()).get(entry2.getKey()).getLabelPath().equals(entry2.getValue().getLabelPath())) {
+					agree += 1.0;
+				}
+				
+				total++;
+			}
+		}
+		
+		return new Pair<Double, Integer>(agree/total, total);
+	}
+	
+	private static double computeExpectedAgreement(Map<CorpRelLabelPath, Double> dist1, Map<CorpRelLabelPath, Double> dist2) {
+		double expectedAgreement = 0.0;
+		for (Entry<CorpRelLabelPath, Double> e1 : dist1.entrySet()) {
+			if (!dist2.containsKey(e1.getKey()))
+				continue;
+			expectedAgreement += e1.getValue()*dist2.get(e1.getKey());
+		}
+		return expectedAgreement;
+	}
 }
