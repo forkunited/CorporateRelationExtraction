@@ -145,7 +145,7 @@ public class ComputeAnnotationAgreement {
 				double expectedAgreement = computeExpectedAgreement(annotatorP1, annotatorP2);
 				String pairKey = annotatorEntry1.getKey() + "\t" + annotatorEntry2.getKey();
 				
-				pairAgreements.put(pairKey, expectedAgreement < 1 ? (agreementCount.first() - expectedAgreement)/(1 - expectedAgreement) : 0);
+				pairAgreements.put(pairKey, expectedAgreement < 1 && agreementCount.second() > 0 ? (agreementCount.first() - expectedAgreement)/(1 - expectedAgreement) : 0);
 				pairCounts.put(pairKey, agreementCount.second());
 			}
 		}		
