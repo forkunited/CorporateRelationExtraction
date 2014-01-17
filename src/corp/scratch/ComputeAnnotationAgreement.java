@@ -155,18 +155,28 @@ public class ComputeAnnotationAgreement {
 			writer.debugWriteln("Overall Annotator Count: " + annotatorCount);
 			writer.debugWriteln("Overall Agreements: ");
 			double total = 0;
+			int count = 0;
 			for (Entry<String, Double> agreementEntry : pairAgreements.entrySet()) {
-				writer.debugWriteln(agreementEntry.getKey() + "\t" + agreementEntry.getValue() + "\t" + pairCounts.get(agreementEntry.getKey()));
-				total += agreementEntry.getValue();
+				int pairCount = pairCounts.get(agreementEntry.getKey());
+				writer.debugWriteln(agreementEntry.getKey() + "\t" + agreementEntry.getValue() + "\t" + pairCount);
+				if (pairCount > 0) {
+					total += agreementEntry.getValue();
+					count++;
+				}
 			}
 			
-			writer.debugWriteln("Overall Average: " + ((pairAgreements.size() > 0) ? (total/pairAgreements.size()) : "NaN"));
+			writer.debugWriteln("Overall Average: " + ((count > 0) ? (total/count) : "NaN"));
 		} else {
 			double total = 0;
+			int count = 0;
 			for (Entry<String, Double> agreementEntry : pairAgreements.entrySet()) {
-				total += agreementEntry.getValue();
+				int pairCount = pairCounts.get(agreementEntry.getKey());
+				if (pairCount > 0) {
+					total += agreementEntry.getValue();
+					count++;
+				}
 			}
-			writer.debugWriteln(pathPrefix + " Average: " + ((pairAgreements.size() > 0) ? (total/pairAgreements.size()) : "NaN"));
+			writer.debugWriteln(pathPrefix + " Average: " + ((count > 0) ? (total/count) : "NaN"));
 		}
 	}
 	
@@ -207,7 +217,7 @@ public class ComputeAnnotationAgreement {
 			}
 		}
 		
-		return new Pair<Double, Integer>(agree/total, total);
+		return new Pair<Double, Integer>((total > 0 ? agree/total : 0.0), total);
 	}
 	
 	private static double computeExpectedAgreement(Map<CorpRelLabelPath, Double> dist1, Map<CorpRelLabelPath, Double> dist2) {
