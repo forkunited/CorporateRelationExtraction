@@ -53,6 +53,12 @@ public class CorpDocumentSet {
 		loadUnannotatedDocuments(maxUnannotatedDocuments, metaData);
 	}
 	
+	public boolean add(CorpDocumentSet otherSet) {
+		this.annotatedDocuments.putAll(otherSet.annotatedDocuments);
+		this.unannotatedDocuments.putAll(otherSet.unannotatedDocuments);
+		return true;
+	}
+	
 	public List<CorpDocument> getDocuments() {
 		List<CorpDocument> documents = new ArrayList<CorpDocument>();
 		

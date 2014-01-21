@@ -28,7 +28,7 @@ public class ComputeAnnotationAgreement {
 			output
 		);
 	
-		CorpDocumentSet documentSet = new CorpDocumentSet(
+		CorpDocumentSet trainDocumentSet = new CorpDocumentSet(
 				properties.getCorpRelDirPath(), 
 				annotationCache,
 				1,
@@ -37,6 +37,28 @@ public class ComputeAnnotationAgreement {
 				output,
 				dataTools.getMetaData("CorpMetaData")
 		);
+		
+		CorpDocumentSet testDocumentSet = new CorpDocumentSet(
+				properties.getCorpRelTestDirPath(), 
+				annotationCache,
+				1,
+				-1,
+				0,
+				output,
+				dataTools.getMetaData("CorpMetaData")
+		);
+		
+		CorpDocumentSet fullDocumentSet = new CorpDocumentSet(
+				properties.getCorpRelTestDirPath(), 
+				annotationCache,
+				1,
+				-1,
+				0,
+				output,
+				dataTools.getMetaData("CorpMetaData")
+		);
+		
+		fullDocumentSet.add(trainDocumentSet);
 		
 		List<CorpRelLabelPath> paths = new ArrayList<CorpRelLabelPath>();
 		paths.add(null);
@@ -110,10 +132,29 @@ public class ComputeAnnotationAgreement {
 		validPaths.add(CorpRelLabelPath.fromString("NonCorp-Rating"));
 		validPaths.add(CorpRelLabelPath.fromString("NonCorp-University"));
 		
+		output.debugWriteln("-----------------------------------------");
+		output.debugWriteln("FULL DOCUMENT SET");
+		output.debugWriteln("-----------------------------------------");
 		for (CorpRelLabelPath path : paths)
-			computeCounts(documentSet, output, path);
+			computeCounts(fullDocumentSet, output, path);
 		for (CorpRelLabelPath path : paths)
-			computeCohens(documentSet, output, path, validPaths);
+			computeCohens(fullDocumentSet, output, path, validPaths);
+		
+		output.debugWriteln("-----------------------------------------");
+		output.debugWriteln("TEST DOCUMENT SET");
+		output.debugWriteln("-----------------------------------------");
+		for (CorpRelLabelPath path : paths)
+			computeCounts(testDocumentSet, output, path);
+		for (CorpRelLabelPath path : paths)
+			computeCohens(testDocumentSet, output, path, validPaths);
+		
+		output.debugWriteln("-----------------------------------------");
+		output.debugWriteln("TRAIN DOCUMENT SET");
+		output.debugWriteln("-----------------------------------------");
+		for (CorpRelLabelPath path : paths)
+			computeCounts(trainDocumentSet, output, path);
+		for (CorpRelLabelPath path : paths)
+			computeCohens(trainDocumentSet, output, path, validPaths);
 	}
 	
 	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
