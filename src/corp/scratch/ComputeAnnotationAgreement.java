@@ -138,7 +138,7 @@ public class ComputeAnnotationAgreement {
 		for (CorpRelLabelPath path : paths)
 			computeCounts(fullDocumentSet, output, path);
 		for (CorpRelLabelPath path : paths)
-			computeCohens(fullDocumentSet, output, path, validPaths);
+			computeCohens(fullDocumentSet, output, path, null);
 		
 		output.debugWriteln("-----------------------------------------");
 		output.debugWriteln("TEST DOCUMENT SET");
@@ -146,7 +146,7 @@ public class ComputeAnnotationAgreement {
 		for (CorpRelLabelPath path : paths)
 			computeCounts(testDocumentSet, output, path);
 		for (CorpRelLabelPath path : paths)
-			computeCohens(testDocumentSet, output, path, validPaths);
+			computeCohens(testDocumentSet, output, path, null);
 		
 		output.debugWriteln("-----------------------------------------");
 		output.debugWriteln("TRAIN DOCUMENT SET");
@@ -154,7 +154,7 @@ public class ComputeAnnotationAgreement {
 		for (CorpRelLabelPath path : paths)
 			computeCounts(trainDocumentSet, output, path);
 		for (CorpRelLabelPath path : paths)
-			computeCohens(trainDocumentSet, output, path, validPaths);
+			computeCohens(trainDocumentSet, output, path, null);
 	}
 	
 	private static void computeCounts(CorpDocumentSet documentSet, OutputWriter writer, CorpRelLabelPath pathPrefix) {
