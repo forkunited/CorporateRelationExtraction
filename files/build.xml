@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="CorporateRelationExtraction">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <path id="CorporateRelationExtraction.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="[lib directory]/mallet.jar"/>
+        <pathelement location="[lib directory]/mallet-deps.jar"/>
+    	<pathelement location="[lib directory]/ark-water.jar"/>
+        <pathelement location="[lib directory]/stanford-corenlp-1.3.5-models.jar"/>
+        <pathelement location="[lib directory]/secondstring-20120620.jar"/>
+        <pathelement location="[lib directory]/jsch-0.1.50.jar"/>
+        <pathelement location="[lib directory]/stanford-corenlp-1.3.5-sources.jar"/>
+        <pathelement location="[lib directory]/stanford-corenlp-1.3.5.jar"/>
+        <pathelement location="[lib directory]/joda-time-2.3-sources.jar"/>
+        <pathelement location="[lib directory]/joda-time-2.3-javadoc.jar"/>
+        <pathelement location="[lib directory]/joda-time-2.3.jar"/>
+        <pathelement location="[lib directory]/json-lib-2.4-jdk15.jar"/>
+        <pathelement location="[lib directory]/commons-net-3.1.jar"/>
+        <pathelement location="[lib directory]/commons-math-2.1.jar"/>
+        <pathelement location="[lib directory]/commons-logging-1.1.1.jar"/>
+        <pathelement location="[lib directory]/commons-lang-2.5.jar"/>
+        <pathelement location="[lib directory]/commons-io-2.1.jar"/>
+        <pathelement location="[lib directory]/commons-httpclient-3.1.jar"/>
+        <pathelement location="[lib directory]/commons-el-1.0.jar"/>
+        <pathelement location="[lib directory]/commons-digester-1.8.jar"/>
+        <pathelement location="[lib directory]/commons-configuration-1.6.jar"/>
+        <pathelement location="[lib directory]/commons-compress-1.4.1.jar"/>
+        <pathelement location="[lib directory]/commons-collections-3.2.1.jar"/>
+        <pathelement location="[lib directory]/commons-codec-1.4.jar"/>
+        <pathelement location="[lib directory]/commons-cli-1.2.jar"/>
+        <pathelement location="[lib directory]/commons-beanutils-core-1.8.0.jar"/>
+        <pathelement location="[lib directory]/commons-beanutils-1.7.0.jar"/>
+        <pathelement location="[lib directory]/ezmorph-1.0.6.jar"/>
+        <pathelement location="[lib directory]/hadoop-common-2.2.0.jar"/>
+        <pathelement location="[lib directory]/hadoop-mapreduce-client-common-2.2.0.jar"/>
+        <pathelement location="[lib directory]/hadoop-mapreduce-client-core-2.2.0.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="ExperimentTreeKCV">
+        <java classname="corp.experiment.ExperimentTreeKCV" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx8G -XX:+UseParallelGC -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${experiment}"/>
+        </java>
+    </target>
+    <target name="ExperimentTreeAccuracy">
+        <java classname="corp.experiment.ExperimentTreeAccuracy" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx9G -XX:+UseParallelGC -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${experiment}"/>
+        </java>
+    </target>
+    <target name="RunLatentFactions">
+        <java classname="corp.scratch.RunLatentFactions" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx8G -XX:+UseParallelGC -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${name}"/>
+            <arg value="${numFactions}"/>
+            <arg value="${iterations}"/>
+            <arg value="${maxThreads}"/>
+            <arg value="${maxDocuments}"/>
+        </java>
+    </target>	
+    <target name="RunLDA">
+        <java classname="corp.scratch.RunLDA" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx8G -XX:+UseParallelGC -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${name}"/>
+            <arg value="${numTopics}"/>
+            <arg value="${iterations}"/>
+            <arg value="${maxThreads}"/>
+            <arg value="${maxDocuments}"/>
+            <arg value="${randomSeed}"/>
+        </java>
+    </target>
+    <target name="RunModelTree">
+        <java classname="corp.scratch.RunModelTree" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx4G -XX:+UseParallelGC -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${modelPath}"/>
+            <arg value="${outputPath}"/>
+            <arg value="${maxThreads}"/>
+            <arg value="${maxDocuments}"/>
+            <arg value="${batchSize}"/>
+            <arg value="${annotationDirPath}"/>
+        </java>
+    </target>
+    <target name="ComputeLDAOrgTopics">
+        <java classname="corp.scratch.ComputeLDAOrgTopics" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx3G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${name}"/>
+        </java>
+    </target>	
+    <target name="ComputeLDATopicalWords">
+        <java classname="corp.scratch.ComputeLDATopicalWords" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx3G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+            <arg value="${name}"/>
+        </java>
+    </target>
+    <target name="ComputeAnnotationAgreement">
+        <java classname="corp.scratch.ComputeAnnotationAgreement" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx7G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="CorpKeyFnPerformance">
+        <java classname="corp.scratch.CorpKeyFnPerformance" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx512m"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="ConstructGazetteer">
+        <java classname="corp.scratch.ConstructGazetteer" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx1024m"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="ConstructDataSample">
+        <java classname="corp.scratch.ConstructDataSample" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx10G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="ConstructBrownClusterData">
+        <java classname="corp.scratch.ConstructBrownClusterData" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx4G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="MiscellaneousStats">
+        <java classname="corp.scratch.MiscellaneousStats" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx10G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="Scratch">
+        <java classname="corp.scratch.Scratch" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx10G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="CRegKFoldCrossValidation">
+        <java classname="corp.scratch.CRegKFoldCrossValidation" failonerror="true" fork="yes">
+                <jvmarg line="-Xmx10G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="CRegTreeKFoldCrossValidation">
+        <java classname="corp.scratch.CRegTreeKFoldCrossValidation" failonerror="true" fork="yes">
+          <jvmarg line="-Xmx10G"/>
+            <classpath refid="CorporateRelationExtraction.classpath"/>
+        </java>
+    </target>
+    <target name="build-jar">
+      <jar destfile="corp.jar"
+           basedir="bin">
+        <zipgroupfileset dir="[lib directory]" includes="*.jar"/>
+      </jar>
+    </target>	
+</project>
