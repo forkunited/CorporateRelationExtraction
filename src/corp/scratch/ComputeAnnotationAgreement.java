@@ -200,7 +200,7 @@ public class ComputeAnnotationAgreement {
 		Map<String, Map<String, Map<String, CorpRelDatum>>> annotatorDatums = documentSet.getAnnotatorDatums(pathPrefix);
 		Map<String, Double> pairAgreements = new HashMap<String, Double>();
 		Map<String, Integer> pairCounts = new HashMap<String, Integer>();
-		
+		Map<String, Double> pairAccuracies = new HashMap<String, Double>();
 		for (Entry<String, Map<String, Map<String, CorpRelDatum>>> annotatorEntry1 : annotatorDatums.entrySet()) {
 			Map<CorpRelLabelPath, Double> annotatorP1 = computeLabelDistribution(annotatorEntry1.getValue(), validPaths);
 			for (Entry<String, Map<String, Map<String, CorpRelDatum>>> annotatorEntry2 : annotatorDatums.entrySet()) {
@@ -212,6 +212,7 @@ public class ComputeAnnotationAgreement {
 				String pairKey = annotatorEntry1.getKey() + "\t" + annotatorEntry2.getKey();
 				
 				pairAgreements.put(pairKey, expectedAgreement < 1 && agreementCount.second() > 0 ? (agreementCount.first() - expectedAgreement)/(1 - expectedAgreement) : 0);
+				pairAccuracies.put(pairKey, agreementCount.first());
 				pairCounts.put(pairKey, agreementCount.second());
 			}
 		}		
@@ -224,7 +225,7 @@ public class ComputeAnnotationAgreement {
 			int count = 0;
 			for (Entry<String, Double> agreementEntry : pairAgreements.entrySet()) {
 				int pairCount = pairCounts.get(agreementEntry.getKey());
-				writer.debugWriteln(agreementEntry.getKey() + "\t" + agreementEntry.getValue() + "\t" + pairCount);
+				writer.debugWriteln(agreementEntry.getKey() + "\t" + agreementEntry.getValue() + " (" + pairAccuracies.get(agreementEntry.getKey()) + ")\t" + pairCount);
 				if (pairCount > 0) {
 					total += agreementEntry.getValue();
 					count++;
