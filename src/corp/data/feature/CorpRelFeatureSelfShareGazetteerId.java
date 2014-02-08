@@ -5,6 +5,19 @@ import java.util.List;
 import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
+/**
+ * 
+ * For organization mention m and gazetteer G, 
+ * CorpRelFeatureSelfShareGazetteerId computes
+ * 
+ * 1(G(O(m))=G(A(m)))
+ * 
+ * Where A(m) is the authoring organization,O(m) is the mentioned 
+ * organization, and G(s) returns the ID of s in G.  
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureSelfShareGazetteerId extends CorpRelFeatureSelf {
 	private Gazetteer gazetteer;
 	

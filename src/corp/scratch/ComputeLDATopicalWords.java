@@ -12,6 +12,14 @@ import corp.util.CorpProperties;
 import corp.util.LDA;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * ComputeLDATopicalWords takes the output of LDA 
+ * (http://mallet.cs.umass.edu/), and computes the words whose topic 
+ * distributions have the minimum entropy.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ComputeLDATopicalWords {
 	public static void main(String[] args) {
 		String name = args[0];

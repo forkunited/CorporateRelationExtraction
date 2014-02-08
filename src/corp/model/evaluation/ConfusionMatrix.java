@@ -12,6 +12,13 @@ import corp.data.annotation.CorpRelLabelPath;
 import ark.util.StanfordUtil;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * ConfusionMatrix computes and manipulates confusion matrices from lists 
+ * of classified organization mentions (corp.data.annotation.CorpRelDatum).
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ConfusionMatrix {
 	private Map<CorpRelLabelPath, Map<CorpRelLabelPath, List<CorpRelDatum>>> actualToPredicted;
 	private List<CorpRelLabelPath> labelPaths;

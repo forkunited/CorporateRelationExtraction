@@ -17,6 +17,28 @@ import ark.util.Stemmer;
 import ark.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
+/**
+ * 
+ * CorpRelFeatureNGram represents an n-gram feature type.  For
+ * each organization mention m, the feature computes the vector:
+ * 
+ * <1(v_1\in T(m))), 1(v_2 \in T(m)), ... , 1(v_n \in T(m))>
+ * 
+ * Where T(m) is some text associated with m depending on the 
+ * particular n-gram feature that is being computed, and v_i 
+ * is an n-gram in vocabulary of possible n-grams from the full
+ * data-set.  
+ * 
+ * For examples of possible T, see the feature types that extend 
+ * this class.
+ * 
+ * Optionally, if a clusterer (Brown) is provided, then grams of
+ * the n-grams are first mapped to their clusters or sets of 
+ * prefixes of their clusters.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	protected int minFeatureOccurrence;
 	protected int n;

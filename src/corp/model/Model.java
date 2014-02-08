@@ -17,6 +17,15 @@ import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * 
+ * Model represents a statistical model that can train and be evaluated using
+ * a corp.data.feature.CorpRelFeaturizedDataSet containing featurized 
+ * organization mentions from a press release corpus.  
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class Model {
 	protected String modelPath;
 	protected List<CorpRelLabelPath> validPaths;

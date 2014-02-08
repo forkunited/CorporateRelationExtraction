@@ -15,6 +15,15 @@ import corp.data.annotation.CorpRelLabelPath;
 import corp.util.CorpProperties;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * ComputeAnnotationAgreement computes annotator agreement (Cohen's Kappa) 
+ * scores and mention counts for the set of annotated organization mentions.
+ * The values are computed for each annotator, and averaged for data limited
+ * to various label nodes in the relationship-type taxonomy.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ComputeAnnotationAgreement {
 	public static void main(String args[]) {
 		OutputWriter output = new OutputWriter();

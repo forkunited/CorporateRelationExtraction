@@ -22,7 +22,10 @@ import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
 /**
- * For periodically testing out short temporary snippets of code
+ * Scratch provides space for trying out temporary snippets of code.  This is
+ * useful for performing one-off tasks or briefly testing things out.
+ * 
+ * @author Bill McDowell
  */
 public class Scratch {
 	public static void main(String[] args) {

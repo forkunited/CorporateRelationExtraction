@@ -12,6 +12,20 @@ import ark.util.StanfordUtil;
 import ark.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
+/**
+ * 
+ * For each organization mention m, CorpRelFeatureNGramSentence computes the 
+ * vector:
+ * 
+ * <1(v_1\in S(m))), 1(v_2 \in S(m)), ... , 1(v_n \in S(m))>
+ * 
+ * Where S(m) is text of the sentence containing m, and v_i 
+ * is an n-gram in vocabulary of possible n-grams from the full
+ * data-set.  
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureNGramSentence extends CorpRelFeatureNGram {
 	
 	public CorpRelFeatureNGramSentence(

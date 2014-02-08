@@ -29,6 +29,16 @@ import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.feature.CorpRelFeature;
 
+/**
+ * LatentFactions is a wrapper class for running Yc's Latent Factions model
+ * on the corporate press release documents.
+ * 
+ * See http://www.cs.cmu.edu/~nasmith/papers/sim+smith+smith.aclws12.pdf for
+ * information about the model.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class LatentFactions {
 	private File inputDir;
 	private File settingsFile;

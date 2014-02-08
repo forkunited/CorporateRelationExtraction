@@ -18,6 +18,17 @@ import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.util.CorpProperties;
 import corp.util.OutputWriter;*/
 
+/**
+ * 
+ * CorpRelFeatureTest was originally used to ensure that features were being
+ * computed accurately, but it hasn't been updated to reflect changes in the
+ * code.  I've kept some of the old code here in case it comes in handy in the
+ * future, but it might just be a good idea to start over with testing if 
+ * that seems necessary.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureTest {
 	/*private static OutputWriter output;
 	private static CorpProperties properties;

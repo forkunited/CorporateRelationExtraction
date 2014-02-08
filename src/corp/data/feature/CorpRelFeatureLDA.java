@@ -13,6 +13,17 @@ import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import corp.util.LDA;
 
+/**
+ * For organization mention m and gazetteer G, CorpRelFeatureLDA computes 
+ * the topic distribution computed by a given instantiation of LDA for
+ * the "document" H(O(m)).H(A(m)).C(S(m)) where S(m) is the sentence 
+ * containing m, O(m) is the mentioned organization and A(m) is the authoring 
+ * corporation. H is a normalizing function for organization names, and C
+ * is a cleaning function for strings.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureLDA extends CorpRelFeature {
 	private LDA lda;
 	private LDA.DatumDocumentTransform documentFn;

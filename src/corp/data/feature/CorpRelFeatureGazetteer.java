@@ -8,6 +8,18 @@ import ark.data.Gazetteer;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 
+/**
+ * 
+ * CorpRelFeatureGazetteer represents a gazetteer feature type.  For
+ * each organization mention m, the feature computes the maximum or
+ * minimum of a function f_m:G ->R where G is a gazetteer of names,
+ * and f_m is a function defined for organization mention m using either
+ * the author or mentioned organization name.  For examples, see
+ * the feature types that extend this class.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class CorpRelFeatureGazetteer extends CorpRelFeature {
 	protected enum ExtremumType {
 		Minimum,

@@ -17,6 +17,19 @@ import corp.util.CorpProperties;
 import ark.util.OutputWriter;
 import ark.util.StringUtil;
 
+/**
+ * CorpKeyFnPerformance evaluates an organization name hashing
+ * function (represented by corp.util.CorpKeyFn) that resolves names
+ * to entities.  The details of this evaluation are given in the
+ * "Entity Resolution Function" section (3.3.1) of the Sloan
+ * technical report.  The basic idea is that we use author-to-mention
+ * relations annotated with "Self-reference" to evaluate whether
+ * the hashing function correctly resolves coreferring names
+ * to the same entity.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpKeyFnPerformance {
 	public static void main(String[] args) {
 		CorpProperties properties = new CorpProperties();

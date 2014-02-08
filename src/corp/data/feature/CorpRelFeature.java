@@ -9,6 +9,15 @@ import corp.data.CorpMetaData;
 import corp.data.annotation.CorpRelDatum;
 import ark.util.SerializationUtil;
 
+/**
+ * CorpRelFeature represents a feature type for use in models that 
+ * classify organization mentions from the corporate press release
+ * data set.  A feature type computes a vector of real values
+ * for each organization mention.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class CorpRelFeature {
 	public CorpRelFeature() {
 		

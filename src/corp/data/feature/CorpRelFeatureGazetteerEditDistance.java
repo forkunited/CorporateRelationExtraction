@@ -3,6 +3,23 @@ package corp.data.feature;
 import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
+/**
+ * For organization mention m and gazetteer G, 
+ * CorpRelFeatureGazetteerEditDistance computes
+ * 
+ * max_{g\in G} E(g, O(m))
+ * 
+ * Or 
+ * 
+ * max_{g\in G} E(g, A(m))
+ * 
+ * Where E is normalized edit distance, O(m) is the mentioned 
+ * organization and A(m) is the authoring  corporation.  Whether A(m) or O(m) 
+ * is used is determined by the "input type".
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureGazetteerEditDistance extends CorpRelFeatureGazetteer {
 	public CorpRelFeatureGazetteerEditDistance(Gazetteer gazetteer, CorpRelFeatureGazetteer.InputType inputType) {
 		this.extremumType = CorpRelFeatureGazetteer.ExtremumType.Minimum;

@@ -2,6 +2,18 @@ package corp.data.feature;
 
 import ark.util.StringUtil;
 
+/**
+ * 
+ * For organization mention m, CorpRelFeatureSelfEquality computes 
+ * 
+ * 1(C(A(m))=C(O(m)))
+ * 
+ * Where A(m) is the authoring corporation, and O(m) is the mentioned 
+ * organization, and C is a string cleaning function.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureSelfEquality extends CorpRelFeatureSelf {
 	public CorpRelFeatureSelfEquality() {
 		super();

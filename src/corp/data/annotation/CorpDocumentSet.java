@@ -19,6 +19,14 @@ import java.util.concurrent.TimeUnit;
 import corp.data.CorpMetaData;
 import ark.util.OutputWriter;
 
+/**
+ * 
+ * CorpDocumentSet represents a set of corporate press release documents
+ * located on disk. 
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpDocumentSet {
 	private String corpRelDirPath;
 	private ConcurrentHashMap<String, CorpDocument> annotatedDocuments; // Map Stanford annotation file names to documents

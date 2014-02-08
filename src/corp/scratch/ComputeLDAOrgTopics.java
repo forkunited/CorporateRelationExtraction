@@ -11,6 +11,13 @@ import ark.util.OutputWriter;
 import corp.util.CorpProperties;
 import corp.util.LDA;
 
+/**
+ * ComputeLDAOrgTopics takes the output of LDA (http://mallet.cs.umass.edu/),
+ * and computes the most likely topic for each word.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ComputeLDAOrgTopics {
 	public static void main(String[] args) {
 		String name = args[0];

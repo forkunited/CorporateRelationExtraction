@@ -9,6 +9,15 @@ import corp.model.Model;
 import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * AccuracyValidation is used by corp.experiment.ExperimentTreeAccuracy
+ * to train a corporate relation-type classification model on the training
+ * set, and test on the test set, evaluating by accuracy and a confusion
+ * matrix.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class AccuracyValidation {
 	private Model model;
 	private CorpRelFeaturizedDataSet trainData;

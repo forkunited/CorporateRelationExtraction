@@ -21,6 +21,20 @@ import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.CoreMap;
 
+/**
+ * 
+ * CorpDocument represents a single document from the 8-K corporate press 
+ * release corpus.  If the represented document has been annotated with 
+ * corporate relation types, then methods in this class can be used to
+ * load in the relation type annotations, and align them with the Stanford
+ * CoreNLP NER annotations.
+ * 
+ * This class is mainly used by CorpDocumentSet to load a directory of 
+ * documents and their annotations from disk.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpDocument {
 	private String annotationFileName;
 	private AnnotationCache annotationCache;

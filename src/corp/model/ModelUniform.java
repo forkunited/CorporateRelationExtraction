@@ -13,6 +13,22 @@ import corp.data.feature.CorpRelFeaturizedDatum;
 import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * 
+ * ModelUniform represents a model that assigns equal probability to each
+ * of the possible corporate relationship labels.  This kind of model, 
+ * constrained to a single label that is always given probability 1, is used
+ * within a ModelTree to develop different levels of the taxonomy in 
+ * isolation.  For example, to develop the "Other-corporation" model alone,
+ * we build a ModelTree with a uniform model at the root that has 
+ * "Other-corporation" as its only valid label, and with a logistic 
+ * regression (ModelCReg) at "Other-corporation".  This results in the 
+ * ModelTree only training and evaluating the "Other-corporation" branch
+ * of the taxonomy.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ModelUniform extends Model {
 	private String modelPath;
 	private OutputWriter output;

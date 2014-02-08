@@ -2,6 +2,15 @@ package corp.data.feature;
 
 import ark.util.StringUtil;
 
+/**
+ * 
+ * For organization mention m, CorpRelFeatureSelfEditDistance computes the 
+ * normalized edit distance between the authoring corporation A(m), and the
+ * mentioned organization O(m).
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureSelfEditDistance extends CorpRelFeatureSelf {
 	public CorpRelFeatureSelfEditDistance() {
 		super();

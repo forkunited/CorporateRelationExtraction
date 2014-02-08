@@ -22,10 +22,11 @@ import corp.util.CorpProperties;
 import ark.util.OutputWriter;
 
 /**
- * Construct a random sample of data from documents that have gone
- * through the Stanford pipeline (to be annotated)
+ * ConstructDataSample constructs a random sample of data from Stanford 
+ * CoreNLP annotated press release documents.  In the past, this was
+ * for providing a set of data for Brian's annotators to annotate.
  * 
- * @author Bill
+ * @author Bill McDowell
  */
 public class ConstructDataSample {
 	private static Random rand;

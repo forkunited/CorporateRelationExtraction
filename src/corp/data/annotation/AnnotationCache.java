@@ -18,6 +18,25 @@ import ark.util.StanfordUtil;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 
+/**
+ * 
+ * AnnotationCache holds LRU caches of Stanford CoreNLP annotated documents
+ * and sentences.  The cache assumes that if a document is requested, then that 
+ * document exists, and it should be loaded from disk if it is not in the cache.
+ * On the other hand, if a sentence is requested, and it is not in memory
+ * or on disk, then the document annotation is loaded instead, and split up
+ * into sentence annotations on disk so that the full document does not need
+ * to be loaded next time the same sentence is requested.
+ * 
+ * This cache is mainly as helper for classes representing press release 
+ * documents and corporate relation annotations in corp.data.annotation. When
+ * other classes throughout the project request information from the document
+ * classes, the document classes query the cache.  This is necessary because
+ * the Stanford CoreNLP annotation documents take up a lot of memory.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class AnnotationCache {
 	private String docAnnoDirPath;
 	private String sentenceAnnoDirPath;

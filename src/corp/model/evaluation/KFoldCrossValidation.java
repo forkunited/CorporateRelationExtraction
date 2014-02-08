@@ -17,6 +17,16 @@ import corp.model.Model;
 import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * KFoldCrossValidation is used by corp.experiment.ExperimentTreeKCV to 
+ * perform k-fold cross validation with a given model on set of annotated 
+ * organization mentions.  For each fold, it's also possible to perform an 
+ * optional grid-search for hyper-parameter values using
+ * corp.model.evaluation.HyperParameterGridSearch.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class KFoldCrossValidation {
 	private Model model;
 	private CorpRelFeaturizedDataSet[] folds;
@@ -24,7 +34,7 @@ public class KFoldCrossValidation {
 	private List<CorpRelFeature> originalFeatures;
 	private Random rand;
 	private OutputWriter output;
-	private Map<String, List<Double>> possibleParameterValues;
+	private Map<String, List<Double>> possibleParameterValues; // Hyper-parameter values
 	
 	public KFoldCrossValidation(Model model, 
 			CorpRelFeaturizedDataSet data,

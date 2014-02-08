@@ -3,6 +3,23 @@ package corp.data.feature;
 import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
+/**
+ * For organization mention m and gazetteer G, 
+ * CorpRelFeatureGazetteerPrefixTokens computes
+ * 
+ * max_{g\in G} 1(O(m) shares k prefix tokens with G)
+ * 
+ * Or 
+ * 
+ * max_{g\in G} 1(A(m) shares k prefix tokens with G)
+ * 
+ * Where O(m) is the mentioned organization and A(m) is the authoring 
+ * corporation.  Whether A(m) or O(m) is used is determined by the
+ * "input type".
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureGazetteerPrefixTokens  extends CorpRelFeatureGazetteer {
 	private int minTokens;
 	

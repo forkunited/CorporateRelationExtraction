@@ -15,6 +15,19 @@ import corp.util.LDA;
 import ark.util.StringUtil;
 import ark.data.Gazetteer;
 
+/**
+ * 
+ * CorpDataTools loads various gazetteers, corporation metadata, and other 
+ * data used in various models and experiments.  
+ * 
+ * Currently, for convenience, CorpDataTools just loads everything into 
+ * memory upon construction.  If memory conservation becomes important,
+ * then this class should be rewritten to only keep things in memory
+ * when they are needed.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpDataTools {
 	private CorpProperties properties;
 	private OutputWriter output;

@@ -12,6 +12,20 @@ import ark.util.StanfordUtil;
 import ark.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
+/**
+ * 
+ * For each organization mention m, CorpRelFeatureNGramContext computes the 
+ * vector:
+ * 
+ * <1(v_1\in T(m))), 1(v_2 \in T(m)), ... , 1(v_n \in T(m))>
+ * 
+ * Where T(m) is a window of text surrounding m, and v_i 
+ * is an n-gram in vocabulary of possible n-grams from the full
+ * data-set.  
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureNGramContext extends CorpRelFeatureNGram {
 	private int contextWindowSize;
 	

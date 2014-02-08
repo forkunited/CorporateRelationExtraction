@@ -16,6 +16,23 @@ import ark.util.OutputWriter;
 import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * Experiment represents an experiment run on corporate press release 
+ * documents, defined by a an input configuration file in the 
+ * "experiments" directory.  The syntax of the input configuration
+ * files is somewhat intuitive, so you can probably figure it out
+ * by reading through the examples in the "experiments" directory.
+ * 
+ * The particular operations of the experiment are defined by the classes 
+ * that extend Experiment.
+ *
+ * The output is generally written to debug, results, model, and data
+ * files in the output directory specified in the corp.properties 
+ * configuration file.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class Experiment {
 	protected OutputWriter output;
 	

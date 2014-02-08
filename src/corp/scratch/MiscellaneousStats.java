@@ -17,6 +17,18 @@ import ark.data.CounterTable;
 import ark.util.OutputWriter;
 import ark.util.StringUtil;
 
+/**
+ * MiscellaneousStats contains functions for computing miscellaneous 
+ * statistics on the corporate press release documents.  Currently,
+ * this just contains a function that computes a histogram of unigrams
+ * that occur within mentioned organization names.  This histogram was
+ * used to motivate choices for organization stop words to use in 
+ * the entity resolution function (H in the Sloan tech report implemented
+ * by corp.util.CorpKeyFn).
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class MiscellaneousStats {
 	public static void main(String[] args) {
 		computeOrganizationTermCounts();

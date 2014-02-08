@@ -11,6 +11,14 @@ import corp.model.Model;
 import ark.util.OutputWriter;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * HyperParameterGridSearch performs a grid-search for hyper-parameter values
+ * of a given model using a given training and test (dev) set of organization
+ * mentions.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class HyperParameterGridSearch {
 	public class GridPosition {
 		private TreeMap<String, Double> coordinates;

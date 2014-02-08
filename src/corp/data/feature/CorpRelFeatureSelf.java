@@ -8,6 +8,17 @@ import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
 import ark.util.StringUtil;
 
+/**
+ * 
+ * CorpRelFeatureSelf represents a 'self' feature type.  For
+ * each organization mention m, the feature computes some function
+ * f(O(m), A(m)) where O(m) is the mentioned organization and A(m) is the 
+ * authoring corporation. f is defined by the particular self-feature
+ * being computed through one of the child classes of CorpRelFeatureSelf.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class CorpRelFeatureSelf extends CorpRelFeature {
 	protected enum ExtremumType {
 		Minimum,

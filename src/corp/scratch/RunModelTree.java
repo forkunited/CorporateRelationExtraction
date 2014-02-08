@@ -29,6 +29,44 @@ import ark.util.StanfordUtil;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * RunModelTree uses a trained relationship-type taxonomy classification
+ * model to compute relationship-type posteriors for organization mentions
+ * in press release documents.  As described in the paper, a single posterior
+ * is computed for the set of all instances of the same cleaned organization
+ * name within a single document, using features from the sentence surrounding
+ * the first instance. The resulting posterior for mentions of the same 
+ * organization name within a single document are output in a JSON object of 
+ * the following form:
+ * 
+ * {
+ *  "author": "<Author name (A(m))>",
+ *  "annotationFile": "<Source CoreNLP annotated press release document>",
+ *  "mentions": [
+ *               {
+ *                "text": "<Organization mention (O(m))>",
+ *                "sentence": <sentence index from Stanford CoreNLP>,
+ *                "tokenStart": <start token index from Stanford CoreNLP>,
+ *                "tokenEnd": <end token index from Stanford CoreNLP>
+ *               },
+ *               <...Other instances of the same organization name...>
+ * 				],
+ * 	"sentences": [
+ *                {
+ *                 "text": "<Sentence text from Stanford CoreNLP>",
+ *                 "index": <Sentence index from Stanford CoreNLP>
+ *                },
+ *                <...>
+ *               ],
+ * 	"p": {
+ *        "<Relationship-type path from taxonomy>": <Probability>,
+ *        <...>
+ *       }
+ * }
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class RunModelTree {
 	public static void main(String[] args) {
 		String modelPath = args[0];

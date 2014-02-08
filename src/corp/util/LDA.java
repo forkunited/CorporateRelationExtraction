@@ -31,6 +31,14 @@ import ark.util.OutputWriter;
 import ark.util.StanfordUtil;
 import ark.util.StringUtil;
 
+/**
+ * LDA is a wrapper class for running the Mallet implementation 
+ * (http://mallet.cs.umass.edu/) of LDA on the corporate press 
+ * release documents.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class LDA {
 	public interface DatumDocumentTransform {
 		public String transform(CorpRelDatum datum);

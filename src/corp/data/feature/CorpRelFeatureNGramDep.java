@@ -16,6 +16,21 @@ import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 
+/**
+ * 
+ * For each organization mention m, CorpRelFeatureNGramDep computes the 
+ * vector:
+ * 
+ * <1(v_1\in T(m))), 1(v_2 \in T(m)), ... , 1(v_n \in T(m))>
+ * 
+ * Where T(m) is text that is one dependency away from m in the dependency 
+ * parse of the sentence containing m, and v_i 
+ * is an n-gram in vocabulary of possible n-grams from the full
+ * data-set.  
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureNGramDep extends CorpRelFeatureNGram {
 	public enum Mode {
 		ParentsOnly,

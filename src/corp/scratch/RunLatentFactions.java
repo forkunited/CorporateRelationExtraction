@@ -16,6 +16,14 @@ import corp.util.LatentFactions;
 import ark.util.OutputWriter;
 import ark.util.StringUtil;
 
+/**
+ * RunLatentFactions uses the corp.util.LatentFactions wrapper class to
+ * run Yc's "latent factions" model on the corporate press release 
+ * documents.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class RunLatentFactions {
 	public static void main(String[] args) {
 		String name = args[0];

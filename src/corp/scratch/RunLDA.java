@@ -20,6 +20,16 @@ import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 import corp.util.LDA;
 
+/**
+ * RunLDA uses the corp.util.LDA wrapper class to run the
+ * Mallet implementation of LDA (http://mallet.cs.umass.edu/) on the corpus 
+ * of press release documents.  RunLDA can be set to LDA treat either full 
+ * press releases or just sentences containing organization mentions as 
+ * LDA documents.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class RunLDA {
 	public static void main(String[] args) {
 		String name = args[0];

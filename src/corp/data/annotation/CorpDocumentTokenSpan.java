@@ -7,7 +7,9 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.CoreMap;
 
 /**
- * Represents a span of tokens in a CorpDocument.  
+ * CorpDocumentTokenSpan represents a span of tokens in a press release 
+ * document.  This is mainly useful in representing the locations of the
+ * organization mentions within the document.  
  * 
  * @author Bill
  */

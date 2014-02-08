@@ -16,6 +16,25 @@ import corp.data.annotation.CorpRelLabel;
 import corp.data.annotation.CorpRelLabelPath;
 import ark.util.OutputWriter;
 
+/**
+ * 
+ * CorpRelFeaturizedDataSet extends corp.data.annotation.CorpRelDataSet to 
+ * represent a featurized set of organization mentions loaded from press 
+ * release documents through CorpDocumentSet.  The mentions that are annotated
+ * with relationship labels are stored at the appropriate places within the 
+ * relationship type taxonomy, and this taxonomy data structure is constructed
+ * from the relationship type paths that are seen in the document set from which
+ * the data set is constructed.  Storage of the data within this taxonomy allows
+ * for fast retrieval of data by its location within the taxonomy.  This is 
+ * useful for training models only on data that falls under certain parts of
+ * the taxonomy.
+ * 
+ * The mentions in the data set are featurized on demand, as they are requested 
+ * from CorpRelFeaturizedDataSet.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeaturizedDataSet extends CorpRelDataSet {
 	private boolean FEATURIZE_THREADED_BY_DATUM = true;
 	

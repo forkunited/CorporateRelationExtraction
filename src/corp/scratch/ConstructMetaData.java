@@ -9,6 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+/**
+ * ConstructMetaData contains functions for putting data from various sources
+ * into the meta-data format used by the corp.data.CorpMetaData class.  These
+ *  will probably be useless in the future (and they contain hard-coded paths), 
+ * but I've kept them in the project just in case they can serve as examples or 
+ * something in the future.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ConstructMetaData {
 	public static void main(String[] args) {
 		/*constructFromSourceWithColumnNames("C:/Users/Bill/Documents/projects/NoahsARK/sloan/Data/MetaData/Sources/CompustatMeta.tsv",

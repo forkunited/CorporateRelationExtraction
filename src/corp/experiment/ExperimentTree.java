@@ -15,6 +15,17 @@ import corp.model.ModelUniform;
 import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * 
+ * ExperimentTree represents a training/evaluation experiment involving
+ * a corp.model.ModelTree model.  The relationship type sub-taxonomy, 
+ * features types, and hyper-parameters used by the ModelTree model
+ * in the experiment are defined through the input configuration file.
+ * See the "experiments" directory for examples. 
+ * 
+ * @author Bill McDowell
+ *
+ */
 public abstract class ExperimentTree extends Experiment {
 	protected boolean treeAllowSubpaths;
 	protected ModelTree modelTree;

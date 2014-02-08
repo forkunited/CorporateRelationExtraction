@@ -6,6 +6,20 @@ import corp.model.evaluation.KFoldCrossValidation;
 import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * ExperimentTreeKCV represents a k-fold cross-validation training/evaluation 
+ * experiment with optional grid-search using the "training" data with a 
+ * corp.model.ModelTree model.  See the "experiments" directory for example 
+ * configurations, and read the technical report (and the source tex file
+ * for more detail).
+ * 
+ *  After the configuration is parsed, this class mainly uses the
+ * corp.model.evaluation.KFoldCrossValidation class to carry out
+ * the experiment.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ExperimentTreeKCV extends ExperimentTree {
 	private int crossValidationFolds;
 	

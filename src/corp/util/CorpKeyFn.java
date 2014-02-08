@@ -5,6 +5,22 @@ import java.util.List;
 import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
+/**
+ * CorpKeyFn computes the entity resolution hashing function described in the
+ * "Entity Resolution Function" section (3.3.1) of the Sloan tech report.  It
+ * is used to resolve organization names to entities.
+ * 
+ * The class takes "key maps" and a string cleaning function as parameters.  The
+ * "key maps" map stock tickers and non-corporate initialisms to entities, and
+ * the string cleaning function cleans extra characters and stop-words from
+ * the names.  
+ * 
+ * See corp.data.CorpDataTools for example instantiations of this class.  The
+ * instantiation described in the tech report pdf is in there.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpKeyFn implements StringUtil.StringTransform {
 	private List<Gazetteer> keyMaps;
 	private StringUtil.StringTransform cleanFn;

@@ -2,6 +2,13 @@ package corp.util;
 
 import ark.util.ARKProperties;
 
+/**
+ * CorpProperties reads in property values from a configuration file. These
+ * are used throughout the rest of the code.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpProperties extends ARKProperties {
 	private String corpRelDirPath;
 	private String corpRelTestDirPath;
@@ -30,7 +37,9 @@ public class CorpProperties extends ARKProperties {
 	private String LDASourceDirPath;
 	
 	public CorpProperties() {
-		// FIXME: Do this differently... environment variables...?
+		// FIXME: Do this differently... environment variables...? Or just add
+		// your hadoop hdfs path to make it work on the Hadoop cluster in the 
+		// bad way.
 		super(new String[] { "corp.properties", "/user/wmcdowell/sloan/Projects/CorporateRelationExtraction/corp.properties" } );
 
 		this.corpRelDirPath = loadProperty("corpRelDirPath");

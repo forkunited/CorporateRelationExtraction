@@ -17,6 +17,28 @@ import ark.data.CounterTable;
 import ark.util.SerializationUtil;
 import ark.util.StringUtil;
 
+/**
+ * For organization mention m and gazetteer G, 
+ * CorpRelFeatureMetaDataAttribute computes either vector:
+ * 
+ * <1(v_1 \in a(A(m))), 1(v_2 \in a(A(m))), ... , 1(v_n \in a(A(m)))>
+ * 
+ * Or:
+ * 
+ * <1(v_1 \in a(O(m))), 1(v_2 \in a(O(m))), ... , 1(v_n \in a(O(m)))>
+ * 
+ * Or:
+ * 
+ * <1(v_1,v_1) \in a(A(m))xa(O(m))), 1((v_1,v_2) \in a(A(m))xa(O(m))), ... , 1((v_n,v_n) \in a(A(m))xa(O(m)))>
+ * 
+ * Where O(m) is the mentioned organization, A(m) is the authoring 
+ * corporation, a(s) returns a set of meta-data attributes for 
+ * organization s, and v_i is a possible value for attribute a.  Whether 
+ * A(m) or O(m) is used is determined by the "input type".
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	public enum InputType {
 		Mentioner,

@@ -2,6 +2,18 @@ package corp.data.feature;
 
 import ark.util.StringUtil;
 
+/**
+ * 
+ * For organization mention m, CorpRelFeatureSelfPrefixTokens computes 
+ * 
+ * 1(A(m) shares at least k prefix tokens with O(m))
+ * 
+ * Where A(m) is the authoring organization and O(m) is the mentioned 
+ * organization.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureSelfPrefixTokens extends CorpRelFeatureSelf {
 	private int minTokens;
 	

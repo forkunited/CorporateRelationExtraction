@@ -9,6 +9,38 @@ import java.util.Map.Entry;
 
 import ark.util.FileUtil;
 
+/**
+ * 
+ * CorpMetaData represents metadata represents deserialized attributes of 
+ * corporations. In the past, we've used this class to load meta-data 
+ * that was gathered from Compustat and Bloomberg, but this CorpMetaData
+ * can be extended to include metadata from other sources.
+ * 
+ * A metadata file from which the class loads its content starts with a 
+ * heading line of the form:
+ * 
+ * [attribute_name_1]	[attribute_name_2]	...	[attribute_name_n]
+ * 
+ * Followed by content lines of the form:
+ * 
+ * [ID]	[attribute_values_1]	[attribute_values_2]	...	[attribute_values_n]
+ *
+ * Currently, attribute names can be:
+ * 
+ * cik: Numbers for the corporation
+ * name: Name of the corporation
+ * ticker: Ticker symbols for the corporation
+ * sic: SIC codes for the corporation
+ * country: Countries in which the corporation is located
+ * type: Types for the corporation
+ * industry: Industries for the corporation
+ * 
+ * Several values for each attribute can be given for each corporation through
+ * comma-separated lists (in each [attribute_values_i] in the input file).
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpMetaData {
 	public enum Attribute {
 		CIK,

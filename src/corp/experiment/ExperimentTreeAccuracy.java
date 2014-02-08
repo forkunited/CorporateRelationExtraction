@@ -10,6 +10,18 @@ import corp.model.evaluation.ConfusionMatrix;
 import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
+/**
+ * ExperimentTreeAccuracy represents a training/evaluation experiment
+ * using the "test" data with a corp.model.ModelTree model.  See
+ * the "experiments/test" directory for example configurations.
+ * 
+ * After the configuration is parsed, this class mainly uses the
+ * corp.model.evaluation.AccuracyValidation class to carry out
+ * the experiment.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ExperimentTreeAccuracy extends ExperimentTree {
 	public ExperimentTreeAccuracy() {
 		

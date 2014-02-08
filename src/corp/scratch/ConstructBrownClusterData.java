@@ -16,6 +16,17 @@ import ark.util.StringUtil;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 
+/**
+ * ConstructBrownClusterData takes a set of corporate press release documents
+ * through corp.annotation.CorpDocumentSet, and outputs clean text for input
+ * to Brown clustering (https://github.com/percyliang/brown-cluster).  Words
+ * are first cleaned using the default clean function from the ARKWater 
+ * project, and then words that contain non-alphabetic symbols are removed, 
+ * and numbers are replaced by "[NUMBER]".
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class ConstructBrownClusterData {
 	public static void main(String[] args) {
 		constructForAll();

@@ -25,9 +25,13 @@ import ark.util.OutputWriter;
 import ark.util.StringUtil;
 
 /**
- * Stubs for constructing clean Gazetteers from old messy Gazetteer files
+ * ConstructGazetteer contains functions for putting data from various sources
+ * into the gazetteer format used by the ark.data.Gazetteer class from the 
+ * ARKWater project.  These will probably be useless in the future (and they
+ * contain hard-coded paths), but I've kept them in the project just in case
+ * they can serve as examples for something in the future.
  * 
- * @author Bill
+ * @author Bill McDowell
  *
  */
 public class ConstructGazetteer {

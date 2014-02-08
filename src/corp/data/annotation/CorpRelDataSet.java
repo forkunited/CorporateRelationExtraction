@@ -8,6 +8,24 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
 
+/**
+ * 
+ * CorpRelDataSet represents a set of organization mentions loaded from press
+ * release documents through CorpDocumentSet.  The mentions that are annotated
+ * with relationship labels are stored at the appropriate places within the 
+ * relationship type taxonomy, and this taxonomy data structure is constructed
+ * from the relationship type paths that are seen in the document set from which
+ * the data set is constructed.  Storage of the data within this taxonomy allows
+ * for fast retrieval of data by its location within the taxonomy.  This is 
+ * useful for training models only on data that falls under certain parts of
+ * the taxonomy.
+ * 
+ * Note that the data stored within CorpRelDataSet is not featurized.  Instead,
+ * the corp.data.feature.CorpRelFeaturizedDataSet the featurized extension.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelDataSet {
 	// Label graph... should be a acyclic.  Kept as DAG instead of tree just in case want to build a DAG model later...
 	private Map<CorpRelLabel, List<CorpRelLabel>> labeledDAG; 

@@ -3,6 +3,23 @@ package corp.data.feature;
 import ark.data.Gazetteer;
 import ark.util.StringUtil;
 
+/**
+ * For organization mention m and gazetteer G, 
+ * CorpRelFeatureGazetteerInitialism computes
+ * 
+ * max_{g\in G} 1(O(m) is an initialism for g)
+ * 
+ * Or 
+ * 
+ * max_{g\in G} 1(A(m) is an initialism for g)
+ * 
+ * Where O(m) is the mentioned organization and A(m) is the authoring 
+ * corporation.  Whether A(m) or O(m) is used is determined by the
+ * "input type".
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureGazetteerInitialism  extends CorpRelFeatureGazetteer {
 	private boolean allowPrefix;
 	

@@ -2,6 +2,15 @@ package corp.data.annotation;
 
 import java.util.Collection;
 
+/**
+ * 
+ * CorpRelLabelPath represents a sequence of corporate relationship type 
+ * labels, usually corresponding to a path through the relationship 
+ * type taxonomy.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelLabelPath {
 	private CorpRelLabel[] labelPath;
 	

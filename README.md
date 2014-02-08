@@ -8,7 +8,9 @@ future improvements.  You can get an idea of how things work by reading
 through the other Sloan documentation included in the Sloan project 
 distribution (in the tarball, not in this repository), reading through
 this document, and then reading through the description of each class
-located at the top of each code file.
+located at the top of each code file.  A lot of the documentation within
+the code refers to the tech report, so it's important that you read over
+that document before doing anything else.
 
 ## Layout of the project ##
 
@@ -45,6 +47,15 @@ systematically tested, so this is practically empty.
 but *corp.scratch* just performs miscellaneous tasks.  So if you're trying
 to understand how this library is used to train and test the extraction
 models, you should start by looking at classes in *corp.experiment*.
+
+The *experiments* directory contains experiment configuration files for 
+running experiments using *corp.experiment* classes.  The 
+*experiments/ablation* sub-directory contains "ablation studies" 
+experiments, the "experiments/test" directory contains experiments 
+for testing the final model on the test data set, and the remaining 
+sub-directories contain experiments that were run to choose features
+for the various logistic regressions at different labels in the 
+taxonomy tree model (see the Sloan technical report for more information).
 
 ## How to run things ##
 

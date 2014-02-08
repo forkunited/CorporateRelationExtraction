@@ -2,6 +2,18 @@ package corp.data.feature;
 
 import ark.util.StringUtil;
 
+/**
+ * 
+ * For organization mention m, CorpRelFeatureSelfInitialism computes 
+ * 
+ * 1(A(m) is an initialism for O(m) or O(m) is an initialism for A(m))
+ * 
+ * Where A(m) is the authoring organization and O(m) is the mentioned 
+ * organization.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelFeatureSelfInitialism extends CorpRelFeatureSelf {
 	private boolean allowPrefix;
 	

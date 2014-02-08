@@ -23,12 +23,11 @@ import edu.stanford.nlp.util.Pair;
 
 /**
  * 
- * The basic idea of a CReg Tree Model is that it should call multiple CReg
- * Models and make a prediction. It may also use the posteriors provided by the
- * basic CReg Models.
+ * ModelTree represents the probabilistic taxonomy model described in the 
+ * Sloan tech report.  
  * 
- * @author Lingpeng Kong
- * 
+ * @author Bill McDowell
+ *
  */
 public class ModelTree extends Model {
 	// This represents a tree as a set of paths mapped to models...

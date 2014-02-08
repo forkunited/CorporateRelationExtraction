@@ -27,10 +27,14 @@ import corp.data.feature.CorpRelFeaturizedDatum;
 import edu.stanford.nlp.util.Pair;
 
 /**
- * This is a simple wrapper for CReg in Java
  * 
- * @author Lingpeng Kong, Bill McDowell
+ * ModelCReg is a wrapper for the https://github.com/redpony/creg logistic 
+ * regression implementation.  This is used for the classifiers at each label
+ * in the taxonomy tree (see the Sloan technical report for more details) to
+ * classify corporate relationships to organization mentions.
  * 
+ * @author Bill McDowell
+ *
  */
 public class ModelCReg extends Model {
 	private String cmdPath;

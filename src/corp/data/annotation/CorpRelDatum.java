@@ -2,6 +2,17 @@ package corp.data.annotation;
 
 import java.util.List;
 
+/**
+ * 
+ * CorpRelDatum represents a single organization mention within a press 
+ * release document.  Each mention consists of several token spans 
+ * (representing several instances of the same organization name), and 
+ * an optional relationship label taxonomy path if the mention is 
+ * annotated.
+ * 
+ * @author Bill McDowell
+ *
+ */
 public class CorpRelDatum {
 	private String authorCorpName;
 	private List<CorpDocumentTokenSpan> otherOrgTokenSpans;
