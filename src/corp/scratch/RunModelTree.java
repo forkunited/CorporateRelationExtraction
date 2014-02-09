@@ -32,12 +32,12 @@ import edu.stanford.nlp.util.Pair;
 /**
  * RunModelTree uses a trained relationship-type taxonomy classification
  * model to compute relationship-type posteriors for organization mentions
- * in press release documents.  As described in the paper, a single posterior
- * is computed for the set of all instances of the same cleaned organization
- * name within a single document, using features from the sentence surrounding
- * the first instance. The resulting posterior for mentions of the same 
- * organization name within a single document are output in a JSON object of 
- * the following form:
+ * in press release documents.  As described in the tech report, a single 
+ * posterior is computed for the set of all instances of the same cleaned 
+ * organization name within a single document, using features from the 
+ * sentence surrounding the first instance. The resulting posterior for 
+ * mentions of the same organization name within a single document are output 
+ * in a JSON object of the following form:
  * 
  * {
  *  "author": "<Author name (A(m))>",
