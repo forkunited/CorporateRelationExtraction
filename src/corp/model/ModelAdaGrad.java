@@ -120,12 +120,13 @@ public class ModelAdaGrad extends Model {
 				if (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null)
 					continue;
 				
+				CorpRelLabelPath datumLabel = datum.getLabelPath().getLongestValidPrefix(this.validPaths);
 				CorpRelLabelPath bestLabel = argMaxScoreLabel(datum, true);
 				List<Double> bestLabelCosts = this.costFunction.computeVector(datum, bestLabel);
 				
 				// Update feature weights
 				for (int i = 0; i < this.feature_w.length; i++) { 
-					feature_g[i] = -labelFeatureValue(i, datum, datum.getLabelPath())+labelFeatureValue(i, datum, bestLabel);
+					feature_g[i] = -labelFeatureValue(i, datum, datumLabel)+labelFeatureValue(i, datum, bestLabel);
 					this.feature_G[i] += feature_g[i]*feature_g[i];
 					this.feature_u[i] += feature_g[i];
 					
