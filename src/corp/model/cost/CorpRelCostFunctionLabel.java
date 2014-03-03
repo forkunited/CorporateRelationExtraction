@@ -9,6 +9,7 @@ public class CorpRelCostFunctionLabel extends CorpRelCostFunction {
 
 	public CorpRelCostFunctionLabel(List<CorpRelLabelPath> validPaths) {
 		this.validPaths = validPaths;
+		this.name = "Label";
 	}
 	
 	@Override

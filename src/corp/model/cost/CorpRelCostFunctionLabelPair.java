@@ -8,6 +8,7 @@ import corp.data.feature.CorpRelFeaturizedDatum;
 public class CorpRelCostFunctionLabelPair extends CorpRelCostFunction {
 	public CorpRelCostFunctionLabelPair(List<CorpRelLabelPath> validPaths) {
 		this.validPaths = validPaths;
+		this.name = "LabelPair";
 	}
 	
 	@Override

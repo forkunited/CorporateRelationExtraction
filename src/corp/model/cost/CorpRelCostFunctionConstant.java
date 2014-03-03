@@ -7,6 +7,7 @@ import corp.data.feature.CorpRelFeaturizedDatum;
 
 public class CorpRelCostFunctionConstant extends CorpRelCostFunction {
 	public CorpRelCostFunctionConstant() {
+		this.name = "Constant";
 	}
 	
 	@Override
@@ -21,5 +22,9 @@ public class CorpRelCostFunctionConstant extends CorpRelCostFunction {
 		existingVector.add(1.0);
 		
 		return existingVector;
+	}
+	
+	public String toString() {
+		return this.name;
 	}
 }

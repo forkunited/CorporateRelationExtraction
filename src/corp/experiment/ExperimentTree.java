@@ -9,9 +9,11 @@ import java.util.Map.Entry;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeature;
 import corp.model.Model;
+import corp.model.ModelAdaGrad;
 import corp.model.ModelCReg;
 import corp.model.ModelTree;
 import corp.model.ModelUniform;
+import corp.model.cost.CorpRelCostFunction;
 import ark.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
@@ -76,6 +78,8 @@ public abstract class ExperimentTree extends Experiment {
 			} else if (assignment.first().equals("treeModel")) {
 				if (assignment.second().startsWith("CReg"))
 					model = new ModelCReg(this.properties.getCregCommandPath(), modelValidPaths, this.output);
+				else if (assignment.second().startsWith("AdaGrad"))
+					model = new ModelAdaGrad(modelValidPaths, this.output);
 				else
 					model = new ModelUniform(modelValidPaths, this.output);
 				
@@ -91,6 +95,8 @@ public abstract class ExperimentTree extends Experiment {
 				modelValidPaths.add(CorpRelLabelPath.fromString(assignment.second()));
 			} else if (assignment.first().equals("treeModelFeature")) {
 				modelFeatures.add(CorpRelFeature.fromString(assignment.second(), this.dataTools));
+			} else if (assignment.first().equals("treeModelCostFunction")) {
+				model.setCostFunction(CorpRelCostFunction.fromString(assignment.second(), modelValidPaths));
 			} else if (assignment.first().equals("treeModelParameterSearch")) {
 				if (this.gridSearchParameters == null)
 					this.gridSearchParameters = new HashMap<String, List<Double>>();

@@ -15,6 +15,7 @@ import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
+import corp.model.cost.CorpRelCostFunction;
 import edu.stanford.nlp.util.Pair;
 
 /**
@@ -30,6 +31,8 @@ public abstract class Model {
 	protected String modelPath;
 	protected List<CorpRelLabelPath> validPaths;
 	protected Map<String, Double> hyperParameters;
+	
+	protected CorpRelCostFunction costFunction;
 	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
 		return this.validPaths;
@@ -71,6 +74,10 @@ public abstract class Model {
 	
 	public boolean hasHyperParameter(String parameter) {
 		return this.hyperParameters.containsKey(parameter);
+	}
+	
+	public void setCostFunction(CorpRelCostFunction costFunction) {
+		this.costFunction = costFunction;
 	}
 	
 	public abstract boolean deserialize(String modelPath, CorpDataTools dataTools);
