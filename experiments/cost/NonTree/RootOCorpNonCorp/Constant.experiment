@@ -2,7 +2,7 @@ maxThreads=4
 randomSeed=1
 crossValidationFolds=10
 treeAllowSubpaths=false
-maxDocuments=-1
+maxDocuments=20
 
 treeModelPath=
 treeModel=AdaGrad
