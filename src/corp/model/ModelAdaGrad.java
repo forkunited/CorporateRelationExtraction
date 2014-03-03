@@ -78,9 +78,7 @@ public class ModelAdaGrad extends Model {
 		for (int i = 0; i < this.validPaths.size(); i++)
 			this.pathIndices.put(this.validPaths.get(i), i);
 	
-		this.cost_i = new Integer[this.cost_v.length];
-		for (int i = 0; i < this.cost_i.length; i++)
-			this.cost_i[i] = i;
+		setCostFunction(costFunction);
 	}
 	
 	@Override
@@ -98,6 +96,10 @@ public class ModelAdaGrad extends Model {
 			this.cost_v = new double[this.costFunction.getNames().size()];
 			this.cost_u = new double[this.cost_v.length];
 			this.cost_G = new double[this.cost_v.length];
+		
+			this.cost_i = new Integer[this.cost_v.length];
+			for (int i = 0; i < this.cost_i.length; i++)
+				this.cost_i[i] = i;
 		}
 		
 		double[] prevFeature_w = Arrays.copyOf(this.feature_w, this.feature_w.length);
