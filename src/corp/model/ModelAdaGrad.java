@@ -92,7 +92,7 @@ public class ModelAdaGrad extends Model {
 		this.modelPath = outputPath;
 		
 		if (this.feature_w == null) {
-			this.t = 0;
+			this.t = 1;
 			this.feature_w = new double[datums.get(0).getFeatureValues().size()*this.validPaths.size()];
 			this.feature_u = new double[this.feature_w.length];
 			this.feature_G = new double[this.feature_w.length];
@@ -130,7 +130,7 @@ public class ModelAdaGrad extends Model {
 					this.feature_G[i] += feature_g[i]*feature_g[i];
 					this.feature_u[i] += feature_g[i];
 					
-					if (feature_g[i] <= lambda_1)
+					if (Math.abs(this.feature_u[i])/this.t <= lambda_1)
 						this.feature_w[i] = 0; 
 					else 
 						this.feature_w[i] = -Math.signum(this.feature_u[i])*(this.t/(Math.sqrt(this.feature_G[i])))*((Math.abs(this.feature_u[i])/this.t)-lambda_1); 
