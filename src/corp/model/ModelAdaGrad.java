@@ -207,7 +207,7 @@ public class ModelAdaGrad extends Model {
 		double score = 0;
 		int labelIndex = this.pathIndices.get(label);
 		int numFeatures = datum.getFeatureValues().size();
-		for (int i = labelIndex*numFeatures; i < (labelIndex+1)*this.feature_w.length; i++) {
+		for (int i = labelIndex*numFeatures; i < (labelIndex+1)*numFeatures; i++) {
 			score += this.feature_w[i]*labelFeatureValue(i, datum, label);
 		}
 		
