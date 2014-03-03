@@ -85,6 +85,10 @@ public class ModelAdaGrad extends Model {
 	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
 		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedLabeledData();
 		
+		this.pathIndices = new HashMap<CorpRelLabelPath, Integer>();
+		for (int i = 0; i < this.validPaths.size(); i++)
+			this.pathIndices.put(this.validPaths.get(i), i);
+		
 		this.modelPath = outputPath;
 		
 		if (this.feature_w == null) {
@@ -375,6 +379,10 @@ public class ModelAdaGrad extends Model {
 	@Override
 	public List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(
 			CorpRelFeaturizedDataSet data) {
+		
+		this.pathIndices = new HashMap<CorpRelLabelPath, Integer>();
+		for (int i = 0; i < this.validPaths.size(); i++)
+			this.pathIndices.put(this.validPaths.get(i), i);
 		
 		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedData();
 		List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posteriors = new ArrayList<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>>(datums.size());
