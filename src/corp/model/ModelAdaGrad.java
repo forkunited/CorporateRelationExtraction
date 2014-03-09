@@ -56,13 +56,13 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.001, 500);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.001, 100);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.001, 500);
+		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.001, 100);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, OutputWriter output, double featuresL1, int trainingIterations) {
@@ -159,7 +159,7 @@ public class ModelAdaGrad extends Model {
 						sumVOverG += this.cost_v[this.cost_i[p]]/this.cost_G[this.cost_i[p]];
 					double prevTheta = theta;
 					theta = (1.0/(p+1.0))*(sumVOverG - 1.0);
-					if (this.cost_G[this.cost_i[p]] != 0 || this.cost_v[this.cost_i[p]]-theta/this.cost_G[this.cost_i[p]] < 0) {
+					if (this.cost_G[this.cost_i[p]] != 0 && this.cost_v[this.cost_i[p]]-theta/this.cost_G[this.cost_i[p]] < 0) {
 						theta = prevTheta;
 						break;
 					}
