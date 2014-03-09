@@ -160,13 +160,13 @@ public class ModelAdaGrad extends Model {
 					double prevTheta = theta;
 					theta = (1.0/(p+1.0))*(sumVOverG - 1.0);
 					if (this.cost_G[this.cost_i[p]] != 0 && this.cost_v[this.cost_i[p]]-theta/this.cost_G[this.cost_i[p]] <= 0) {
-						System.out.println("broke: v: " + this.cost_v[this.cost_i[p]] + " theta: " + theta + " G: " + this.cost_G[this.cost_i[p]]);
+						this.output.debugWriteln("broke: v: " + this.cost_v[this.cost_i[p]] + " theta: " + theta + " G: " + this.cost_G[this.cost_i[p]]);
 						theta = prevTheta;
 						break;
 					}
 				}
 				
-				System.out.println("theta " + theta);
+				this.output.debugWriteln("theta " + theta);
 				
 				for (int j = 0; j < this.cost_v.length; j++) {
 					this.cost_v[j] = Math.max(0, this.cost_v[j]-theta/this.cost_G[j]);
