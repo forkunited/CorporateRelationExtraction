@@ -46,9 +46,9 @@ public class ModelAdaGrad extends Model {
 	    	double u_1 = cost_G[i1]*(2.0*cost_v[i1]-1);
 	    	double u_2 = cost_G[i2]*(2.0*cost_v[i2]-1);
 	    	
-	    	if (u_1 > u_2)
+	    	if (u_1 > u_2 || (cost_G[i1] != 0 && cost_G[i2] == 0))
 	    		return -1;
-	    	else if (u_1 < u_2)
+	    	else if (u_1 < u_2 || (cost_G[i1] == 0 && cost_G[i2] != 0))
 	    		return 1;
 	    	else 
 	    		return 0;
@@ -162,17 +162,17 @@ public class ModelAdaGrad extends Model {
 					}
 					double prevTheta = theta;
 					theta = (sumV-1.0)/harmonicG;
-					if (this.cost_G[this.cost_i[p]] != 0 && this.cost_v[this.cost_i[p]]-theta/this.cost_G[this.cost_i[p]] <= 0) {
-						this.output.debugWriteln("broke: v: " + this.cost_v[this.cost_i[p]] + " theta: " + theta + " G: " + this.cost_G[this.cost_i[p]]);
+					if (this.cost_G[this.cost_i[p]] == 0 || this.cost_v[this.cost_i[p]]-theta/this.cost_G[this.cost_i[p]] <= 0) {
 						theta = prevTheta;
 						break;
 					}
 				}
 				
-				this.output.debugWriteln("theta " + theta);
-				
 				for (int j = 0; j < this.cost_v.length; j++) {
-					this.cost_v[j] = Math.max(0, this.cost_v[j]-theta/this.cost_G[j]);
+					if (this.cost_G[j] == 0)
+						this.cost_v[j] = 0;
+					else
+						this.cost_v[j] = Math.max(0, this.cost_v[j]-theta/this.cost_G[j]);
 				}
 				
 				this.t++;

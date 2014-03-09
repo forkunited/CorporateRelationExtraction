@@ -19,7 +19,10 @@ public class CorpRelCostFunctionConstant extends CorpRelCostFunction {
 	@Override
 	public List<Double> computeVector(CorpRelFeaturizedDatum datum,
 			CorpRelLabelPath labelPath, List<Double> existingVector) {
-		existingVector.add(1.0);
+		if (labelPath != datum.getLabelPath())
+			existingVector.add(1.0);
+		else
+			existingVector.add(0.0);
 		
 		return existingVector;
 	}
