@@ -56,13 +56,13 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.001, 50);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.001, 10);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.001, 50);
+		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.001, 10);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, OutputWriter output, double featuresL1, int trainingIterations) {
@@ -180,11 +180,14 @@ public class ModelAdaGrad extends Model {
 	
 			double vDiff = averageDiff(this.cost_v, prevCost_v);
 			double wDiff = averageDiff(this.feature_w, prevFeature_w);
+			double vDiffMax = maxDiff(this.cost_v, prevCost_v);
+			double wDiffMax = maxDiff(this.feature_w, prevFeature_w);
+			
 			double vSum = 0;
 			for (int i = 0; i < this.cost_v.length; i++)
 				vSum += this.cost_v[i];
 			
-			this.output.debugWriteln("Finished iteration " + iteration + " (v-diff (avg): " + vDiff + " w-diff (avg): " + wDiff + " v-sum: " + vSum + ").");
+			this.output.debugWriteln("Finished iteration " + iteration + " (v-diff (avg, max): (" + vDiff + ", " + vDiffMax + ") w-diff (avg, max): (" + wDiff + ", " + wDiffMax + ") v-sum: " + vSum + ").");
 			prevCost_v = Arrays.copyOf(this.cost_v, prevCost_v.length);
 			prevFeature_w = Arrays.copyOf(this.feature_w, prevFeature_w.length);
 		}
@@ -193,6 +196,13 @@ public class ModelAdaGrad extends Model {
 			return false;
 		
 		return true;
+	}
+	
+	private double maxDiff(double[] v1, double[] v2) {
+		double diffMax = 0.0;
+		for (int i = 0; i < v1.length; i++)
+			diffMax = Math.max(Math.abs(v2[i] - v1[i]), diffMax);
+		return diffMax/v1.length;		
 	}
 	
 	private double averageDiff(double[] v1, double[] v2) {
