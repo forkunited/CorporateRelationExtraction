@@ -23,8 +23,4 @@ public class CorpRelCostFunctionConstant extends CorpRelCostFunction {
 		
 		return existingVector;
 	}
-	
-	public String toString() {
-		return this.name;
-	}
 }

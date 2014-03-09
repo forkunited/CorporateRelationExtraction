@@ -127,6 +127,7 @@ public class ModelAdaGrad extends Model {
 				// Update feature weights
 				for (int i = 0; i < this.feature_w.length; i++) { 
 					feature_g[i] = -labelFeatureValue(i, datum, datumLabel)+labelFeatureValue(i, datum, bestLabel);
+					System.out.println(feature_g[i]);
 					this.feature_G[i] += feature_g[i]*feature_g[i];
 					this.feature_u[i] += feature_g[i];
 					
