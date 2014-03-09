@@ -149,16 +149,19 @@ public class ModelAdaGrad extends Model {
 				
 				
 				// Project cost weights onto simplex \sum v_i = 1, v_i >= 0
-				// Find p = max { j : u_j -  (1/(j*G_j))((sum_r=1^j u_r/G_r)-1) > 0 } 
+				// Find p = max { j : u_j - 1/G_j((\sum^j u_i) - 1.0)/(\sum^j 1.0/G_i) > 0 } 
 				// where u and G are sorted desc
 				Arrays.sort(this.cost_i, costWeightComparator);
-				double sumVOverG = 0;
+				double sumV = 0;
+				double harmonicG = 0;
 				double theta = 0;
 				for (int p = 0; p < this.cost_v.length; p++) {
-					if (this.cost_G[this.cost_i[p]] != 0)
-						sumVOverG += this.cost_v[this.cost_i[p]]/this.cost_G[this.cost_i[p]];
+					if (this.cost_G[this.cost_i[p]] != 0) {
+						sumV += this.cost_v[this.cost_i[p]];
+						harmonicG += 1.0/this.cost_G[this.cost_i[p]];
+					}
 					double prevTheta = theta;
-					theta = (1.0/(p+1.0))*(sumVOverG - 1.0);
+					theta = (sumV-1.0)/harmonicG;
 					if (this.cost_G[this.cost_i[p]] != 0 && this.cost_v[this.cost_i[p]]-theta/this.cost_G[this.cost_i[p]] <= 0) {
 						this.output.debugWriteln("broke: v: " + this.cost_v[this.cost_i[p]] + " theta: " + theta + " G: " + this.cost_G[this.cost_i[p]]);
 						theta = prevTheta;
