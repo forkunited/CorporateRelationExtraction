@@ -56,7 +56,7 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 1.0, 40);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 1.0, 10);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
