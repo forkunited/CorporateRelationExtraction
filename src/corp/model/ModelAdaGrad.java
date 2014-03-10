@@ -56,13 +56,13 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.000, 300);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.000, 30);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.000, 300);
+		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.000, 30);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, OutputWriter output, double featuresL1, int trainingIterations) {
@@ -150,7 +150,6 @@ public class ModelAdaGrad extends Model {
 					if (this.cost_G[i] != 0)
 						this.cost_v[i] -= cost_g[i]/Math.sqrt(this.cost_G[i]); 
 				}
-				
 				
 				// Project cost weights onto simplex \sum v_i = 1, v_i >= 0
 				// Find p = max { j : u_j - 1/G_j((\sum^j u_i) - 1.0)/(\sum^j 1.0/G_i) > 0 } 
@@ -249,11 +248,11 @@ public class ModelAdaGrad extends Model {
 	private double labelFeatureValue(int weightIndex, CorpRelFeaturizedDatum datum, CorpRelLabelPath label) {
 		int labelIndex = this.pathIndices.get(label);
 		int numFeatures = datum.getFeatureValues().size();
-		int featureLabelIndex = (weightIndex >= numFeatures) ? weightIndex / numFeatures : weightIndex;
+		int featureLabelIndex = weightIndex / numFeatures;
 		if (featureLabelIndex != labelIndex)
 			return 0.0;
 		
-		int featureIndex = featureLabelIndex % numFeatures;
+		int featureIndex = weightIndex % numFeatures;
 		return datum.getFeatureValues().get(featureIndex);
 	}
 	
