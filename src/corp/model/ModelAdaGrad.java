@@ -205,7 +205,7 @@ public class ModelAdaGrad extends Model {
 		double diffMax = 0.0;
 		for (int i = 0; i < v1.length; i++)
 			diffMax = Math.max(Math.abs(v2[i] - v1[i]), diffMax);
-		return diffMax/v1.length;		
+		return diffMax;		
 	}
 	
 	private double averageDiff(double[] v1, double[] v2) {
