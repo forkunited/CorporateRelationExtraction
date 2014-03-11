@@ -46,9 +46,13 @@ public class ModelAdaGrad extends Model {
 	    	double u_1 = cost_G[i1]*(2.0*cost_v[i1]-1);
 	    	double u_2 = cost_G[i2]*(2.0*cost_v[i2]-1);
 	    	
-	    	if (u_1 > u_2 || (cost_G[i1] != 0 && cost_G[i2] == 0))
+	    	if (cost_G[i1] != 0 && cost_G[i2] == 0)
 	    		return -1;
-	    	else if (u_1 < u_2 || (cost_G[i1] == 0 && cost_G[i2] != 0))
+	    	else if (cost_G[i1] == 0 && cost_G[i2] != 0)
+	    		return 1;
+	    	if (u_1 > u_2)
+	    		return -1;
+	    	else if (u_1 < u_2)
 	    		return 1;
 	    	else 
 	    		return 0;
