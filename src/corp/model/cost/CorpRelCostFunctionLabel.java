@@ -25,7 +25,7 @@ public class CorpRelCostFunctionLabel extends CorpRelCostFunction {
 	public List<Double> computeVector(CorpRelFeaturizedDatum datum,
 			CorpRelLabelPath labelPath, List<Double> existingVector) {
 		for (CorpRelLabelPath validPath : this.validPaths) {
-			if (labelPath == validPath && labelPath != datum.getLabelPath())
+			if (labelPath.equals(validPath) && !labelPath.equals(datum.getLabelPath()))
 				existingVector.add(1.0);
 			else
 				existingVector.add(0.0);

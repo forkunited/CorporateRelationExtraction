@@ -15,7 +15,7 @@ public class CorpRelCostFunctionLabelPair extends CorpRelCostFunction {
 	public List<String> getNames(List<String> existingNames) {
 		for (CorpRelLabelPath actualPath : this.validPaths) {
 			for (CorpRelLabelPath predictedPath : this.validPaths) {
-				if (actualPath == predictedPath)
+				if (actualPath.equals(predictedPath))
 					continue;
 				existingNames.add("LabelPair_A_" + actualPath.toString() + "_P_" + predictedPath.toString());
 			}
@@ -29,9 +29,9 @@ public class CorpRelCostFunctionLabelPair extends CorpRelCostFunction {
 			CorpRelLabelPath labelPath, List<Double> existingVector) {
 		for (CorpRelLabelPath actualPath : this.validPaths) {
 			for (CorpRelLabelPath predictedPath : this.validPaths) {
-				if (actualPath == predictedPath)
+				if (actualPath.equals(predictedPath))
 					continue;
-				if (datum.getLabelPath() != labelPath && datum.getLabelPath() == actualPath && labelPath == predictedPath)
+				if (!datum.getLabelPath().equals(labelPath) && datum.getLabelPath().equals(actualPath) && labelPath.equals(predictedPath))
 					existingVector.add(1.0);
 				else
 					existingVector.add(0.0);
