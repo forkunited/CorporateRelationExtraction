@@ -62,7 +62,7 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), output, 1.000, 30);
+		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.01, 30);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, OutputWriter output, double featuresL1, int trainingIterations) {
