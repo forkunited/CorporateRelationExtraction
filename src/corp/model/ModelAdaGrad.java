@@ -56,13 +56,13 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 1.000, 30);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.01, 45);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.01, 30);
+		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.01, 45);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, OutputWriter output, double featuresL1, int trainingIterations) {
@@ -132,14 +132,14 @@ public class ModelAdaGrad extends Model {
 					this.feature_u[i] += feature_g[i];
 					
 					// FIXME: Replace this with regularized version later
-					//if (this.feature_G[i] != 0)
-					//	this.feature_w[i] -= feature_g[i]/Math.sqrt(this.feature_G[i]); 
+					if (this.feature_G[i] != 0)
+						this.feature_w[i] -= feature_g[i]/Math.sqrt(this.feature_G[i]); 
 					
-					if (Math.abs(this.feature_u[i])/this.t <= lambda_1)
+					/*if (Math.abs(this.feature_u[i])/this.t <= lambda_1)
 						this.feature_w[i] = 0; 
 					else 
 						this.feature_w[i] = -Math.signum(this.feature_u[i])*(this.t/(Math.sqrt(this.feature_G[i])))*((Math.abs(this.feature_u[i])/this.t)-lambda_1); 
-				}
+				*/}
 				
 				// Update cost weights
 				for (int i = 0; i < this.cost_v.length; i++) {
