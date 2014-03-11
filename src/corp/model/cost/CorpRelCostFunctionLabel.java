@@ -6,10 +6,17 @@ import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDatum;
 
 public class CorpRelCostFunctionLabel extends CorpRelCostFunction {
-
-	public CorpRelCostFunctionLabel(List<CorpRelLabelPath> validPaths) {
+	public enum FactorMode {
+		Actual,
+		Predicted
+	}
+	
+	private FactorMode factorMode;
+	
+	public CorpRelCostFunctionLabel(List<CorpRelLabelPath> validPaths, FactorMode factorMode) {
 		this.validPaths = validPaths;
-		this.name = "Label";
+		this.factorMode = factorMode;
+		this.name = "Label_" + this.factorMode;
 	}
 	
 	@Override
@@ -25,7 +32,8 @@ public class CorpRelCostFunctionLabel extends CorpRelCostFunction {
 	public List<Double> computeVector(CorpRelFeaturizedDatum datum,
 			CorpRelLabelPath labelPath, List<Double> existingVector) {
 		for (CorpRelLabelPath validPath : this.validPaths) {
-			if (labelPath.equals(validPath) && !labelPath.equals(datum.getLabelPath()))
+			if ((this.factorMode.equals(FactorMode.Predicted) && labelPath.equals(validPath) && !labelPath.equals(datum.getLabelPath()))
+					|| (this.factorMode.equals(FactorMode.Actual) && datum.getLabelPath().equals(validPath) && !labelPath.equals(datum.getLabelPath())))
 				existingVector.add(1.0);
 			else
 				existingVector.add(0.0);

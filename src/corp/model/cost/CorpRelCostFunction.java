@@ -32,8 +32,10 @@ public abstract class CorpRelCostFunction {
 	public static CorpRelCostFunction fromString(String str, List<CorpRelLabelPath> validPaths) {
 		if (str.equals("Constant"))
 			return new CorpRelCostFunctionConstant();
-		else if (str.equals("Label"))
-			return new CorpRelCostFunctionLabel(validPaths);
+		else if (str.equals("Label_Actual"))
+			return new CorpRelCostFunctionLabel(validPaths, CorpRelCostFunctionLabel.FactorMode.Actual);
+		else if (str.equals("Label_Predicted"))
+			return new CorpRelCostFunctionLabel(validPaths, CorpRelCostFunctionLabel.FactorMode.Predicted);
 		else
 			return new CorpRelCostFunctionLabelPair(validPaths);
 			
