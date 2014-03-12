@@ -9,7 +9,7 @@ treeModel=Uniform
 treeModelValidPath=OCorp
 treeModelPath=OCorp
 treeModel=AdaGrad
-treeModelCostFunction=LabelPredicted
+treeModelCostFunction=Label_Predicted
 
 treeModelValidPath=OCorp-Family
 treeModelValidPath=OCorp-Merger
