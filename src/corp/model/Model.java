@@ -15,6 +15,7 @@ import corp.data.CorpDataTools;
 import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabelPath;
 import corp.data.feature.CorpRelFeaturizedDataSet;
+import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.model.cost.CorpRelCostFunction;
 import edu.stanford.nlp.util.Pair;
 
@@ -28,10 +29,19 @@ import edu.stanford.nlp.util.Pair;
  *
  */
 public abstract class Model {
+	public enum CostMode {
+		None,
+		Cost,
+		NormalizedCost
+	}
+	
 	protected String modelPath;
 	protected List<CorpRelLabelPath> validPaths;
 	protected Map<String, Double> hyperParameters;
 	
+
+	protected Map<CorpRelLabelPath, Integer> costNorms;
+	protected CostMode costMode;
 	protected CorpRelCostFunction costFunction;
 	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
@@ -78,6 +88,11 @@ public abstract class Model {
 	
 	public void setCostFunction(CorpRelCostFunction costFunction) {
 		this.costFunction = costFunction;
+		this.costMode = CostMode.Cost;
+	}
+	
+	public void setCostMode(CostMode costMode) {
+		this.costMode = costMode;
 	}
 	
 	public abstract boolean deserialize(String modelPath, CorpDataTools dataTools);
@@ -85,6 +100,19 @@ public abstract class Model {
 	public abstract List<Pair<CorpRelDatum, Map<CorpRelLabelPath, Double>>> posterior(CorpRelFeaturizedDataSet data);
 	public abstract Model clone();
 
+	protected List<Double> computeCosts(CorpRelFeaturizedDatum datum, CorpRelLabelPath label) {
+		if (this.costMode == CostMode.NormalizedCost) {
+			List<Double> costs = this.costFunction.computeVector(datum, label);
+			for (int i = 0; i < costs.size(); i++)
+				costs.set(i, costs.get(i)/this.costNorms.get(datum.getLabelPath()));
+			return costs;
+		} else if (this.costMode == CostMode.Cost) {
+			return this.costFunction.computeVector(datum, label);
+		} else {
+			return new ArrayList<Double>();
+		}
+	}
+	
 	protected boolean serializeParameters() {
 		if (this.modelPath == null)
 			return false;

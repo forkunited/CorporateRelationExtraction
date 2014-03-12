@@ -12,7 +12,7 @@ public abstract class CorpRelCostFunction {
 	
 	public abstract List<String> getNames(List<String> existingNames);
 	public abstract List<Double> computeVector(CorpRelFeaturizedDatum datum, CorpRelLabelPath labelPath, List<Double> existingVector);
-
+	
 	public List<CorpRelLabelPath> getValidLabelPaths() {
 		return this.validPaths;
 	}

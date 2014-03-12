@@ -60,20 +60,19 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), output, 0.01, 100);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), CostMode.COST, output, 0.01, 100);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), output, 0.01, 100);
+		this(validPaths, new CorpRelCostFunctionConstant(), CostMode.COST, output, 0.01, 100);
 	}
 	
-	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, OutputWriter output, double featuresL1, int trainingIterations) {
+	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, CostMode costMode, OutputWriter output, double featuresL1, int trainingIterations) {
 		this.modelPath = null;
 		this.validPaths = validPaths;
 		this.output = output;
-		this.costFunction = costFunction;
 		this.hyperParameters = new HashMap<String, Double>();
 		this.trainingIterations = trainingIterations;
 		setHyperParameter("featuresL1", featuresL1);
@@ -83,11 +82,24 @@ public class ModelAdaGrad extends Model {
 			this.pathIndices.put(this.validPaths.get(i), i);
 	
 		setCostFunction(costFunction);
+		setCostMode(costMode);
 	}
 	
 	@Override
 	public boolean train(CorpRelFeaturizedDataSet data, String outputPath) {
-		List<CorpRelFeaturizedDatum> datums = data.getFeaturizedLabeledData();
+		List<CorpRelFeaturizedDatum> allDatums = data.getFeaturizedLabeledData();
+		List<CorpRelFeaturizedDatum> datums = new ArrayList<CorpRelFeaturizedDatum>();
+		this.costNorms = new HashMap<CorpRelLabelPath, Integer>();
+		for (CorpRelFeaturizedDatum datum : allDatums) {
+			if (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null)
+				continue;
+			datums.add(datum);
+			CorpRelLabelPath label = datum.getLabelPath().getLongestValidPrefix(this.validPaths);
+			if (!this.costNorms.containsKey(label))
+				this.costNorms.put(label, 0);
+			this.costNorms.put(label, this.costNorms.get(label) + 1);
+		}
+		
 		
 		this.pathIndices = new HashMap<CorpRelLabelPath, Integer>();
 		for (int i = 0; i < this.validPaths.size(); i++)
@@ -120,13 +132,10 @@ public class ModelAdaGrad extends Model {
 		double[] cost_g = new double[this.cost_v.length];
 		double lambda_1 = this.getHyperParameter("featuresL1");
 		for (int iteration = 0; iteration < this.trainingIterations; iteration++) {
-			for (CorpRelFeaturizedDatum datum : datums) {
-				if (datum.getLabelPath() == null || datum.getLabelPath().getLongestValidPrefix(this.validPaths) == null)
-					continue;
-				
+			for (CorpRelFeaturizedDatum datum : datums) {				
 				CorpRelLabelPath datumLabel = datum.getLabelPath().getLongestValidPrefix(this.validPaths);
 				CorpRelLabelPath bestLabel = argMaxScoreLabel(datum, true);
-				List<Double> bestLabelCosts = this.costFunction.computeVector(datum, bestLabel);
+				List<Double> bestLabelCosts = computeCosts(datum, bestLabel);
 				
 				// Update feature weights
 				for (int i = 0; i < this.feature_w.length; i++) { 
@@ -241,7 +250,7 @@ public class ModelAdaGrad extends Model {
 		}
 		
 		if (includeCost) {
-			List<Double> costs = this.costFunction.computeVector(datum, label);
+			List<Double> costs = computeCosts(datum, label);
 			for (int i = 0; i < this.cost_v.length; i++)
 				score += costs.get(i)*this.cost_v[i];
 		}
@@ -394,7 +403,7 @@ public class ModelAdaGrad extends Model {
 
 	@Override
 	public Model clone() {
-		ModelAdaGrad cloneModel = new ModelAdaGrad(this.validPaths, this.costFunction, this.output, getHyperParameter("featuresL1"), this.trainingIterations);
+		ModelAdaGrad cloneModel = new ModelAdaGrad(this.validPaths, this.costFunction, this.costMode, this.output, getHyperParameter("featuresL1"), this.trainingIterations);
 		cloneModel.modelPath = this.modelPath;
 		for (Entry<String, Double> hyperParameter : this.hyperParameters.entrySet())
 			cloneModel.setHyperParameter(hyperParameter.getKey(), hyperParameter.getValue());
