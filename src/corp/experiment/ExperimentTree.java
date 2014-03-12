@@ -98,7 +98,7 @@ public abstract class ExperimentTree extends Experiment {
 			} else if (assignment.first().equals("treeModelCostFunction")) {
 				model.setCostFunction(CorpRelCostFunction.fromString(assignment.second(), modelValidPaths));
 			} else if (assignment.first().equals("treeModelCostFunctionMode")) {
-				model.setCostMode(Model.CostMode.NORMALIZED_COST);
+				model.setCostMode(Model.CostMode.valueOf(assignment.second()));
 			} else if (assignment.first().equals("treeModelParameterSearch")) {
 				if (this.gridSearchParameters == null)
 					this.gridSearchParameters = new HashMap<String, List<Double>>();

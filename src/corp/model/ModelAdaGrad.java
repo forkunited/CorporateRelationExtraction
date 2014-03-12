@@ -60,13 +60,13 @@ public class ModelAdaGrad extends Model {
 	}
 	
 	public ModelAdaGrad(String existingModelPath, OutputWriter output, CorpDataTools dataTools) {
-		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), CostMode.COST, output, 0.01, 100);
+		this(new ArrayList<CorpRelLabelPath>(), new CorpRelCostFunctionConstant(), CostMode.Cost, output, 0.01, 100);
 		this.modelPath = existingModelPath;
 		this.deserialize(existingModelPath, dataTools);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, OutputWriter output) {
-		this(validPaths, new CorpRelCostFunctionConstant(), CostMode.COST, output, 0.01, 100);
+		this(validPaths, new CorpRelCostFunctionConstant(), CostMode.Cost, output, 0.01, 100);
 	}
 	
 	public ModelAdaGrad(List<CorpRelLabelPath> validPaths, CorpRelCostFunction costFunction, CostMode costMode, OutputWriter output, double featuresL1, int trainingIterations) {
