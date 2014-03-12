@@ -103,8 +103,9 @@ public abstract class Model {
 	protected List<Double> computeCosts(CorpRelFeaturizedDatum datum, CorpRelLabelPath label) {
 		if (this.costMode == CostMode.NormalizedCost) {
 			List<Double> costs = this.costFunction.computeVector(datum, label);
+			CorpRelLabelPath actualLabel = datum.getLabelPath().getLongestValidPrefix(this.validPaths);
 			for (int i = 0; i < costs.size(); i++)
-				costs.set(i, costs.get(i)/this.costNorms.get(datum.getLabelPath()));
+				costs.set(i, costs.get(i)/this.costNorms.get(actualLabel));
 			return costs;
 		} else if (this.costMode == CostMode.Cost) {
 			return this.costFunction.computeVector(datum, label);
