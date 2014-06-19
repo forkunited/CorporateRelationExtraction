@@ -13,9 +13,9 @@ import corp.data.annotation.CorpRelDatum;
 import corp.data.annotation.CorpRelLabel;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
-import ark.data.CounterTable;
+import ark.util.CounterTable;
 import ark.util.OutputWriter;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 
 /**
  * MiscellaneousStats contains functions for computing miscellaneous 
@@ -74,7 +74,7 @@ public class MiscellaneousStats {
 		/* Construct corporate relation data set from documents */
 		CorpRelFeaturizedDataSet dataSet = new CorpRelFeaturizedDataSet(documentSet, new OutputWriter());
 		List<CorpRelDatum> data = dataSet.getData();
-		CounterTable terms = new CounterTable();
+		CounterTable<String> terms = new CounterTable<String>();
 		for (CorpRelDatum datum : data) {
 			List<CorpDocumentTokenSpan> tokenSpans = datum.getOtherOrgTokenSpans();
 			String authorCorpName = datum.getAuthorCorpName();

@@ -2,8 +2,8 @@ package corp.util;
 
 import java.util.List;
 
-import ark.data.Gazetteer;
-import ark.util.StringUtil;
+import corp.data.Gazetteer;
+import corp.util.StringUtil;
 
 /**
  * CorpKeyFn computes the entity resolution hashing function described in the

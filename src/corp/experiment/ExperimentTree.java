@@ -14,7 +14,7 @@ import corp.model.ModelCReg;
 import corp.model.ModelTree;
 import corp.model.ModelUniform;
 import corp.model.cost.CorpRelCostFunction;
-import ark.util.SerializationUtil;
+import corp.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 /**

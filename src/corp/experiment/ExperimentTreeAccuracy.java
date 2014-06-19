@@ -7,7 +7,7 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.model.evaluation.AccuracyValidation;
 import corp.model.evaluation.ConfusionMatrix;
-import ark.util.SerializationUtil;
+import corp.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 /**

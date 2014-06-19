@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import corp.data.CorpMetaData;
-import ark.data.Gazetteer;
+import corp.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpRelLabel;
@@ -15,7 +15,7 @@ import corp.data.feature.CorpRelFeaturizedDatum;
 import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 import ark.util.OutputWriter;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 
 /**
  * CorpKeyFnPerformance evaluates an organization name hashing

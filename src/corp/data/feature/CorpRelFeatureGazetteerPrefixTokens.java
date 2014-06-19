@@ -1,7 +1,7 @@
 package corp.data.feature;
 
-import ark.data.Gazetteer;
-import ark.util.StringUtil;
+import corp.data.Gazetteer;
+import corp.util.StringUtil;
 
 /**
  * For organization mention m and gazetteer G, 

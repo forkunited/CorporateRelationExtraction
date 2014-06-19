@@ -3,7 +3,7 @@ package corp.experiment;
 import java.io.File;
 import java.util.List;
 import corp.model.evaluation.KFoldCrossValidation;
-import ark.util.SerializationUtil;
+import corp.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 /**

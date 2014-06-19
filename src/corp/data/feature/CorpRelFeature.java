@@ -7,7 +7,7 @@ import java.util.Map;
 import corp.data.CorpDataTools;
 import corp.data.CorpMetaData;
 import corp.data.annotation.CorpRelDatum;
-import ark.util.SerializationUtil;
+import corp.util.SerializationUtil;
 
 /**
  * CorpRelFeature represents a feature type for use in models that 

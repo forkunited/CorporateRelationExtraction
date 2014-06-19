@@ -2,8 +2,8 @@ package corp.data.feature;
 
 import java.util.List;
 
-import ark.data.Gazetteer;
-import ark.util.StringUtil;
+import corp.data.Gazetteer;
+import corp.util.StringUtil;
 
 /**
  * 

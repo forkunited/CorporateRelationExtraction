@@ -13,7 +13,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import corp.data.CorpMetaData;
-import ark.data.Gazetteer;
+import corp.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.annotation.CorpDocumentTokenSpan;
@@ -22,7 +22,7 @@ import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 import ark.util.OutputWriter;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 
 /**
  * ConstructGazetteer contains functions for putting data from various sources

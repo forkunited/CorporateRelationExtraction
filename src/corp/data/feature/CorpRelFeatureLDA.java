@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ark.util.StanfordUtil;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;

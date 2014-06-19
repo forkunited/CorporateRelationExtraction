@@ -1,6 +1,6 @@
 package corp.data.feature;
 
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 
 /**
  * 

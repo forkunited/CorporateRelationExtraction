@@ -2,6 +2,7 @@ package corp.data;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,8 @@ import ark.wrapper.BrownClusterer;
 import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 import corp.util.LDA;
-import ark.util.StringUtil;
-import ark.data.Gazetteer;
+import corp.util.StringUtil;
+import corp.data.Gazetteer;
 
 /**
  * 
@@ -44,20 +45,28 @@ public class CorpDataTools {
 		this.output = output;
 		this.gazetteers = new HashMap<String, Gazetteer>();
 		this.metaData = new HashMap<String, CorpMetaData>();
-		this.cleanFns = new HashMap<String, StringUtil.StringTransform>();
+		this.cleanFns = new HashMap<String,  StringUtil.StringTransform>();
 		this.collectionFns = new HashMap<String, StringUtil.StringCollectionTransform>();
 		this.clusterers = new HashMap<String, BrownClusterer>();
 		
-		this.collectionFns.put("Prefixes", StringUtil.getPrefixesFn());
+		this.collectionFns.put("Prefixes", new StringUtil.StringCollectionTransform() {
+			public String toString() {
+				return "Prefixes";
+			}
+			
+			public Collection<String> transform(String str) {
+				return StringUtil.prefixes(str);
+			}
+		});
 		this.collectionFns.put("None", null);
 		
-		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath()));
-		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath()));
-		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTicker", this.properties.getBloombergCorpTickerGazetteerPath()));
-		this.gazetteers.put("NonCorpInitialismGazetteer", new Gazetteer("NonCorpInitialism", this.properties.getNonCorpInitialismGazetteerPath()));
-			
-		
 		this.cleanFns.put("DefaultCleanFn", StringUtil.getDefaultCleanFn());
+		
+		this.gazetteers.put("StopWordGazetteer", new Gazetteer("StopWord", this.properties.getStopWordGazetteerPath(), this.cleanFns.get("DefaultCleanFn")));
+		this.gazetteers.put("NGramStopWordGazetteer", new Gazetteer("NGramStopWord", this.properties.getNGramStopWordGazetteerPath(), this.cleanFns.get("DefaultCleanFn")));
+		this.gazetteers.put("BloombergCorpTickerGazetteer", new Gazetteer("BloombergCorpTicker", this.properties.getBloombergCorpTickerGazetteerPath(), this.cleanFns.get("DefaultCleanFn")));
+		this.gazetteers.put("NonCorpInitialismGazetteer", new Gazetteer("NonCorpInitialism", this.properties.getNonCorpInitialismGazetteerPath(), this.cleanFns.get("DefaultCleanFn")));
+			
 		this.cleanFns.put("StopWordCleanFn_StopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("StopWordGazetteer")));
 		this.cleanFns.put("StopWordCleanFn_NGramStopWord", StringUtil.getStopWordsCleanFn(this.gazetteers.get("NGramStopWordGazetteer")));
 		

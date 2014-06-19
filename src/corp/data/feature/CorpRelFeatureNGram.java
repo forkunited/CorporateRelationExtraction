@@ -10,11 +10,11 @@ import java.util.Map.Entry;
 
 import corp.data.annotation.CorpRelDatum;
 import ark.wrapper.BrownClusterer;
-import ark.data.CounterTable;
-import ark.util.SerializationUtil;
+import ark.util.CounterTable;
+import corp.util.SerializationUtil;
 import ark.util.StanfordUtil;
 import ark.util.Stemmer;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 import edu.stanford.nlp.ling.CoreLabel;
 
 /**
@@ -45,7 +45,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	protected String namePrefix;
 	protected StringUtil.StringTransform cleanFn;
 	protected BrownClusterer clusterer;
-	protected HashMap<String, Integer> vocabulary;
+	protected Map<String, Integer> vocabulary;
 
 	private String getNamePrefix() {
 		String clustererName = "";
@@ -57,7 +57,7 @@ public abstract class CorpRelFeatureNGram extends CorpRelFeature {
 	
 	@Override
 	public void init(List<CorpRelDatum> data) {
-		CounterTable counter = new CounterTable();
+		CounterTable<String> counter = new CounterTable<String>();
 		for (CorpRelDatum datum : data) {
 			HashSet<String> ngramsForDatum = getNGramsForDatum(datum);
 			for (String ngram : ngramsForDatum) {

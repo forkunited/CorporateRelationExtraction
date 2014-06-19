@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import ark.data.Gazetteer;
+import corp.data.Gazetteer;
 import ark.util.OutputWriter;
 import ark.util.StanfordUtil;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 import corp.data.CorpMetaData;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocument;

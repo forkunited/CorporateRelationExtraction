@@ -10,12 +10,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import corp.data.CorpMetaData;
-import ark.data.Gazetteer;
+import corp.data.Gazetteer;
 import corp.data.annotation.CorpDocumentTokenSpan;
 import corp.data.annotation.CorpRelDatum;
-import ark.data.CounterTable;
-import ark.util.SerializationUtil;
-import ark.util.StringUtil;
+import ark.util.CounterTable;
+import corp.util.SerializationUtil;
+import corp.util.StringUtil;
 
 /**
  * For organization mention m and gazetteer G, 
@@ -50,7 +50,7 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	private CorpMetaData metaData;
 	private CorpMetaData.Attribute attribute;
 	private CorpRelFeatureMetaDataAttribute.InputType inputType;
-	private HashMap<String, Integer> attributeVocabulary = new HashMap<String, Integer>();
+	private Map<String, Integer> attributeVocabulary = new HashMap<String, Integer>();
 	private int minFeatureOccurrence;
 	private StringUtil.StringCollectionTransform attributeTransformFn;
 	
@@ -88,7 +88,7 @@ public class CorpRelFeatureMetaDataAttribute extends CorpRelFeature {
 	
 	@Override
 	public void init(List<CorpRelDatum> data) {
-		CounterTable attValues = new CounterTable();
+		CounterTable<String> attValues = new CounterTable<String>();
 		for (CorpRelDatum datum : data) {
 			HashSet<String> datumAttValues = getDatumAttributeValues(datum);
 			

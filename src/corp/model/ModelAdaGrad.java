@@ -130,7 +130,7 @@ public class ModelAdaGrad extends Model {
 		CostWeightComparator costWeightComparator = new CostWeightComparator();
 		double[] feature_g = new double[this.feature_w.length];
 		double[] cost_g = new double[this.cost_v.length];
-		double lambda_1 = this.getHyperParameter("featuresL1");
+		//double lambda_1 = this.getHyperParameter("featuresL1");
 		for (int iteration = 0; iteration < this.trainingIterations; iteration++) {
 			for (CorpRelFeaturizedDatum datum : datums) {				
 				CorpRelLabelPath datumLabel = datum.getLabelPath().getLongestValidPrefix(this.validPaths);

@@ -13,7 +13,7 @@ import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeaturizedDataSet;
 import corp.util.CorpProperties;
 import ark.util.OutputWriter;
-import ark.util.SerializationUtil;
+import corp.util.SerializationUtil;
 import edu.stanford.nlp.util.Pair;
 
 /**

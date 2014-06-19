@@ -1,6 +1,6 @@
 package corp.util;
 
-import ark.util.ARKProperties;
+import ark.util.Properties;
 
 /**
  * CorpProperties reads in property values from a configuration file. These
@@ -9,7 +9,7 @@ import ark.util.ARKProperties;
  * @author Bill McDowell
  *
  */
-public class CorpProperties extends ARKProperties {
+public class CorpProperties extends Properties {
 	private String corpRelDirPath;
 	private String corpRelTestDirPath;
 	private String stanfordAnnotationDirPath;

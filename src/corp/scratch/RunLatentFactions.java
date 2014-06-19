@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import corp.data.CorpMetaData;
-import ark.data.Gazetteer;
+import corp.data.Gazetteer;
 import corp.data.annotation.AnnotationCache;
 import corp.data.annotation.CorpDocumentSet;
 import corp.data.feature.CorpRelFeature;
@@ -14,7 +14,7 @@ import corp.util.CorpKeyFn;
 import corp.util.CorpProperties;
 import corp.util.LatentFactions;
 import ark.util.OutputWriter;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 
 /**
  * RunLatentFactions uses the corp.util.LatentFactions wrapper class to

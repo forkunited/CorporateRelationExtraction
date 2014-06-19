@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ark.util.CommandRunner;
 import ark.util.OutputWriter;
-import ark.util.StringUtil;
+import corp.util.StringUtil;
 
 import corp.data.annotation.CorpDocument;
 import corp.data.annotation.CorpDocumentSet;

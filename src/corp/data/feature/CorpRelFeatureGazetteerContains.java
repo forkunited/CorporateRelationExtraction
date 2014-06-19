@@ -1,6 +1,6 @@
 package corp.data.feature;
 
-import ark.data.Gazetteer;
+import corp.data.Gazetteer;
 
 /**
  * For organization mention m and gazetteer G, 
